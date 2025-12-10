@@ -4,19 +4,24 @@ $username = "root";
 $password = "";
 $dbname = "db_web_du_lich";
 
-// Tạo kết nối
-$connect = new mysqli($servername, $username, $password, $dbname);
+$debug = true; // sau này có thể chuyển sang false để tắt debug
 
-// Kiểm tra kết nối
-if ($connect->connect_error) {
-    // In lỗi ra trang để bạn kiểm tra nhanh (KHÔNG nên in chi tiết lỗi trên production)
-    echo "Kết nối thất bại: " . htmlspecialchars($conn->connect_error);
+try {
+    $connect = new mysqli($servername, $username, $password, $dbname);
+    if ($debug) {
+        echo "Kết nối DB thành công!";
+    }
+} catch (mysqli_sql_exception $e) {
+    if ($debug) {
+        echo "Kết nối thất bại: " . htmlspecialchars($e->getMessage());
+    } else {
+        error_log("DB connection failed: " . $e->getMessage());
+        http_response_code(500);
+        echo "Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.";
+    }
+    exit;
 }
 
-// Sau nay có thể xóa dòng này đi
-echo "Kết nối DB thành công!";
-
-
 // Thiết lập bộ ký tự cho kết nối
-$conn->set_charset("utf8mb4");
+$connect->set_charset("utf8mb4");
 ?>
