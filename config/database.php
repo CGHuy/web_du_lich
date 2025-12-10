@@ -1,29 +1,49 @@
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "db_web_du_lich";
+class Database
+{
+    private $servername = "localhost";
+    private $username = "root";
+    private $password = "123";
+    private $dbname = "db_web_du_lich";
+    private $debug = true;
+    public $connect;
 
-$debug = true; // sau này có thể chuyển sang false để tắt debug
+    public function __construct()
+    {
+        try {
+            $this->connect = new mysqli(
+                $this->servername,
+                $this->username,
+                $this->password,
+                $this->dbname
+            );
+            $this->connect->set_charset("utf8mb4");
 
-try {
-    // Tạo kết nối
-    $connect = new mysqli($servername, $username, $password, $dbname);
-
-    // Thiết lập bộ ký tự cho kết nối (đảm bảo db và ứng dụng sử dụng cùng bộ ký tự)
-    $connect->set_charset("utf8mb4");
-
-    if ($debug) {
-        echo "Kết nối DB thành công!";
+            if ($this->debug) {
+                error_log("Kết nối DB thành công!");
+            }
+        } catch (mysqli_sql_exception $e) {
+            if ($this->debug) {
+                error_log("Kết nối thất bại: " . $e->getMessage());
+            } else {
+                error_log("DB connection failed: " . $e->getMessage());
+            }
+            http_response_code(500);
+            echo "Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.";
+            exit;
+        }
     }
-} catch (mysqli_sql_exception $e) {
-    if ($debug) {
-        echo "Kết nối thất bại: " . htmlspecialchars($e->getMessage());
-    } else {
-        error_log("DB connection failed: " . $e->getMessage());
-        http_response_code(500);
-        echo "Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.";
+
+    public function getConnection()
+    {
+        return $this->connect;
     }
-    exit;
+
+    public function close()
+    {
+        if ($this->connect) {
+            $this->connect->close();
+        }
+    }
 }
 ?>
