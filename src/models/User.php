@@ -1,71 +1,52 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
-
 class User
 {
     private $db;
     private $conn;
-
     public function __construct()
     {
         $this->db = new Database();
         $this->conn = $this->db->getConnection();
     }
-
-    public function getAllUsers()
+    public function getAll()
     {
         $sql = "SELECT * FROM users";
         $result = $this->conn->query($sql);
         $users = [];
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
+        if ($result)
+            while ($row = $result->fetch_assoc())
                 $users[] = $row;
-            }
-        }
         return $users;
     }
-
-    public function getUserById($id)
+    public function getById($id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE id = ?");
-        if (!$stmt)
-            return null;
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $result = $stmt->get_result();
         return $result->fetch_assoc();
     }
-
-    public function createUser($name, $email)
+    public function create($fullname, $phone, $email, $password, $role = 'customer', $status = 1)
     {
-        $stmt = $this->conn->prepare("INSERT INTO users (name, email) VALUES (?, ?)");
-        if (!$stmt)
-            return false;
-        $stmt->bind_param("ss", $name, $email);
+        $stmt = $this->conn->prepare("INSERT INTO users (fullname, phone, email, password, role, status) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssssi", $fullname, $phone, $email, $password, $role, $status);
         return $stmt->execute();
     }
-
-    public function updateUser($id, $name, $email)
+    public function update($id, $fullname, $phone, $email, $password, $role, $status)
     {
-        $stmt = $this->conn->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
-        if (!$stmt)
-            return false;
-        $stmt->bind_param("ssi", $name, $email, $id);
+        $stmt = $this->conn->prepare("UPDATE users SET fullname = ?, phone = ?, email = ?, password = ?, role = ?, status = ? WHERE id = ?");
+        $stmt->bind_param("ssssssi", $fullname, $phone, $email, $password, $role, $status, $id);
         return $stmt->execute();
     }
-
-    public function deleteUser($id)
+    public function delete($id)
     {
         $stmt = $this->conn->prepare("DELETE FROM users WHERE id = ?");
-        if (!$stmt)
-            return false;
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
-
     public function __destruct()
     {
         $this->db->close();
     }
 }
-?>
