@@ -56,4 +56,48 @@ class UserController
 
         header('Location: ' . route('user.edit'));
     }
+    public function changePassword()
+    {
+        include __DIR__ . '/../views/components/ChangePassword.php';
+    }
+    public function updatePassword()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . route('user.changePassword'));
+            return;
+        }
+
+        $user = $this->userModel->getById($this->userId);
+        if (!$user) {
+            http_response_code(404);
+            echo "User không tồn tại";
+            return;
+        }
+
+        $currentPassword = $_POST['current_password'] ?? '';
+        $newPassword = $_POST['new_password'] ?? '';
+        $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if ($currentPassword !== $user['password']) {
+            echo "Mật khẩu hiện tại không đúng.";
+            return;
+        }
+
+        if ($newPassword !== $confirmPassword) {
+            echo "Mật khẩu mới và xác nhận mật khẩu không khớp.";
+            return;
+        }
+
+        $this->userModel->update(
+            $this->userId,
+            $user['fullname'],
+            $user['phone'],
+            $user['email'],
+            $newPassword,
+            $user['role'],
+            $user['status']
+        );
+
+        header('Location: ' . route('user.changePassword'));
+    }
 }
