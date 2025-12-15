@@ -7,10 +7,6 @@ require_once __DIR__ . '/../models/Service.php';
 
 class AdminController {
 
-    public function index() {
-        return include __DIR__ . '/../views/components/MenuAdmin.php';
-    }
-
     public function tour() {
         $tourModel = new Tour();
         $tours = $tourModel->getAll();
