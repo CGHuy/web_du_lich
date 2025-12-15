@@ -2,7 +2,6 @@
 return [
     'user.edit' => ['controller' => 'UserController', 'action' => 'edit'],
     'user.update' => ['controller' => 'UserController', 'action' => 'update'],
-    'admin.index' => ['controller' => 'AdminController', 'action' => 'index'],
     'admin.tour' => ['controller' => 'AdminController', 'action' => 'tour'],
     'admin.itinerary' => ['controller' => 'AdminController', 'action' => 'itinerary'],
     'admin.booking' => ['controller' => 'AdminController', 'action' => 'booking'],
