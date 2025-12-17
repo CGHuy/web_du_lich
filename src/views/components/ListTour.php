@@ -27,15 +27,28 @@ include __DIR__ . '/../partials/menu.php';
             <h1 class="text-slate-900 dark:text-slate-50 fw-bold mb-3" style="font-size:2rem;">Khám Phá Các Tour Du Lịch
             </h1>
             <div class="d-flex align-items-center gap-2 flex-nowrap">
-                <label class="form-label mb-0 text-sm font-medium text-slate-600 dark:text-slate-300" for="sort">Sắp
-                    xếp:</label>
-                <select
-                    class="form-select rounded-lg border-slate-300 bg-background-light dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 h-10 ps-3 pe-4 text-sm focus:border-primary focus:ring-primary"
-                    id="sort">
-                    <option>Tất cả</option>
-                    <option>Giá: Thấp đến cao</option>
-                    <option>Giá: Cao đến thấp</option>
-                </select>
+                <label class="form-label mb-0 text-sm font-medium text-slate-600 dark:text-slate-300" for="sort">Sắp xếp:</label>
+                <form method="get" action="<?= route('ListTour.index') ?>" id="sortForm">
+                    <?php
+                    $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
+                    // Giữ lại các filter khác khi sort
+                    $filterFields = ['controller','action','region','duration_range','services','search','min_price','max_price','page'];
+                    foreach ($filterFields as $field) {
+                        if ($field === 'services' && isset($_GET['services']) && is_array($_GET['services'])) {
+                            foreach ($_GET['services'] as $serviceId) {
+                                echo '<input type="hidden" name="services[]" value="'.htmlspecialchars($serviceId).'">';
+                            }
+                        } elseif (isset($_GET[$field]) && $field !== 'services') {
+                            echo '<input type="hidden" name="'.$field.'" value="'.htmlspecialchars($_GET[$field]).'">';
+                        }
+                    }
+                    ?>
+                    <select name="sort" class="form-select rounded-lg border-slate-300 bg-background-light dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 h-10 ps-3 pe-4 text-sm focus:border-primary focus:ring-primary" id="sort" onchange="document.getElementById('sortForm').submit()">
+                        <option value="" <?php echo ($sort === '') ? 'selected' : ''; ?>>Tất cả</option>
+                        <option value="price_asc" <?php echo ($sort === 'price_asc') ? 'selected' : ''; ?>>Giá: Thấp đến cao</option>
+                        <option value="price_desc" <?php echo ($sort === 'price_desc') ? 'selected' : ''; ?>>Giá: Cao đến thấp</option>
+                    </select>
+                </form>
             </div>
         </div>
 
@@ -51,12 +64,17 @@ include __DIR__ . '/../partials/menu.php';
                     <?php endif; ?>
                     <div class="mb-4">
                         <label for="priceRange" class="form-label fw-bold">Giá</label>
+                        <?php
+                        $minPrice = isset($_GET['min_price']) ? (int)$_GET['min_price'] : 500000;
+                        $maxPrice = isset($_GET['max_price']) ? (int)$_GET['max_price'] : 10000000;
+                        ?>
                         <input type="range" class="form-range" min="500000" max="10000000" step="500000"
-                            id="priceRange">
-                        <div class="d-flex justify-content-between">
-                            <span>2.000.000đ</span>
+                            id="priceRange" name="min_price" value="<?php echo $minPrice; ?>" oninput="document.getElementById('minPriceValue').innerText = this.value.toLocaleString('vi-VN') + 'đ';" onchange="this.form.submit()">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span id="minPriceValue"><?php echo number_format($minPrice, 0, ',', '.'); ?>đ</span>
                             <span>10.000.000đ+</span>
                         </div>
+                        <input type="hidden" name="max_price" value="<?php echo $maxPrice; ?>">
                     </div>
                     <div class="mb-4">
                         <label for="areaSelect" class="form-label fw-bold">Khu vực</label>

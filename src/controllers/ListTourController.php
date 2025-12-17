@@ -19,12 +19,15 @@ class ListTourController
         $durationRange = isset($_GET['duration_range']) && $_GET['duration_range'] !== '' ? $_GET['duration_range'] : '';
         $services = isset($_GET['services']) && is_array($_GET['services']) ? array_map('intval', $_GET['services']) : [];
         $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $minPrice = isset($_GET['min_price']) ? (int) $_GET['min_price'] : null;
+        $maxPrice = isset($_GET['max_price']) ? (int) $_GET['max_price'] : null;
+        $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
 
         $serviceModel = new Service();
         $allServices = $serviceModel->getAll();
 
-        if ($region !== '' || $durationRange !== '' || !empty($services) || $search !== '') {
-            $allTours = $this->listTourService->filterTours($region, $durationRange, $services, $search);
+        if ($region !== '' || $durationRange !== '' || !empty($services) || $search !== '' || $minPrice !== null || $maxPrice !== null || $sort !== '') {
+            $allTours = $this->listTourService->filterTours($region, $durationRange, $services, $search, $minPrice, $maxPrice, $sort);
         } else {
             $allTours = $this->tourModel->getAll();
         }

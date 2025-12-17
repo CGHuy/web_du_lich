@@ -14,7 +14,7 @@ class ListTourService
      * Lọc tour theo region, duration, services, search
      * $services: mảng id dịch vụ (int)
      */
-    public function filterTours($region = '', $durationRange = '', $services = [], $search = '')
+    public function filterTours($region = '', $durationRange = '', $services = [], $search = '', $minPrice = null, $maxPrice = null, $sort = '')
     {
         $params = [];
         $where = [];
@@ -29,6 +29,14 @@ class ListTourService
             $where[] = 't.name LIKE ?';
             $params[] = '%' . $search . '%';
         }
+        if ($minPrice !== null) {
+            $where[] = 't.price_default >= ?';
+            $params[] = $minPrice;
+        }
+        if ($maxPrice !== null) {
+            $where[] = 't.price_default <= ?';
+            $params[] = $maxPrice;
+        }
         if (!empty($services)) {
             $count = count($services);
             $join .= ' INNER JOIN tour_services ts ON t.id = ts.tour_id ';
@@ -42,6 +50,12 @@ class ListTourService
             $sql .= ' WHERE ' . implode(' AND ', $where);
         }
         $sql .= $group . $having;
+        // Sắp xếp theo giá nếu có
+        if ($sort === 'price_asc') {
+            $sql .= ' ORDER BY t.price_default ASC';
+        } elseif ($sort === 'price_desc') {
+            $sql .= ' ORDER BY t.price_default DESC';
+        }
         $db = new Database();
         $conn = $db->getConnection();
         $stmt = $conn->prepare($sql);
