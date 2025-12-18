@@ -18,9 +18,10 @@
                     style="color: inherit;">Lịch sử đặt
                     tour</a>
             </li>
-            <li class="menu-item <?= $currentPage === 'favorites' ? 'active' : '' ?>">
+            <li class="menu-item <?= $currentPage === 'favorite-tour' ? 'active' : '' ?>">
                 <i class="fa-solid fa-heart"></i>
-                <a href="#" class="text-decoration-none flex-grow-1" style="color: inherit;">Tour yêu
+                <a href="<?= route('settinguser.favoriteTour'); ?>" class="text-decoration-none flex-grow-1"
+                    style="color: inherit;">Tour yêu
                     thích</a>
             </li>
             <li class="menu-item">

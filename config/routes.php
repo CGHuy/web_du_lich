@@ -7,5 +7,7 @@ return [
     'settinguser.bookingHistory' => ['controller' => 'SettingUserController', 'action' => 'bookingHistory'],
     'settinguser.updateBookingHistory' => ['controller' => 'SettingUserController', 'action' => 'updateBookingHistory'],
     'settinguser.detailBookingHistory' => ['controller' => 'SettingUserController', 'action' => 'detailBookingHistory'],
+    'settinguser.favoriteTour' => ['controller' => 'SettingUserController', 'action' => 'favoriteTour'],
+    'settinguser.updateFavoriteTour' => ['controller' => 'SettingUserController', 'action' => 'updateFavoriteTour'],
 
 ];

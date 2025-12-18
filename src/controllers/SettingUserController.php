@@ -161,5 +161,41 @@ class SettingUserController
         include __DIR__ . '/../views/components/DetailBookingHistory.php';
     }
 
+    //=================== Tour yêu thích ===================//
+    public function favoriteTour() // Hiển thị tour yêu thích
+    {
+        require_once __DIR__ . '/../service/FavouriteTourService.php';
+        $favouriteTourService = new FavouriteTourService();
+        $favoriteTours = $favouriteTourService->getFavouriteToursByUser($this->userId);
+        include __DIR__ . '/../views/components/FavouriteTour.php';
+    }
+
+    public function updateFavoriteTour() // Xử lý cập nhật tour yêu thích hoặc xuất danh sách
+    {
+        require_once __DIR__ . '/../service/FavouriteTourService.php';
+        require_once __DIR__ . '/../models/Wishlist.php';
+        $wishlistModel = new Wishlist();
+        $favouriteTourService = new FavouriteTourService();
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $action = $_POST['action'] ?? '';
+            $tour_id = isset($_POST['tour_id']) ? (int) $_POST['tour_id'] : null;
+            $wishlist_id = isset($_POST['wishlist_id']) ? (int) $_POST['wishlist_id'] : null;
+
+            if ($action === 'add' && $tour_id) {
+                $wishlistModel->create($this->userId, $tour_id);
+            } elseif ($action === 'delete' && $wishlist_id) {
+                $wishlistModel->delete($wishlist_id);
+            }
+
+            header('Location: ' . route('settinguser.favoriteTour'));
+            return;
+        }
+
+        // Nếu là GET, xuất danh sách tour yêu thích
+        $favoriteTours = $favouriteTourService->getFavouriteToursByUser($this->userId);
+        include __DIR__ . '/../views/components/FavouriteTour.php';
+    }
+
 
 }

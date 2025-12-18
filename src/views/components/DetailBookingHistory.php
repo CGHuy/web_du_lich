@@ -20,15 +20,15 @@ include __DIR__ . '/../partials/menu.php';
 </head>
 
 <body>
-    <div class="container-fluid my-4">
+    <div class="container my-4">
         <div class="card">
             <div class="card-header">
                 <h2 class="card-title">CHI TIẾT BOOKING</h2>
                 <p style="color: #636465ff ;">Thông tin chi tiết về chuyến đi của bạn đã đặt</p>
             </div>
             <div class="table-responsive">
-                <table class="table align-middle">
-                    <form method="post" action="<?= route('settinguser.detailBookingHistory'); ?>">
+                <form method="post" action="<?= route('settinguser.detailBookingHistory'); ?>">
+                    <table class="table align-middle detail-booking-table ">
                         <tbody>
                             <?php if (empty($bookingDetail)): ?>
                                 <tr>
@@ -41,15 +41,15 @@ include __DIR__ . '/../partials/menu.php';
                                     </th>
                                 </tr>
                                 <tr>
-                                    <td>Họ và tên</td>
+                                    <td class="detail-booking-title">Họ và tên</td>
                                     <td><?= htmlspecialchars($bookingDetail['contact_name']) ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Email</td>
+                                    <td class="detail-booking-title">Email</td>
                                     <td><?= htmlspecialchars($bookingDetail['contact_email']) ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Số điện thoại</td>
+                                    <td class="detail-booking-title">Số điện thoại</td>
                                     <td><?= htmlspecialchars($bookingDetail['contact_phone']) ?></td>
                                 </tr>
 
@@ -60,35 +60,35 @@ include __DIR__ . '/../partials/menu.php';
                                 </tr>
 
                                 <tr>
-                                    <td>Mã Booking</td>
+                                    <td class="detail-booking-title">Mã Booking</td>
                                     <td style="color: blue; font-weight: bold;">
                                         <?= htmlspecialchars($bookingDetail['booking_code']) ?>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Mã Tour</td>
+                                    <td class="detail-booking-title">Mã Tour</td>
                                     <td style="color: blue; font-weight: bold;">
                                         <?= htmlspecialchars($bookingDetail['tour_code']) ?>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Tên Tour</td>
+                                    <td class="detail-booking-title">Tên Tour</td>
                                     <td><?= htmlspecialchars($bookingDetail['tour_name']) ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Ngày khởi hành</td>
+                                    <td class="detail-booking-title">Ngày khởi hành</td>
                                     <td><?= date('d/m/Y', strtotime($bookingDetail['departure_date'])) ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Số lượng</td>
+                                    <td class="detail-booking-title">Số lượng</td>
                                     <td><?= htmlspecialchars($bookingDetail['quantity']) ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Địa điểm khởi hành</td>
+                                    <td class="detail-booking-title">Địa điểm khởi hành</td>
                                     <td><?= htmlspecialchars($bookingDetail['departure_location']) ?></td>
                                 </tr>
                                 <tr>
-                                    <td>Ghi chú</td>
+                                    <td class="detail-booking-title">Ghi chú</td>
                                     <td><?= htmlspecialchars($bookingDetail['note']) ?></td>
                                 </tr>
 
@@ -99,13 +99,13 @@ include __DIR__ . '/../partials/menu.php';
 
                                 </tr>
                                 <tr>
-                                    <td>Tổng giá</td>
+                                    <td class="detail-booking-title">Tổng giá</td>
                                     <td style="color: red; font-weight: bold;">
                                         <?= number_format($bookingDetail['total_price'], 0, ',', '.') ?> đ
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Trạng thái</td>
+                                    <td class="detail-booking-title">Trạng thái</td>
                                     <td>
                                         <?php
                                         $statusBadge = [
@@ -118,7 +118,7 @@ include __DIR__ . '/../partials/menu.php';
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Trạng thái thanh toán</td>
+                                    <td class="detail-booking-title">Trạng thái thanh toán</td>
                                     <td>
                                         <?php
                                         $statusBadge = [
@@ -132,8 +132,8 @@ include __DIR__ . '/../partials/menu.php';
                                 </tr>
                             <?php endif; ?>
                         </tbody>
-                    </form>
-                </table>
+                    </table>
+                </form>
             </div>
         </div>
 
