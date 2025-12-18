@@ -138,14 +138,28 @@ class SettingUserController
             $bookings = $this->bookingHistoryModel->getByUserId($this->userId);
         }
 
-
-
-
-
-
-
         // Hiển thị lại view với dữ liệu từ DB
         include __DIR__ . '/../views/components/BookingHistory.php';
+
     }
+    public function detailBookingHistory() // Hiển thị chi tiết đặt tour
+    {
+        $bookingId = isset($_GET['id']) ? (int) $_GET['id'] : null;
+        if (!$bookingId) {
+            http_response_code(400);
+            echo "Yêu cầu không hợp lệ";
+            return;
+        }
+
+        $bookingDetail = $this->bookingHistoryModel->getById($bookingId);
+        if (!$bookingDetail) {
+            http_response_code(404);
+            echo "Booking không tồn tại";
+            return;
+        }
+
+        include __DIR__ . '/../views/components/DetailBookingHistory.php';
+    }
+
 
 }

@@ -42,11 +42,11 @@ include __DIR__ . '/../partials/menu.php';
                                             <th>Mã Booking</th>
                                             <th>Tên Tour</th>
                                             <th>Ngày Khởi Hành</th>
-                                            <th>Số Lượng</th>
                                             <th>Tổng Tiền</th>
-                                            <th>Thanh Toán</th>
                                             <th>Trạng Thái</th>
                                             <th>Ngày Đặt</th>
+                                            <th></th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -61,22 +61,11 @@ include __DIR__ . '/../partials/menu.php';
                                                     <td><?= htmlspecialchars($booking['booking_code']) ?></td>
                                                     <td><?= htmlspecialchars($booking['tour_name']) ?></td>
                                                     <td><?= date('d/m/Y', strtotime($booking['departure_date'])) ?></td>
-                                                    <td><?= $booking['quantity'] ?></td>
                                                     <td><?= number_format($booking['total_price'], 0, ',', '.') ?> đ</td>
                                                     <td>
                                                         <?php
-                                                        $paymentBadge = [
-                                                            'unpaid' => '<span class="badge bg-warning">Chưa thanh toán</span>',
-                                                            'paid' => '<span class="badge bg-success">Đã thanh toán</span>',
-                                                            'refunded' => '<span class="badge bg-secondary">Đã hoàn tiền</span>'
-                                                        ];
-                                                        echo $paymentBadge[$booking['payment_status']] ?? $booking['payment_status'];
-                                                        ?>
-                                                    </td>
-                                                    <td>
-                                                        <?php
                                                         $statusBadge = [
-                                                            'pending' => '<span class="badge bg-info">Chờ xác nhận</span>',
+                                                            'pending' => '<span class="badge bg-warning">Chờ xác nhận</span>',
                                                             'confirmed' => '<span class="badge bg-success">Đã xác nhận</span>',
                                                             'cancelled' => '<span class="badge bg-danger">Đã hủy</span>'
                                                         ];
@@ -84,6 +73,9 @@ include __DIR__ . '/../partials/menu.php';
                                                         ?>
                                                     </td>
                                                     <td><?= date('d/m/Y H:i', strtotime($booking['created_at'])) ?></td>
+                                                    <td><a href=""><button type="submit" class="btn btn-primary btn-sm px-3">Xem
+                                                                chi tiết</button></a>
+                                                    </td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         <?php endif; ?>
