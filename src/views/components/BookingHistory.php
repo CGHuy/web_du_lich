@@ -73,8 +73,12 @@ include __DIR__ . '/../partials/menu.php';
                                                         ?>
                                                     </td>
                                                     <td><?= date('d/m/Y H:i', strtotime($booking['created_at'])) ?></td>
-                                                    <td><a href=""><button type="submit" class="btn btn-primary btn-sm px-3">Xem
-                                                                chi tiết</button></a>
+                                                    <td>
+                                                        <a href="<?= route('settinguser.detailBookingHistory', ['id' => $booking['id']]); ?>"
+                                                            class="btn btn-primary btn-sm px-3">
+                                                            Xem chi tiết
+                                                        </a>
+                                                    </td>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -83,7 +87,7 @@ include __DIR__ . '/../partials/menu.php';
                                 </table>
                             </div>
                         </div>
-                    </form>
+                        <!-- Form đã được loại bỏ, không cần thiết cho nút xem chi tiết -->
                 </div>
             </div>
         </div>

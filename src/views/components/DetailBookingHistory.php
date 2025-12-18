@@ -23,86 +23,113 @@ include __DIR__ . '/../partials/menu.php';
     <div class="container-fluid my-4">
         <div class="card">
             <div class="card-header">
-                <h2 class="card-title">Chi tiết BookingTour</h2>
-                <p>Thông tin chi tiết về chuyến đi của bạn đã đặt</p>
-            </div>
-            <div class="card-body card-grid">
+                <h2 class="card-title">CHI TIẾT BOOKING</h2>
+                <p style="color: #636465ff ;">Thông tin chi tiết về chuyến đi của bạn đã đặt</p>
             </div>
             <div class="table-responsive">
-                <table class="table align-top">
+                <table class="table align-middle">
                     <form method="post" action="<?= route('settinguser.detailBookingHistory'); ?>">
-                        <thead>
-                            <tr>
-                                <td colspan="2" align="left">Thông tin Booking</td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" align="left">Thông tin thanh toán</td>
-                            </tr>
-                        </thead>
                         <tbody>
-                            <?php if (empty($bookings)): ?>
+                            <?php if (empty($bookingDetail)): ?>
                                 <tr>
-                                    <td colspan="9" class="text-center">Chưa có lịch sử đặt tour</td>
+                                    <td colspan="9" class="text-center">Không tìm thấy booking</td>
                                 </tr>
                             <?php else: ?>
-                                <?php foreach ($bookings as $index => $booking): ?>
-                                    <tr class="align-middle">
-                                    <tr>
-                                        <td>Mã Booking</td>
-                                        <td><?= htmlspecialchars($booking['booking_code']) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tên Tour</td>
-                                        <td><?= htmlspecialchars($booking['tour_name']) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ngày khởi hành</td>
-                                        <td><?= date('d/m/Y', strtotime($booking['departure_date'])) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Số lượng</td>
-                                        <td><?= htmlspecialchars($booking['quantity']) ?></td>
-                                    </tr>
+                                <tr>
+                                    <th rowspan="4">
+                                        <h6 style="color: #1a75c4ff;">THÔNG TIN LIÊN LẠC</h6>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>Họ và tên</td>
+                                    <td><?= htmlspecialchars($bookingDetail['contact_name']) ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Email</td>
+                                    <td><?= htmlspecialchars($bookingDetail['contact_email']) ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Số điện thoại</td>
+                                    <td><?= htmlspecialchars($bookingDetail['contact_phone']) ?></td>
+                                </tr>
 
-                                    <tr>
-                                        <td>Địa điểm khởi hành</td>
-                                        <td><?= htmlspecialchars($booking['departure_location']) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="color: red">Tổng giá</td>
-                                        <td><?= number_format($booking['total_price'], 0, ',', '.') ?> đ</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Trạng thái</td>
-                                        <td>
-                                            <?php
-                                            $statusBadge = [
-                                                'pending' => '<span class="badge bg-info">Chờ xác nhận</span>',
-                                                'confirmed' => '<span class="badge bg-success">Đã xác nhận</span>',
-                                                'cancelled' => '<span class="badge bg-danger">Đã hủy</span>'
-                                            ];
-                                            echo $statusBadge[$booking['booking_status']] ?? $booking['booking_status'];
-                                            ?>
-                                        </td>
+                                <tr>
+                                    <th rowspan="8">
+                                        <h6 style="color: #1a75c4ff;">CHI TIẾT BOOKING </h6>
+                                    </th>
+                                </tr>
 
+                                <tr>
+                                    <td>Mã Booking</td>
+                                    <td style="color: blue; font-weight: bold;">
+                                        <?= htmlspecialchars($bookingDetail['booking_code']) ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Mã Tour</td>
+                                    <td style="color: blue; font-weight: bold;">
+                                        <?= htmlspecialchars($bookingDetail['tour_code']) ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Tên Tour</td>
+                                    <td><?= htmlspecialchars($bookingDetail['tour_name']) ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Ngày khởi hành</td>
+                                    <td><?= date('d/m/Y', strtotime($bookingDetail['departure_date'])) ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Số lượng</td>
+                                    <td><?= htmlspecialchars($bookingDetail['quantity']) ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Địa điểm khởi hành</td>
+                                    <td><?= htmlspecialchars($bookingDetail['departure_location']) ?></td>
+                                </tr>
+                                <tr>
+                                    <td>Ghi chú</td>
+                                    <td><?= htmlspecialchars($bookingDetail['note']) ?></td>
+                                </tr>
 
+                                <tr>
+                                    <th rowspan="4">
+                                        <h6 style="color: #1a75c4ff;">THÔNG TIN THANH TOÁN</h6>
+                                    </th>
 
-                                    </tr>
-                                    <tr>
-                                        <td>Trạng thái thanh toán</td>
-                                        <td>
-                                            <?php
-                                            $statusBadge = [
-                                                'unpaid' => '<span class="badge bg-info">Chưa thanh toán</span>',
-                                                'paid' => '<span class="badge bg-success">Đã thanh toán</span>',
-                                                'refunded' => '<span class="badge bg-danger">Đã hoàn tiền</span>'
-                                            ];
-                                            echo $statusBadge[$booking['payment_status']] ?? $booking['payment_status'];
-                                            ?>
-                                        </td>
-
-                                    </tr>
-                                <?php endforeach; ?>
+                                </tr>
+                                <tr>
+                                    <td>Tổng giá</td>
+                                    <td style="color: red; font-weight: bold;">
+                                        <?= number_format($bookingDetail['total_price'], 0, ',', '.') ?> đ
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Trạng thái</td>
+                                    <td>
+                                        <?php
+                                        $statusBadge = [
+                                            'pending' => '<span class="badge bg-warning">Chờ xác nhận</span>',
+                                            'confirmed' => '<span class="badge bg-success">Đã xác nhận</span>',
+                                            'cancelled' => '<span class="badge bg-danger">Đã hủy</span>'
+                                        ];
+                                        echo $statusBadge[$bookingDetail['booking_status']] ?? $bookingDetail['booking_status'];
+                                        ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Trạng thái thanh toán</td>
+                                    <td>
+                                        <?php
+                                        $statusBadge = [
+                                            'unpaid' => '<span class="badge bg-warning">Chưa thanh toán</span>',
+                                            'paid' => '<span class="badge bg-success">Đã thanh toán</span>',
+                                            'refunded' => '<span class="badge bg-danger">Đã hoàn tiền</span>'
+                                        ];
+                                        echo $statusBadge[$bookingDetail['payment_status']] ?? $bookingDetail['payment_status'];
+                                        ?>
+                                    </td>
+                                </tr>
                             <?php endif; ?>
                         </tbody>
                     </form>

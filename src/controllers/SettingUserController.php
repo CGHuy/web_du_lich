@@ -144,18 +144,18 @@ class SettingUserController
     }
     public function detailBookingHistory() // Hiển thị chi tiết đặt tour
     {
+        // KHÔNG kiểm tra POST, chỉ lấy id từ GET
         $bookingId = isset($_GET['id']) ? (int) $_GET['id'] : null;
-        if (!$bookingId) {
-            http_response_code(400);
-            echo "Yêu cầu không hợp lệ";
-            return;
-        }
 
-        $bookingDetail = $this->bookingHistoryModel->getById($bookingId);
-        if (!$bookingDetail) {
-            http_response_code(404);
-            echo "Booking không tồn tại";
-            return;
+        if ($bookingId) {
+            $bookingDetail = $this->bookingHistoryModel->getById($bookingId);
+            if (!$bookingDetail) {
+                http_response_code(404);
+                echo "Booking không tồn tại";
+                return;
+            }
+        } else {
+            $bookingDetail = null;
         }
 
         include __DIR__ . '/../views/components/DetailBookingHistory.php';
