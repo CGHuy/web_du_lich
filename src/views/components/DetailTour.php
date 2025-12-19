@@ -207,7 +207,9 @@ include __DIR__ . '/../partials/menu.php';
                     <span style="color: #888; font-size: 1rem; opacity: 0.8;">/Người</span>
                 </span>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-primary">Đặt Tour</button>
+                    <a href="<?php echo route('BookingTour.index', ['tour_id' => $tour['id']]); ?>"
+                        class="btn btn-primary">Đặt
+                        Tour</a>
                     <button class="btn btn-secondary"><i class="fa-solid fa-heart"
                             style="color: #f40808ff;"></i></button>
                 </div>

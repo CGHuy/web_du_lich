@@ -45,6 +45,19 @@ class TourDeparture
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+
+    public function getByTourIdForBookingTour($tour_id)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM tour_departures WHERE tour_id = ?");
+        $stmt->bind_param("i", $tour_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $departures = [];
+        while ($row = $result->fetch_assoc()) {
+            $departures[] = $row;
+        }
+        return $departures;
+    }
     public function __destruct()
     {
         $this->db->close();
