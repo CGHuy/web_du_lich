@@ -1,3 +1,6 @@
+<?php if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+} ?>
 <header
     class="d-flex align-items-center justify-content-between border-bottom px-4 py-3 sticky-top bg-white bg-opacity-80 backdrop-blur-sm z-50"
     style="top:0;">
@@ -25,10 +28,27 @@
         <a class="text-decoration-none text-body fw-medium px-2 py-1" href="#">Liên hệ</a>
     </nav>
     <div class="d-flex align-items-center gap-2">
-        <button class="d-none d-sm-flex btn btn-primary rounded-pill px-4 fw-bold">Đăng nhập</button>
-        <button class="d-none d-sm-flex btn btn-light rounded-pill px-4 fw-bold border">Đăng ký</button>
-        <div class="rounded-circle overflow-hidden"
-            style="width:40px; height:40px; background-size:cover; background-position:center; background-image:url('https://lh3.googleusercontent.com/aida-public/AB6AXuDdAJYOADieIt84Dfw2UfqcTV7w7ziE9Z_M8fnRnU5DUYpmTYKJByFLrgMNTyV-dmXqV8QiAEHkoxyFXXfrXW-ZkDSUPD94DsS9y9lVaNcg3Dwx7oSqOzXab-3F0ioQ8hsIUyE9dgLWi72PBmYwtF7S-jF1F6SU0XnlFUbMYkjmm2jfb75xwcTqy_VXIY4yeyMmKckuJltzR3DSaiDibhWUI-ZfzweEbmccIzvpUL0jCJvJcPPPOaY1x3MexpdWC1yB50j4wCwwHafQ');">
-        </div>
+        <?php
+        // Determine current script to allow hiding account/logout on index.php after login
+        $currentScript = basename($_SERVER['SCRIPT_NAME'] ?? ($_SERVER['PHP_SELF'] ?? ''));
+        ?>
+        <?php if (empty($_SESSION['user_id'])): ?>
+            <a href="/web_du_lich/public/login.php" class="d-none d-sm-flex btn btn-primary rounded-pill px-4 fw-bold">Đăng
+                nhập</a>
+            <a href="/web_du_lich/public/register.php"
+                class="d-none d-sm-flex btn btn-light rounded-pill px-4 fw-bold border">Đăng ký</a>
+        <?php else: ?>
+            <?php if ($currentScript !== 'index.php'): ?>
+                <a href="<?= route('settinguser.edit'); ?>"
+                    class="d-none d-sm-flex btn btn-outline-secondary rounded-pill px-3">Tài khoản</a>
+                <a href="/web_du_lich/public/logout.php" class="d-none d-sm-flex btn btn-light rounded-pill px-3">Đăng xuất</a>
+            <?php endif; ?>
+
+            <!-- Always show avatar when logged in -->
+            <a href="<?= route('settinguser.edit'); ?>" class="rounded-circle overflow-hidden"
+                style="width:40px; height:40px; cursor: pointer;" title="Thông tin cá nhân">
+                <img src="images/image.png" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
+            </a>
+        <?php endif; ?>
     </div>
 </header>

@@ -20,8 +20,17 @@ class Tour
                 $tours[] = $row;
         return $tours;
     }
-
-
+    public function getByRegion($region)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM tours WHERE region = ?");
+        $stmt->bind_param("s", $region);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $tours = [];
+        while ($row = $result->fetch_assoc())
+            $tours[] = $row;
+        return $tours;
+    }
     public function getById($id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM tours WHERE id = ?");

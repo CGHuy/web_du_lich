@@ -1,3 +1,38 @@
+.detail-booking-table tr:last-child td,
+.detail-booking-table tr:last-child th {
+	border-bottom: none !important;
+}
+
+/* Custom combobox for BookingHistory */
+.custom-combobox {
+	width: 220px;
+	padding: 8px 32px 8px 14px;
+	border: 1px solid #e0e4ea;
+	border-radius: 8px;
+	background: #f8fafc
+		url('data:image/svg+xml;utf8,<svg fill="%23636465" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7.293 7.293a1 1 0 011.414 0L10 8.586l1.293-1.293a1 1 0 111.414 1.414l-2 2a1 1 0 01-1.414 0l-2-2a1 1 0 010-1.414z"/></svg>')
+		no-repeat right 12px center/18px 18px;
+	font-size: 15px;
+	color: #636465ff;
+	font-weight: 500;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	transition: border-color 0.2s;
+}
+.custom-combobox:focus {
+	border-color: #0b5ed7;
+	outline: none;
+	background-color: #fff;
+}
+.custom-combobox option {
+	color: #636465ff;
+}
+
+.detail-booking-title {
+	color: #636465ff !important;
+	font-weight: bold !important;
+}
 .menu-card {
 	border-radius: 14px;
 	background: #fff;
@@ -37,4 +72,22 @@
 
 .menu-item.active i {
 	color: #0b5ed7;
+}
+.detail-booking-table td,
+.detail-booking-table th {
+	padding-top: 18px !important;
+	padding-bottom: 18px !important;
+	padding-left: 36px !important;
+	padding-right: 36px !important;
+	vertical-align: middle !important;
+	border-bottom: 1px solid #e0e4ea !important;
+}
+
+.detail-booking-table tr.detail-payment-header td,
+.detail-booking-table tr.detail-payment-header th {
+	border-bottom: none !important;
+}
+.detail-booking-table tr:last-child td,
+.detail-booking-table tr:last-child th {
+	border-bottom: none !important;
 }

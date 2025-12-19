@@ -16,53 +16,47 @@ include __DIR__ . '/../partials/menu.php';
     <link rel="stylesheet" href="css/SettingAccount.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
-
 </head>
 
 <body>
     <div class="container-fluid my-4">
         <div class="d-flex gap-4 px-5">
             <?php
-            $currentPage = 'edit';
+            $currentPage = 'change-password';
             include __DIR__ . '/../partials/settings-menu.php';
             ?>
 
             <div class="card card_form" style="flex: 0 0 calc(80% - 1rem);">
                 <div class="card-header">
-                    <h5 class="card-title">Thông tin cá nhân</h5>
-                    <p style="color: #636465ff ;">Cập nhật thông tin và ảnh đại diện của bạn</p>
+                    <h5 class="card-title">Đổi mật khẩu</h5>
+                    <p style="color: #636465ff ;">Cập nhật mật khẩu của bạn để bảo vệ tài khoản</p>
                 </div>
                 <div class="card-body">
-                    <form method="post" action="<?= route('settinguser.update'); ?>">
+                    <form method="post" action="<?= route('settinguser.updatePassword'); ?>">
                         <div class="row g-3">
-                            <div class="col-12 col-md-6">
+                            <div class="col-12">
                                 <div class="mb-3">
-                                    <label class="form-label">Họ và tên</label>
-                                    <input name="fullname" type="text" class="form-control"
-                                        value="<?= htmlspecialchars($user['fullname'] ?? '') ?>">
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Số điện thoại</label>
-                                    <input name="phone" type="text" class="form-control"
-                                        value="<?= htmlspecialchars($user['phone'] ?? '') ?>">
+                                    <label class="form-label">Mật khẩu hiện tại</label>
+                                    <input name="current_password" type="password" class="form-control" required>
                                 </div>
                             </div>
 
                             <div class="col-12">
                                 <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input name="email" type="email" class="form-control"
-                                        value="<?= htmlspecialchars($user['email'] ?? '') ?>">
+                                    <label class="form-label">Mật khẩu mới</label>
+                                    <input name="new_password" type="password" class="form-control" required>
                                 </div>
                             </div>
 
-
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label class="form-label">Xác nhận mật khẩu</label>
+                                    <input name="confirm_password" type="password" class="form-control" required>
+                                </div>
+                            </div>
 
                             <div class="col-12 d-flex justify-content-end">
-                                <button type="submit" class="btn btn-primary btn-sm px-3">Lưu thay đổi</button>
+                                <button type="submit" class="btn btn-primary btn-sm px-3">Cập nhật mật khẩu</button>
                             </div>
                         </div>
                     </form>
