@@ -6,10 +6,19 @@ class SettingUserController
 {
     private $userModel;
     private $bookingHistoryModel;
-    private $userId = 2; // cố định
+    private $userId; // lấy từ session
 
     public function __construct() // Khởi tạo model User
     {
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
+        $this->userId = $_SESSION['user_id'] ?? null;
+        if (!$this->userId) {
+            // nếu chưa đăng nhập, chuyển hướng về trang login
+            header('Location: /web_du_lich/public/login.php');
+            exit;
+        }
+
         $this->userModel = new User();
         $this->bookingHistoryModel = new BookingHistoryService();
     }

@@ -28,15 +28,23 @@
         <a class="text-decoration-none text-body fw-medium px-2 py-1" href="#">Liên hệ</a>
     </nav>
     <div class="d-flex align-items-center gap-2">
+        <?php
+        // Determine current script to allow hiding account/logout on index.php after login
+        $currentScript = basename($_SERVER['SCRIPT_NAME'] ?? ($_SERVER['PHP_SELF'] ?? ''));
+        ?>
         <?php if (empty($_SESSION['user_id'])): ?>
             <a href="/web_du_lich/public/login.php" class="d-none d-sm-flex btn btn-primary rounded-pill px-4 fw-bold">Đăng
                 nhập</a>
             <a href="/web_du_lich/public/register.php"
                 class="d-none d-sm-flex btn btn-light rounded-pill px-4 fw-bold border">Đăng ký</a>
         <?php else: ?>
-            <a href="<?= route('settinguser.edit'); ?>"
-                class="d-none d-sm-flex btn btn-outline-secondary rounded-pill px-3">Tài khoản</a>
-            <a href="/web_du_lich/public/logout.php" class="d-none d-sm-flex btn btn-light rounded-pill px-3">Đăng xuất</a>
+            <?php if ($currentScript !== 'index.php'): ?>
+                <a href="<?= route('settinguser.edit'); ?>"
+                    class="d-none d-sm-flex btn btn-outline-secondary rounded-pill px-3">Tài khoản</a>
+                <a href="/web_du_lich/public/logout.php" class="d-none d-sm-flex btn btn-light rounded-pill px-3">Đăng xuất</a>
+            <?php endif; ?>
+
+            <!-- Always show avatar when logged in -->
             <a href="<?= route('settinguser.edit'); ?>" class="rounded-circle overflow-hidden"
                 style="width:40px; height:40px; cursor: pointer;" title="Thông tin cá nhân">
                 <img src="images/image.png" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
