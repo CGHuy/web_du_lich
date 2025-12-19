@@ -158,8 +158,42 @@ include __DIR__ . '/../partials/menu.php';
                     </div>
                 </section>
                 <section id="review-section" class="mb-5">
-                    <h5>Đánh giá</h5>
-                    <p>Đánh giá từ khách hàng...</p>
+                    <h5 class="mb-4">Đánh giá từ khách hàng</h5>
+                    <div class="d-flex flex-column gap-3" id="reviews">
+                        <?php if (!empty($tourReviews)): ?>
+                            <?php foreach ($tourReviews as $review): ?>
+                                <div class="d-flex align-items-start gap-3 p-3 bg-white rounded shadow-sm">
+                                    <img alt="Avatar of user review" class="rounded-circle"
+                                        style="width:40px;height:40px;object-fit:cover;"
+                                        src="<?php echo !empty($review['avatar']) ? htmlspecialchars($review['avatar']) : 'https://ui-avatars.com/api/?name=' . urlencode($review['user_name'] ?? 'User') . '&background=0D6EFD&color=fff'; ?>">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <p class="fw-semibold mb-1" style="color:#222;font-size:1.05rem;">
+                                                <?php echo htmlspecialchars($review['user_name'] ?? 'Ẩn danh'); ?>
+                                            </p>
+                                            <div class="d-flex align-items-center gap-1">
+                                                <?php
+                                                $rating = isset($review['rating']) ? (int) $review['rating'] : 0;
+                                                for ($i = 1; $i <= 5; $i++) {
+                                                    if ($i <= $rating) {
+                                                        echo '<i class="fa-solid fa-star" style="color:#ffc107;font-size:1rem;"></i>';
+                                                    } else {
+                                                        echo '<i class="fa-regular fa-star" style="color:#e4e4e4;font-size:1rem;"></i>';
+                                                    }
+                                                }
+                                                ?>
+                                            </div>
+                                        </div>
+                                        <p class="mt-1 mb-0 text-secondary" style="font-size:0.98rem;">
+                                            <?php echo nl2br(htmlspecialchars($review['comment'] ?? '')); ?>
+                                        </p>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <div class="text-muted">Chưa có đánh giá cho tour này.</div>
+                        <?php endif; ?>
+                    </div>
                 </section>
             </div>
         </div>

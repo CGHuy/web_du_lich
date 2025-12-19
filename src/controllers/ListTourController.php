@@ -3,6 +3,7 @@ require_once __DIR__ . '/../models/Service.php';
 require_once __DIR__ . '/../service/ListTourService.php';
 require_once __DIR__ . '/../models/TourImage.php';
 require_once __DIR__ . '/../models/TourItinerary.php';
+require_once __DIR__ . '/../models/Review.php';
 
 
 class ListTourController
@@ -11,6 +12,7 @@ class ListTourController
     private $listTourService;
     private $tourImageModel;
     private $tourItineraryModel;
+    private $reviewModel;
 
     public function __construct()
     {
@@ -18,6 +20,7 @@ class ListTourController
         $this->listTourService = new ListTourService();
         $this->tourImageModel = new TourImage();
         $this->tourItineraryModel = new TourItinerary();
+        $this->reviewModel = new Review();
     }
 
     public function index()
@@ -55,15 +58,13 @@ class ListTourController
         }
         $tour = $this->tourModel->getById($id);
         // Lấy lịch trình của tour trực tiếp từ model
-
         $tourItineraries = $this->tourItineraryModel->getByTourIdForListTour($id);
         // Lấy dịch vụ của tour qua service
         $tourServices = $this->listTourService->getServicesByTourId($id);
-        // Lấy tất cả ảnh rồi lọc theo tour_id (không sửa model)
-        $allImages = $this->tourImageModel->getAll();
-        $tourImages = array_values(array_filter($allImages, function ($img) use ($id) {
-            return isset($img['tour_id']) && $img['tour_id'] == $id;
-        }));
+        // Lấy review của tour trực tiếp từ model
+        $tourReviews = $this->reviewModel->getByTourIdForListTour($id);
+        // Lấy ảnh của tour trực tiếp từ model
+        $tourImages = $this->tourImageModel->getImagesByTourIdForListTour($id);
         if (!$tour) {
             header("HTTP/1.0 404 Not Found");
             echo "Tour not found";

@@ -49,4 +49,17 @@ class Review
     {
         $this->db->close();
     }
+
+    public function getByTourIdForListTour($tour_id)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM reviews WHERE tour_id = ?");
+        $stmt->bind_param("i", $tour_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $reviews = [];
+        while ($row = $result->fetch_assoc()) {
+            $reviews[] = $row;
+        }
+        return $reviews;
+    }
 }

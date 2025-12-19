@@ -1,3 +1,4 @@
+
 <?php
 require_once __DIR__ . '/../../config/database.php';
 class TourImage
@@ -42,5 +43,18 @@ class TourImage
     public function __destruct()
     {
         $this->db->close();
+    }
+
+    public function getImagesByTourIdForListTour($tour_id)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM tour_images WHERE tour_id = ?");
+        $stmt->bind_param("i", $tour_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $images = [];
+        while ($row = $result->fetch_assoc()) {
+            $images[] = $row;
+        }
+        return $images;
     }
 }

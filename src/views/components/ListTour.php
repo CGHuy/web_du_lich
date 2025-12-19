@@ -161,7 +161,7 @@ include __DIR__ . '/../partials/menu.php';
                                             <div class="d-flex flex-column h-100">
                                                 <div class="mb-2 d-flex justify-content-center gap-2">
                                                     <span class="badge bg-primary">
-                                                        <?php echo htmlspecialchars($tour['duration']); ?> ngày
+                                                        <?php echo htmlspecialchars($tour['duration']); ?>
                                                     </span>
                                                     <span class="badge bg-primary">
                                                         <?php echo htmlspecialchars($tour['region']); ?>
