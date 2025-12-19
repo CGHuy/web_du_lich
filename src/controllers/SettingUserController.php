@@ -112,8 +112,8 @@ class SettingUserController
     //=================== Lịch sử đặt tour ===================//
     public function bookingHistory() // Hiển thị lịch sử đặt tour
     {
-        // Lấy lịch sử đặt tour từ DB theo userId
-        $status = $_POST['sort'] ?? null; // lấy giá trị lọc
+        // Lấy giá trị lọc có thể từ POST (form) hoặc GET (thông qua link phân trang)
+        $status = $_REQUEST['sort'] ?? null; // 'status-warning', 'status-success', 'status-danger'
         // Map giá trị từ combobox sang status DB
         $statusMap = [
             'status-warning' => 'pending',
@@ -122,9 +122,19 @@ class SettingUserController
         ];
         $statusValue = $statusMap[$status] ?? null;
 
-        // Gọi service để lấy ds Booking đã lọc
-        $bookings = $this->bookingHistoryModel->getByUserId($this->userId, $statusValue);
-        // Biến $bookings sẽ được dùng trong view
+        // Phân trang (page từ GET)
+        $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+        $limit = 5; // Số lượng mục trên mỗi trang
+        $offset = ($page - 1) * $limit;
+
+        // Gọi service để lấy tổng số Booking (để tính tổng số trang)
+        $totalBookings = $this->bookingHistoryModel->getTotalByUserId($this->userId, $statusValue);
+        $totalPages = $totalBookings > 0 ? (int) ceil($totalBookings / $limit) : 1;
+
+        // Gọi service để lấy ds Booking đã lọc và phân trang
+        $bookings = $this->bookingHistoryModel->getByUserId($this->userId, $statusValue, $limit, $offset);
+
+        // Biến $bookings, $page, $totalPages, $status sẽ được dùng trong view
         include __DIR__ . '/../views/components/BookingHistory.php';
     }
     public function updateBookingHistory() // Xử lý cập nhật lịch sử đặt tour

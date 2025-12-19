@@ -1,3 +1,6 @@
+<?php if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+} ?>
 <header
     class="d-flex align-items-center justify-content-between border-bottom px-4 py-3 sticky-top bg-white bg-opacity-80 backdrop-blur-sm z-50"
     style="top:0;">
@@ -25,12 +28,19 @@
         <a class="text-decoration-none text-body fw-medium px-2 py-1" href="#">Liên hệ</a>
     </nav>
     <div class="d-flex align-items-center gap-2">
-        <button class="d-none d-sm-flex btn btn-primary rounded-pill px-4 fw-bold">Đăng nhập</button>
-        <button class="d-none d-sm-flex btn btn-light rounded-pill px-4 fw-bold border">Đăng ký</button>
-        <a href="<?= route('settinguser.edit'); ?>" class="rounded-circle overflow-hidden"
-            style="width:40px; height:40px; cursor: pointer;" title="Thông tin cá nhân">
-            <img src="images/image.png" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
-        </a>
-        </a>
+        <?php if (empty($_SESSION['user_id'])): ?>
+            <a href="/web_du_lich/public/login.php" class="d-none d-sm-flex btn btn-primary rounded-pill px-4 fw-bold">Đăng
+                nhập</a>
+            <a href="/web_du_lich/public/register.php"
+                class="d-none d-sm-flex btn btn-light rounded-pill px-4 fw-bold border">Đăng ký</a>
+        <?php else: ?>
+            <a href="<?= route('settinguser.edit'); ?>"
+                class="d-none d-sm-flex btn btn-outline-secondary rounded-pill px-3">Tài khoản</a>
+            <a href="/web_du_lich/public/logout.php" class="d-none d-sm-flex btn btn-light rounded-pill px-3">Đăng xuất</a>
+            <a href="<?= route('settinguser.edit'); ?>" class="rounded-circle overflow-hidden"
+                style="width:40px; height:40px; cursor: pointer;" title="Thông tin cá nhân">
+                <img src="images/image.png" alt="Avatar" style="width:100%; height:100%; object-fit:cover;">
+            </a>
+        <?php endif; ?>
     </div>
 </header>

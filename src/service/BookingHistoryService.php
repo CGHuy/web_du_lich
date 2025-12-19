@@ -16,7 +16,7 @@ class BookingHistoryService
      * Lấy lịch sử đặt tour của một user
      * JOIN giữa bookings, tour_departures, tours
      */
-    public function getByUserId($userId, $status = null) // Lấy tất cả booking của user, có thể lọc theo trạng thái
+    public function getByUserId($userId, $status = null, $limit = null, $offset = null) // Lấy booking của user, có thể lọc theo trạng thái và phân trang
     {
         $query = "
             SELECT 
@@ -73,8 +73,23 @@ class BookingHistoryService
 
         $query .= " ORDER BY b.created_at DESC";
 
+        // Nếu cần phân trang, thêm LIMIT và OFFSET
+        if ($limit !== null && $offset !== null) {
+            $query .= " LIMIT ? OFFSET ?";
+            $types .= 'ii';
+            $params[] = $limit;
+            $params[] = $offset;
+        }
+
         $stmt = $this->conn->prepare($query);
-        $stmt->bind_param($types, ...$params);
+        // bind_param yêu cầu biến tham chiếu; sử dụng splat operator với call_user_func_array
+        $bind_names[] = $types;
+        for ($i = 0; $i < count($params); $i++) {
+            $bind_name = 'bind' . $i;
+            $$bind_name = $params[$i];
+            $bind_names[] = &$$bind_name;
+        }
+        call_user_func_array([$stmt, 'bind_param'], $bind_names);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -201,6 +216,36 @@ class BookingHistoryService
         $row = $result->fetch_assoc();
 
         return $row['total'];
+    }
+
+    /**
+     * Đếm tổng số bookings của user, có thể lọc theo trạng thái
+     */
+    public function getTotalByUserId($userId, $status = null)
+    {
+        $query = "SELECT COUNT(*) as total FROM bookings WHERE user_id = ?";
+        $types = 'i';
+        $params = [$userId];
+
+        if ($status && in_array($status, ['pending', 'confirmed', 'cancelled'])) {
+            $query .= " AND status = ?";
+            $types .= 's';
+            $params[] = $status;
+        }
+
+        $stmt = $this->conn->prepare($query);
+        $bind_names[] = $types;
+        for ($i = 0; $i < count($params); $i++) {
+            $bind_name = 'b' . $i;
+            $$bind_name = $params[$i];
+            $bind_names[] = &$$bind_name;
+        }
+        call_user_func_array([$stmt, 'bind_param'], $bind_names);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        return (int) ($row['total'] ?? 0);
     }
     public function __destruct()
     {

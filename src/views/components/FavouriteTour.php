@@ -27,45 +27,71 @@ include __DIR__ . '/../partials/menu.php';
             include __DIR__ . '/../partials/settings-menu.php';
             ?>
             <div style="flex: 0 0 calc(80% - 1rem);">
-                <div class="row g-4">
-                    <?php if (!empty($favoriteTours)): ?>
-                        <?php foreach ($favoriteTours as $tour): ?>
-                            <div class="col-12 col-lg-4">
-                                <div class="card h-100 position-relative">
-                                    <form method="post" action="<?= route('settinguser.updateFavoriteTour') ?>"
-                                        style="position:absolute;top:10px;right:10px;z-index:2;">
-                                        <input type="hidden" name="action" value="delete">
-                                        <input type="hidden" name="wishlist_id" value="<?= $tour['wishlist_id'] ?>">
-                                        <button type="submit" class="btn p-0 border-0 bg-transparent" title="Xóa khỏi yêu thích"
-                                            onclick="return confirm('Bạn có chắc muốn xóa tour này khỏi yêu thích?')">
-                                            <i class="fa-solid fa-heart" style="color: #ce1c40; font-size: 1.6rem;"></i>
-                                        </button>
-                                    </form>
+                <?php if (!empty($favoriteTours)): ?>
+                    <div id="carouselFavoriteTours" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <?php foreach (array_chunk($favoriteTours, 4) as $idx => $chunk): ?>
+                                <div class="carousel-item <?= $idx === 0 ? 'active' : '' ?>">
+                                    <div class="row g-4">
+                                        <?php foreach ($chunk as $tour): ?>
+                                            <div class="col-12 col-md-6 col-lg-3">
+                                                <div class="card h-100 position-relative">
+                                                    <form method="post" action="<?= route('settinguser.updateFavoriteTour') ?>"
+                                                        style="position:absolute;top:10px;right:10px;z-index:2;">
+                                                        <input type="hidden" name="action" value="delete">
+                                                        <input type="hidden" name="wishlist_id" value="<?= $tour['wishlist_id'] ?>">
+                                                        <button type="submit" class="btn p-0 border-0 bg-transparent"
+                                                            title="Xóa khỏi yêu thích"
+                                                            onclick="return confirm('Bạn có chắc muốn xóa tour này khỏi yêu thích?')">
+                                                            <i class="fa-solid fa-heart"
+                                                                style="color: #ce1c40; font-size: 1.4rem;"></i>
+                                                        </button>
+                                                    </form>
 
-
-
-                                    <?php if (!empty($tour['cover_image'])): ?>
-                                        <img src="data:image/jpeg;base64,<?= base64_encode($tour['cover_image']) ?>"
-                                            class="card-img-top" alt="<?= htmlspecialchars($tour['name']) ?>">
-                                    <?php else: ?>
-                                        <img src="/web_du_lich/public/images/no-image.png" class="card-img-top" alt="No image">
-                                    <?php endif; ?>
-                                    <div class="card-body">
-                                        <h5 class="card-title "><?= htmlspecialchars($tour['name']) ?></h5>
-                                        <p class="card-text "><?= htmlspecialchars($tour['description']) ?></p>
-                                        <div class="card-price"><b>Giá:</b> <span
-                                                class="hightlight_price"><?= number_format($tour['price_default']) ?> VNĐ</span>
-                                        </div>
+                                                    <?php if (!empty($tour['cover_image'])): ?>
+                                                        <img src="data:image/jpeg;base64,<?= base64_encode($tour['cover_image']) ?>"
+                                                            class="card-img-top" alt="<?= htmlspecialchars($tour['name']) ?>">
+                                                    <?php else: ?>
+                                                        <img src="/web_du_lich/public/images/no-image.png" class="card-img-top"
+                                                            alt="No image">
+                                                    <?php endif; ?>
+                                                    <div class="card-badges">
+                                                        <span class="badge bg-info"><i class="fa-solid fa-map-location-dot"></i>
+                                                            <?= htmlspecialchars($tour['location']) ?></span>
+                                                        <span class="badge bg-primary"><i class="fa-solid fa-calendar-days"></i>
+                                                            <?= htmlspecialchars($tour['duration']) ?></span>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <h5 class="card-title"><?= htmlspecialchars($tour['name']) ?></h5>
+                                                        <p class="card-text"><?= htmlspecialchars($tour['description']) ?></p>
+                                                        <div class="card-price"><b>Giá:</b><span class="hightlight_price">
+                                                                <?= number_format($tour['price_default']) ?> VNĐ</span></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
                                     </div>
                                 </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+                            <?php endforeach; ?>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselFavoriteTours"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselFavoriteTours"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                <?php else: ?>
+                    <div class="row g-4">
                         <div class="col-12">
                             <div class="alert alert-info text-center">Bạn chưa có tour yêu thích nào.</div>
                         </div>
-                    <?php endif; ?>
-                </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>

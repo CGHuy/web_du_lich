@@ -31,9 +31,9 @@ include __DIR__ . '/../partials/menu.php';
                     <h5 class="card-title">Lịch sử Booking</h5>
                     <p style="color: #636465ff ;">Xem lại tất cả chuyến đi bạn đã đặt</p>
                 </div>
-                <div class="card-body">
+                <div class="card-body position-relative">
                     <form method="post" action="<?= route('settinguser.bookingHistory'); ?>">
-                        <?php $status = $status ?? ($_POST['sort'] ?? ''); ?>
+                        <?php $status = $status ?? ($_REQUEST['sort'] ?? ''); ?>
                         <div class="d-flex justify-content-end mb-3">
                             <div class="d-flex align-items-center" style="gap: 10px;">
                                 <label for="" style="margin-bottom:0;">Sắp xếp</label>
@@ -100,6 +100,48 @@ include __DIR__ . '/../partials/menu.php';
                         </div>
                         <!-- Form đã được loại bỏ, không cần thiết cho nút xem chi tiết -->
                     </form>
+                    <div class="d-flex justify-content-end mt-3">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination mb-0">
+                                <?php
+                                $currentPage = isset($page) ? (int) $page : 1;
+                                $totalPages = isset($totalPages) ? (int) $totalPages : 1;
+                                // previous
+                                $prevPage = max(1, $currentPage - 1);
+                                $nextPage = min($totalPages, $currentPage + 1);
+                                $baseUrl = route('settinguser.bookingHistory');
+                                // preserve sort parameter if present
+                                $sortParam = isset($status) && $status ? $status : null;
+                                $buildHref = function ($p) use ($baseUrl, $sortParam) {
+                                    $qs = ['page' => $p];
+                                    if ($sortParam)
+                                        $qs['sort'] = $sortParam;
+                                    $query = http_build_query($qs);
+                                    $sep = (strpos($baseUrl, '?') === false) ? '?' : '&';
+                                    return $baseUrl . $sep . $query;
+                                };
+
+                                ?>
+                                <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
+                                    <a class="page-link" href="<?= $buildHref($prevPage) ?>" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                    <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>">
+                                        <a class="page-link" href="<?= $buildHref($i) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
+                                    <a class="page-link" href="<?= $buildHref($nextPage) ?>" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
             </div>
 
