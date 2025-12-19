@@ -9,7 +9,7 @@ class Tour
         $this->db = new Database();
         $this->conn = $this->db->getConnection();
     }
-    
+
     public function getAll()
     {
         $sql = "SELECT * FROM tours";
@@ -21,25 +21,7 @@ class Tour
         return $tours;
     }
 
-    /**
-     * Trả về danh sách tour theo khu vực (region)
-     * Tránh thay đổi signature của getAll() để không ảnh hưởng các thành viên khác
-     */
-    public function getByRegion($region)
-    {
-        $stmt = $this->conn->prepare("SELECT * FROM tours WHERE region = ?");
-        if (!$stmt) {
-            return [];
-        }
-        $stmt->bind_param('s', $region);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $tours = [];
-        while ($row = $result->fetch_assoc()) {
-            $tours[] = $row;
-        }
-        return $tours;
-    }
+
     public function getById($id)
     {
         $stmt = $this->conn->prepare("SELECT * FROM tours WHERE id = ?");
