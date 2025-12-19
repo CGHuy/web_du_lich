@@ -2,11 +2,14 @@
 require_once __DIR__ . '/../models/Service.php';
 require_once __DIR__ . '/../service/ListTourService.php';
 require_once __DIR__ . '/../models/TourImage.php';
+
+
 class ListTourController
 {
     private $tourModel;
     private $listTourService;
     private $tourImageModel;
+    private $tourItineraryModel;
 
     public function __construct()
     {
@@ -49,6 +52,10 @@ class ListTourController
             $id = $_GET['id'];
         }
         $tour = $this->tourModel->getById($id);
+        // Lấy lịch trình của tour qua service cho gọn
+        $tourItineraries = $this->listTourService->getItinerariesByTourId($id);
+        // Lấy dịch vụ của tour qua service
+        $tourServices = $this->listTourService->getServicesByTourId($id);
         // Lấy tất cả ảnh rồi lọc theo tour_id (không sửa model)
         $allImages = $this->tourImageModel->getAll();
         $tourImages = array_values(array_filter($allImages, function ($img) use ($id) {

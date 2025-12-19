@@ -1,7 +1,40 @@
+#itinerary-section .position-relative .translate-middle-y {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    top: 0;
+    bottom: 0;
+}
+
+#itinerary-section .position-relative .rounded-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 1.15rem;
+    background: #fff;
+    color: #1080f2;
+    border: 4px solid #1080f2;
+    box-shadow: 0 2px 8px 0 rgba(16, 128, 242, 0.10);
+}
+
+section[id$='-section'] {
+    scroll-margin-top: 1rem;
+}
+
+#itinerary-section .position-absolute.top-0.start-0.bottom-0 {
+    z-index: 0;
+}
+
+#itinerary-section .position-relative>.position-absolute {
+    z-index: 1;
+}
+
 .custom-carousel {
     width: 100%;
-    max-width: 700px;
-    height: 40vh;
+    height: 60vh;
     min-height: 260px;
     border-radius: 20px;
     overflow: hidden;

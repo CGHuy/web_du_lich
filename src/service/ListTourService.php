@@ -1,14 +1,60 @@
 <?php
 require_once __DIR__ . '/../models/Tour.php';
+require_once __DIR__ . '/../models/TourItinerary.php';
+require_once __DIR__ . '/../models/TourService.php';
+require_once __DIR__ . '/../models/Service.php';
 
 class ListTourService
 {
     private $tourModel;
+
     public function __construct()
     {
         $this->tourModel = new Tour();
     }
 
+    /**
+     * Lấy danh sách lịch trình theo tour_id, đã sắp xếp theo day_number
+     */
+    public function getItinerariesByTourId($tour_id)
+    {
+        $itineraryModel = new TourItinerary();
+        $allItineraries = $itineraryModel->getAll();
+        $tourItineraries = [];
+        foreach ($allItineraries as $item) {
+            if (isset($item['tour_id']) && $item['tour_id'] == $tour_id) {
+                $tourItineraries[] = $item;
+            }
+        }
+        usort($tourItineraries, function ($a, $b) {
+            return $a['day_number'] <=> $b['day_number'];
+        });
+        return $tourItineraries;
+    }
+
+    /**
+     * Lấy danh sách dịch vụ theo tour_id (join Service và TourService)
+     */
+    public function getServicesByTourId($tour_id)
+    {
+        $tourServiceModel = new TourService();
+        $serviceModel = new Service();
+        $allTourServices = $tourServiceModel->getAll();
+        $allServices = $serviceModel->getAll();
+        $serviceIds = [];
+        foreach ($allTourServices as $item) {
+            if (isset($item['tour_id']) && $item['tour_id'] == $tour_id) {
+                $serviceIds[] = $item['service_id'];
+            }
+        }
+        $result = [];
+        foreach ($allServices as $service) {
+            if (in_array($service['id'], $serviceIds)) {
+                $result[] = $service;
+            }
+        }
+        return $result;
+    }
 
     /**
      * Lọc tour theo region, duration, services, search
