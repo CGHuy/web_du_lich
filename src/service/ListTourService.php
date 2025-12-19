@@ -13,24 +13,7 @@ class ListTourService
         $this->tourModel = new Tour();
     }
 
-    /**
-     * Lấy danh sách lịch trình theo tour_id, đã sắp xếp theo day_number
-     */
-    public function getItinerariesByTourId($tour_id)
-    {
-        $itineraryModel = new TourItinerary();
-        $allItineraries = $itineraryModel->getAll();
-        $tourItineraries = [];
-        foreach ($allItineraries as $item) {
-            if (isset($item['tour_id']) && $item['tour_id'] == $tour_id) {
-                $tourItineraries[] = $item;
-            }
-        }
-        usort($tourItineraries, function ($a, $b) {
-            return $a['day_number'] <=> $b['day_number'];
-        });
-        return $tourItineraries;
-    }
+
 
     /**
      * Lấy danh sách dịch vụ theo tour_id (join Service và TourService)
