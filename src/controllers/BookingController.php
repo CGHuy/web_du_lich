@@ -9,8 +9,8 @@ class BookingController
         $bookings = $bookingModel->getAll();
         $currentPage = 'booking';
         ob_start();
-        include __DIR__ . '/../views/components/QuanLyBooking.php';
+        include __DIR__ . '/../views/admin/QuanLyBooking.php';
         $content = ob_get_clean();
-        include __DIR__ . '/../views/partials/admin_layout.php';
+        include __DIR__ . '/../views/admin/admin_layout.php';
     }
 }

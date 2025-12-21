@@ -10,8 +10,8 @@ class UserController
         $users = $userModel->getAll();
         $currentPage = 'user';
         ob_start();
-        include __DIR__ . '/../views/components/QuanLyUser.php';
+        include __DIR__ . '/../views/admin/QuanLyUser.php';
         $content = ob_get_clean();
-        include __DIR__ . '/../views/partials/admin_layout.php';
+        include __DIR__ . '/../views/admin/admin_layout.php';
     }
 }

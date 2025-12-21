@@ -9,8 +9,8 @@ class ItineraryController
         $itineraries = $itineraryModel->getAll();
         $currentPage = 'itinerary';
         ob_start();
-        include __DIR__ . '/../views/components/QuanLyItinerary.php';
+        include __DIR__ . '/../views/admin/QuanLyItinerary.php';
         $content = ob_get_clean();
-        include __DIR__ . '/../views/partials/admin_layout.php';
+        include __DIR__ . '/../views/admin/admin_layout.php';
     }
 }

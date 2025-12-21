@@ -1,16 +1,15 @@
 <?php
 require_once __DIR__ . '/../../config/database.php';
-class Tour
-{
+class Tour {
     private $db;
     private $conn;
-    public function __construct()
-    {
+
+    public function __construct() {
         $this->db = new Database();
         $this->conn = $this->db->getConnection();
     }
-    public function getAll()
-    {
+
+    public function getAll() {
         $sql = "SELECT * FROM tours";
         $result = $this->conn->query($sql);
         $tours = [];
@@ -19,34 +18,36 @@ class Tour
                 $tours[] = $row;
         return $tours;
     }
-    public function getById($id)
-    {
+    
+    public function getById($id) {
         $stmt = $this->conn->prepare("SELECT * FROM tours WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc();
+        return $stmt->get_result()->fetch_assoc();
     }
-    public function create($name, $slug, $description, $location, $region, $duration, $price_default, $cover_image)
-    {
+
+    public function create($name, $slug, $description, $location, $region, $duration, $price_default, $cover_image) {
         $stmt = $this->conn->prepare("INSERT INTO tours (name, slug, description, location, region, duration, price_default, cover_image) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssssdb", $name, $slug, $description, $location, $region, $duration, $price_default, $cover_image);
+        if ($cover_image !== null) {
+            $stmt->send_long_data(7, $cover_image); // index 7 = cover_image
+        }
         return $stmt->execute();
     }
-    public function update($id, $name, $slug, $description, $location, $region, $duration, $price_default, $cover_image)
-    {
+    
+    public function update($id, $name, $slug, $description, $location, $region, $duration, $price_default, $cover_image) {
         $stmt = $this->conn->prepare("UPDATE tours SET name = ?, slug = ?, description = ?, location = ?, region = ?, duration = ?, price_default = ?, cover_image = ? WHERE id = ?");
         $stmt->bind_param("ssssssdbi", $name, $slug, $description, $location, $region, $duration, $price_default, $cover_image, $id);
         return $stmt->execute();
     }
-    public function delete($id)
-    {
+
+    public function delete($id) {
         $stmt = $this->conn->prepare("DELETE FROM tours WHERE id = ?");
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
-    public function __destruct()
-    {
+    
+    public function __destruct() {
         $this->db->close();
     }
 }

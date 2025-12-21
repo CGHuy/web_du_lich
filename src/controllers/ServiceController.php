@@ -9,8 +9,8 @@ class ServiceController
         $services = $serviceModel->getAll();
         $currentPage = 'service';
         ob_start();
-        include __DIR__ . '/../views/components/QuanLyService.php';
+        include __DIR__ . '/../views/admin/QuanLyService.php';
         $content = ob_get_clean();
-        include __DIR__ . '/../views/partials/admin_layout.php';
+        include __DIR__ . '/../views/admin/admin_layout.php';
     }
 }
