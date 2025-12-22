@@ -38,7 +38,7 @@ class TourController {
 
     public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $id = $_POST['edit_id'];
+            $id = $_POST['id'];
             $name = $_POST['edit_name'];
             $slug = $_POST['edit_slug'];
             $description = $_POST['edit_description'];
@@ -46,23 +46,21 @@ class TourController {
             $region = $_POST['edit_region'];
             $duration = $_POST['edit_duration'];
             $price_default = $_POST['edit_price_default'];
+            
             $cover_image = null;
-
             if (isset($_FILES['edit_cover_image']) && $_FILES['edit_cover_image']['error'] === UPLOAD_ERR_OK) {
                 $cover_image = file_get_contents($_FILES['edit_cover_image']['tmp_name']);
-            } else if (isset($_POST['existing_cover_image'])) {
-                $cover_image = $_POST['existing_cover_image'];
             }
 
+            // Truyền thẳng $cover_image (có thể là null) vào model
             $this->model->update($id, $name, $slug, $description, $location, $region, $duration, $price_default, $cover_image);
             header('Location: ' . route('tour.index'));
         }
     }
 
     public function delete() {
-        $id = $_GET['id'];
+        $id = $_POST['id'];
         $this->model->delete($id);
         header('Location: ' . route('tour.index'));
     }
-
 }

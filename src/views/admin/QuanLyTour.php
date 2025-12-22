@@ -144,42 +144,42 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form method="post" action="<?= route('tour.update') ?>" enctype="multipart/form-data">
-                <input type="hidden" id="edit_id" name="id">
+                <input type="hidden" id="id" name="id">
                 <div class="modal-body row">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="name" class="form-label">Tên Tour</label>
-                            <input type="text" class="form-control" id="edit_name" name="name" required>
+                            <label for="edit_name" class="form-label">Tên Tour</label>
+                            <input type="text" class="form-control" id="edit_name" name="edit_name" required>
                         </div>
                         <div class="mb-3">
-                            <label for="slug" class="form-label">Slug</label>
-                            <input type="text" class="form-control" id="edit_slug" name="slug" required>
+                            <label for="edit_slug" class="form-label">Slug</label>
+                            <input type="text" class="form-control" id="edit_slug" name="edit_slug" required>
                         </div>
                         <div class="mb-3">
-                            <label for="description" class="form-label">Mô tả</label>
-                            <textarea class="form-control" id="edit_description" name="description" rows="3"></textarea>
+                            <label for="edit_description" class="form-label">Mô tả</label>
+                            <textarea class="form-control" id="edit_description" name="edit_description" rows="3"></textarea>
                         </div>
                         <div class="mb-3">
-                            <label for="location" class="form-label">Địa điểm</label>
-                            <input type="text" class="form-control" id="edit_location" name="location" required>
+                            <label for="edit_location" class="form-label">Địa điểm</label>
+                            <input type="text" class="form-control" id="edit_location" name="edit_location" required>
                         </div>
                         <div class="mb-3">
-                            <label for="region" class="form-label">Miền</label>
-                            <input type="text" class="form-control" id="edit_region" name="region" required>
+                            <label for="edit_region" class="form-label">Miền</label>
+                            <input type="text" class="form-control" id="edit_region" name="edit_region" required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label for="duration" class="form-label">Thời gian</label>
-                            <input type="text" class="form-control" id="edit_duration" name="duration" required>
+                            <label for="edit_duration" class="form-label">Thời gian</label>
+                            <input type="text" class="form-control" id="edit_duration" name="edit_duration" required>
                         </div>
                         <div class="mb-3">
-                            <label for="price_default" class="form-label">Giá</label>
-                            <input type="number" class="form-control" id="edit_price_default" name="price_default" required>
+                            <label for="edit_price_default" class="form-label">Giá</label>
+                            <input type="number" class="form-control" id="edit_price_default" name="edit_price_default" required>
                         </div>
                         <div>
-                            <label for="cover_image" class="form-label">Ảnh Bìa</label>
-                            <input type="file" class="form-control" id="edit_cover_image" name="cover_image" accept="image/*">
+                            <label for="edit_cover_image" class="form-label">Ảnh Bìa</label>
+                            <input type="file" class="form-control" id="edit_cover_image" name="edit_cover_image" accept="image/*">
                             <img id="edit_preview" class="img-fluid rounded mt-3 d-block mx-auto" style="max-height: 200px">
                         </div>
                     </div>
