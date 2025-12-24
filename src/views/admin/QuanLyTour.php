@@ -1,7 +1,6 @@
 <div class="card-header d-flex justify-content-between align-items-center p-0 px-4">
     <div>
         <h5 class="card-title">Quản lý Tour</h5>
-        
     </div>
 </div>
 <div class="card-body">
@@ -9,32 +8,22 @@
         <span class="input-group-text search-icon">
             <i class="fa-solid fa-magnifying-glass fa-sm"></i>
         </span>
-        <input class="form-control search-input" placeholder="Tìm kiếm tour theo tên, địa điểm..." value="" aria-label="Tìm kiếm" />
+        <input class="form-control search-input" placeholder="Tìm kiếm tour theo id, tên, địa điểm..." value="" aria-label="Tìm kiếm" />
     </div>
     <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addTourModal">Thêm Tour Mới</a>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Tên Tour</th>
-                    <th>Địa điểm</th>
-                    <th>Miền</th>
-                    <th>Giá</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if (!empty($tours)): ?>
-                    <?php foreach ($tours as $tour): ?>
-                        <tr>
-                            <td><?= htmlspecialchars($tour['tour_code']) ?></td>
-                            <td><?= htmlspecialchars($tour['name']) ?></td>
-                            <td><?= htmlspecialchars($tour['location']) ?></td>
-                            <td><?= htmlspecialchars($tour['region']) ?></td>
-                            <td><?= number_format($tour['price_default']) ?> VNĐ</td>
-                            <td>
-                                <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#viewTourModal" data-id="<?= $tour['id'] ?>">Xem</a>
+    <div class="list-group">
+        <?php if (!empty($tours)): ?>
+            <?php foreach ($tours as $tour): ?>
+                <div class="list-group-item mb-3 p-3 border rounded shadow-sm d-flex align-items-center">
+                    <img src="data:image/jpeg;base64,<?= base64_encode($tour['cover_image']) ?>" alt="<?= htmlspecialchars($tour['name']) ?>" style="width: 150px; height: 120px; object-fit: cover; border-radius: 8px;">
+                    <div class="flex-grow-1 ms-4">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="mb-1 fw-bold find_name"><?= htmlspecialchars($tour['name']) ?></h5>
+                                <small class="text-muted find_id">ID: <?= htmlspecialchars($tour['tour_code']) ?></small>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="#" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#viewTourModal" data-id="<?= $tour['id'] ?>"><i class="fa-solid fa-eye me-1"></i> Xem</a>
                                 <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editTourModal" 
                                     data-id="<?= $tour['id'] ?>"
                                     data-name="<?= htmlspecialchars($tour['name']) ?>"
@@ -45,18 +34,29 @@
                                     data-duration="<?= htmlspecialchars($tour['duration']) ?>"
                                     data-price_default="<?= htmlspecialchars($tour['price_default']) ?>"
                                     data-cover_image="<?= base64_encode($tour['cover_image']) ?>"
-                                >Sửa</a>
-                                <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteTourModal" data-id="<?= $tour['id'] ?>"data-name="<?= htmlspecialchars($tour['name']) ?>">Xóa</a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="6" class="text-center">Không có tour nào.</td>
-                    </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+                                ><i class="fa-solid fa-pen-to-square me-1"></i> Sửa</a>
+                                <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteTourModal"
+                                    data-id="<?= $tour['id'] ?>"
+                                    data-name="<?= htmlspecialchars($tour['name']) ?>"
+                                ><i class="fa-solid fa-trash me-1"></i> Xóa</a>
+                            </div>
+                        </div>
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between text-muted small">
+                            <span class="d-flex align-items-center">
+                                <i class="fa-solid fa-location-dot me-2"></i>
+                                <strong class="me-1">Địa điểm:</strong>
+                                <span class="find_location"><?= htmlspecialchars($tour['location']) ?></span>
+                            </span>
+                            <span class="d-flex align-items-center"><i class="fa-solid fa-map me-2"></i><strong class="me-1">Miền:</strong> <?= htmlspecialchars($tour['region']) ?></span>
+                            <span class="d-flex align-items-center"><i class="fa-solid fa-tag me-2"></i><strong class="me-1">Giá:</strong> <?= number_format($tour['price_default']) ?> VNĐ</span>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="text-center">Không có tour nào.</p>
+        <?php endif; ?>
     </div>
 </div>
 
@@ -219,3 +219,5 @@
         </div>
     </div>
 </div>
+
+<script src="/web_du_lich/public/js/admin/QuanLyTour.js"></script>

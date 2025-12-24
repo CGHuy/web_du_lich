@@ -8,7 +8,7 @@
     <title>Admin Panel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100..900&display=swap">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <link rel="stylesheet" href="css/AppStyle.css">
@@ -29,15 +29,15 @@
                             <a href="<?= route('tour.index'); ?>" class="text-decoration-none flex-grow-1" style="color: inherit;">
                                 Quản lý tour</a>
                         </li>
-                        <li class="menu-item mb-1 <?= $currentPage === 'destination' ? 'active' : '' ?>">
-                            <i class="fa-solid fa-location-dot"></i>
-                            <a href="<?= route('destination.index'); ?>" class="text-decoration-none flex-grow-1" style="color: inherit;">
-                                Quản lý điểm đến</a>
-                        </li>
                         <li class="menu-item mb-1 <?= $currentPage === 'itinerary' ? 'active' : '' ?>">
                             <i class="fa-solid fa-route"></i>
                             <a href="<?= route('itinerary.index'); ?>" class="text-decoration-none flex-grow-1" style="color: inherit;">
                                 Quản lý lịch trình</a>
+                        </li>
+                        <li class="menu-item mb-1 <?= $currentPage === 'destination' ? 'active' : '' ?>">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <a href="<?= route('destination.index'); ?>" class="text-decoration-none flex-grow-1" style="color: inherit;">
+                                Quản lý điểm đến</a>
                         </li>
                         <li class="menu-item mb-1 <?= $currentPage === 'booking' ? 'active' : '' ?>">
                             <i class="fa-solid fa-calendar-check"></i>
@@ -71,13 +71,6 @@
     <!-- Load Bootstrap trước -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <?php 
-        if (isset($jsFiles) && is_array($jsFiles)) {
-            foreach ($jsFiles as $jsFile) {
-                echo '<script src="/web_du_lich/public/js/admin/' . $jsFile . '"></script>' . "\n";
-            }
-        }
-    ?>
 </body>
 
 <?php include __DIR__ . '/../partials/footer.php'; ?>

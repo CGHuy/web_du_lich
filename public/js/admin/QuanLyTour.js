@@ -1,4 +1,3 @@
-// js/tour-management.js
 document.addEventListener('DOMContentLoaded', function() {
 
      // Modal xem
@@ -15,10 +14,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
      // Modal sửa
      var editModal = document.getElementById('editTourModal');
-
      if (editModal) {
           editModal.addEventListener('show.bs.modal', function (event) {
-               var button = event.relatedTarget; // nút Sửa được bấm
+               var button = event.relatedTarget;
 
                document.getElementById('id').value = button.getAttribute('data-id');
                document.getElementById('edit_name').value = button.getAttribute('data-name');
@@ -47,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
           deleteModal.addEventListener('show.bs.modal', function (event) {
                var button = event.relatedTarget;
                var id = button.getAttribute('data-id');
+               var name = button.getAttribute('data-name');
 
                document.getElementById('delete_id').value = id;
                document.getElementById('delete_name').innerText = name;
@@ -58,24 +57,24 @@ document.addEventListener('DOMContentLoaded', function() {
      if (searchInput) {
           searchInput.addEventListener('keyup', function() {
                var filter = searchInput.value.toLowerCase();
-               var table = document.querySelector('.table-responsive table');
-               var tr = table.getElementsByTagName('tr');
+               var list = document.querySelector('.list-group');
+               var items = list.getElementsByClassName('list-group-item');
 
-               for (var i = 1; i < tr.length; i++) {
-                    var tdCode = tr[i].getElementsByTagName('td')[0];
-                    var tdName = tr[i].getElementsByTagName('td')[1];
-                    var tdLocation = tr[i].getElementsByTagName('td')[2];
+               for (var i = 0; i < items.length; i++) {
+                    var nameElement = items[i].querySelector('.find_name');
+                    var idElement = items[i].querySelector('.find_id');
+                    var locationElement = items[i].querySelector('.find_location');
 
-                    if (tdCode || tdName || tdLocation) {
-                         var tourCodeText = tdCode.textContent || tdCode.innerText;
-                         var nameText = tdName.textContent || tdName.innerText;
-                         var locationText = tdLocation.textContent || tdLocation.innerText;
+                    var nameText = nameElement ? nameElement.textContent || nameElement.innerText : '';
+                    var idText = idElement ? idElement.textContent || idElement.innerText : '';
+                    var locationText = locationElement ? locationElement.textContent || locationElement.innerText : '';
 
-                         if (tourCodeText.toLowerCase().indexOf(filter) > -1 || nameText.toLowerCase().indexOf(filter) > -1 || locationText.toLowerCase().indexOf(filter) > -1) {
-                              tr[i].style.display = "";
-                         } else {
-                              tr[i].style.display = "none";
-                         }
+                    if (nameText.toLowerCase().indexOf(filter) > -1 ||
+                         idText.toLowerCase().indexOf(filter) > -1 ||
+                         locationText.toLowerCase().indexOf(filter) > -1) {
+                         items[i].classList.remove('d-none');
+                    } else {
+                         items[i].classList.add('d-none');
                     }
                }
           });

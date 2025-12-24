@@ -11,7 +11,6 @@ class TourController {
     public function index() {
         $tours = $this->model->getAll();
         $currentPage = 'tour';
-        $jsFiles = ['QuanLyTour.js'];
         ob_start();
         include __DIR__ . '/../views/admin/QuanLyTour.php';
         $content = ob_get_clean();
@@ -52,7 +51,6 @@ class TourController {
                 $cover_image = file_get_contents($_FILES['edit_cover_image']['tmp_name']);
             }
 
-            // Truyền thẳng $cover_image (có thể là null) vào model
             $this->model->update($id, $name, $slug, $description, $location, $region, $duration, $price_default, $cover_image);
             header('Location: ' . route('tour.index'));
         }
