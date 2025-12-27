@@ -24,7 +24,8 @@ return [
     'itinerary.getDetails' => ['controller' => 'ItineraryController', 'action' => 'getDetails'],
     'itinerary.save' => ['controller' => 'ItineraryController', 'action' => 'save'],
     'itinerary.delete' => ['controller' => 'ItineraryController', 'action' => 'delete'],
-    'booking.index' => ['controller' => 'BookingController', 'action' => 'index'],
+    'BookingAdmin.index' => ['controller' => 'BookingAdminController', 'action' => 'index'],
+    'admin.bookingDetail' => ['controller' => 'BookingAdminController', 'action' => 'detail'],
     'service.index' => ['controller' => 'ServiceController', 'action' => 'index'],
 ];
 ?>
