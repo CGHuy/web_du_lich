@@ -11,7 +11,10 @@ class Booking
     }
     public function getAll()
     {
-        $sql = "SELECT * FROM bookings";
+        $sql = "SELECT b.*, t.name as tour_name, u.fullname as customer_name FROM bookings b 
+                LEFT JOIN tour_departures td ON b.departure_id = td.id 
+                LEFT JOIN tours t ON td.tour_id = t.id 
+                LEFT JOIN users u ON b.user_id = u.id";
         $result = $this->conn->query($sql);
         $bookings = [];
         if ($result)

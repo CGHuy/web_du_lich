@@ -26,6 +26,7 @@
         <a class="text-decoration-none text-body fw-medium px-2 py-1" href="#">Điểm đến</a>
         <a class="text-decoration-none text-body fw-medium px-2 py-1" href="#">Về chúng tôi</a>
         <a class="text-decoration-none text-body fw-medium px-2 py-1" href="#">Liên hệ</a>
+        <a class="text-decoration-none text-body fw-medium px-2 py-1" href="<?= route('tour.index'); ?>">Admin</a>
     </nav>
     <div class="d-flex align-items-center gap-2">
         <?php

@@ -14,8 +14,8 @@ v
 |
 v
 Controller (UserController) ----> Model (User) ----> MySQL
-| |
-v |
+|
+v
 View (user_list.php, user_detail.php)
 |
 v

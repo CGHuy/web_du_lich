@@ -7,7 +7,7 @@ if (dispatch()) {
     exit;
 }
 
-include __DIR__ . '/../src/views/partials/menu.php';
+include __DIR__ . '/../src/views/partials/header.php';
 require_once __DIR__ . '/../src/models/Tour.php';
 $tourModel = new Tour();
 $tours = $tourModel->getAll();
@@ -254,9 +254,7 @@ $toursMienNam = $tourModel->getByRegion('Miền Nam');
 
 
 
-    <?php
-    include __DIR__ . '/../src/views/partials/footer.php';
-    ?>
+    <?php include __DIR__ . '/../src/views/partials/footer.php';?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

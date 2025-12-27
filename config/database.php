@@ -5,7 +5,7 @@ class Database
     private $username = "root";
     private $password = "123";
     private $dbname = "db_web_du_lich";
-    private $debug = true;  
+    private $debug = false;
     public $connect;
 
     public function __construct()
