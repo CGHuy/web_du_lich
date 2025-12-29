@@ -34,12 +34,14 @@ $toursMienNam = $tourModel->getByRegion('Miền Nam');
 <body>
 
     <div class="container my-4">
-        <div class="search-group mb-4">
-            <div class="search-icon">
-                <span class="material-symbols-outlined"><i class="fa-solid fa-magnifying-glass fa-sm"></i></span>
-            </div>
-            <input class="search-input" placeholder="Bạn muốn đi đâu? Tìm kiếm tour theo tên, địa điểm..." value="" />
-        </div>
+        <form method="get" action="<?= route('ListTour.index') ?>" class="search-group mb-4">
+            <input type="hidden" name="controller" value="ListTour">
+            <input type="hidden" name="action" value="index">
+            <button type="submit" class="search-icon" aria-label="Tìm kiếm">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+            <input class="search-input" name="search" placeholder="Tìm kiếm tour theo tên, địa điểm..." />
+        </form>
 
         <h3>Top Tours nổi bật</h3>
 
@@ -254,7 +256,7 @@ $toursMienNam = $tourModel->getByRegion('Miền Nam');
 
 
 
-    <?php include __DIR__ . '/../src/views/partials/footer.php';?>
+    <?php include __DIR__ . '/../src/views/partials/footer.php'; ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
