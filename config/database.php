@@ -3,7 +3,7 @@ class Database
 {
     private $servername = "localhost";
     private $username = "root";
-    private $password = "123";
+    private $password = "";
     private $dbname = "db_web_du_lich";
     private $debug = false;
     public $connect;

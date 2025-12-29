@@ -12,30 +12,41 @@ document.addEventListener('DOMContentLoaded', function() {
           });
      }
 
+     // Modal thêm
+     var addModal = document.getElementById('addTourModal');
+     if (addModal) {
+          addModal.addEventListener('show.bs.modal', function () {
+               var modalBody = addModal.querySelector('.modal-body');
+               modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Đang tải form...</p></div>';
+               
+               fetch('index.php?controller=tour&action=getAddForm')
+                    .then(response => response.text())
+                    .then(html => {
+                         modalBody.innerHTML = html;
+                    })
+                    .catch(error => {
+                         modalBody.innerHTML = '<div class="alert alert-danger">Lỗi tải form: ' + error.message + '</div>';
+                    });
+          });
+     }
+
      // Modal sửa
      var editModal = document.getElementById('editTourModal');
      if (editModal) {
           editModal.addEventListener('show.bs.modal', function (event) {
                var button = event.relatedTarget;
-
-               document.getElementById('id').value = button.getAttribute('data-id');
-               document.getElementById('edit_name').value = button.getAttribute('data-name');
-               document.getElementById('edit_slug').value = button.getAttribute('data-slug');
-               document.getElementById('edit_description').value = button.getAttribute('data-description');
-               document.getElementById('edit_location').value = button.getAttribute('data-location');
-               document.getElementById('edit_region').value = button.getAttribute('data-region');
-               document.getElementById('edit_duration').value = button.getAttribute('data-duration');
-               document.getElementById('edit_price_default').value = button.getAttribute('data-price_default');
-               var tourCoverImage = button.getAttribute('data-cover_image');
-               var previewImg = document.getElementById('edit_preview');
-
-               if (tourCoverImage && tourCoverImage.trim() !== "") {
-                    previewImg.src = `data:image/jpeg;base64,${tourCoverImage}`;
-                    previewImg.style.display = 'block'; 
-               } else {
-                    previewImg.src = '';
-                    previewImg.style.display = 'none';
-               }
+               var id = button.getAttribute('data-id');
+               var modalBody = editModal.querySelector('.modal-body');
+               modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Đang tải form...</p></div>';
+               
+               fetch('index.php?controller=tour&action=getEditForm&id=' + id)
+                    .then(response => response.text())
+                    .then(html => {
+                         modalBody.innerHTML = html;
+                    })
+                    .catch(error => {
+                         modalBody.innerHTML = '<div class="alert alert-danger">Lỗi tải form: ' + error.message + '</div>';
+                    });
           });
      }
 

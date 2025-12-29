@@ -61,4 +61,24 @@ class TourController {
         $this->model->delete($id);
         header('Location: ' . route('tour.index'));
     }
+
+    public function getAddForm() {
+        include __DIR__ . '/../views/admin/FormAddTour.php';
+    }
+
+    public function getEditForm() {
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            echo "ID tour không hợp lệ.";
+            return;
+        }
+        $tour = $this->model->getById($id);
+        if (!$tour) {
+            echo "Tour không tồn tại.";
+            return;
+        }
+        include __DIR__ . '/../views/admin/FormEditTour.php';
+    }
+
+    
 }

@@ -19,6 +19,8 @@ return [
     'tour.create' => ['controller' => 'TourController', 'action' => 'create'],
     'tour.update' => ['controller' => 'TourController', 'action' => 'update'],
     'tour.delete' => ['controller' => 'TourController', 'action' => 'delete'],
+    'tour.getAddForm' => ['controller' => 'TourController', 'action' => 'getAddForm'],
+    'tour.getEditForm' => ['controller' => 'TourController', 'action' => 'getEditForm'],
     'itinerary.index' => ['controller' => 'ItineraryController', 'action' => 'index'],
     'itinerary.edit' => ['controller' => 'ItineraryController', 'action' => 'edit'],
     'itinerary.getDetails' => ['controller' => 'ItineraryController', 'action' => 'getDetails'],
