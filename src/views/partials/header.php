@@ -4,7 +4,7 @@
 <header
     class="d-flex align-items-center justify-content-between border-bottom px-4 py-3 sticky-top bg-white bg-opacity-80 backdrop-blur-sm z-50"
     style="top:0;">
-    <div class="d-flex align-items-center gap-3">
+    <a href="/web_du_lich/public/index.php" class="d-flex align-items-center gap-3 text-decoration-none text-body">
         <div class="me-2" style="width: 32px; height: 32px; color: #1976d2;">
             <svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" width="32" height="32">
                 <g clip-path="url(#clip0_6_330)">
@@ -20,7 +20,7 @@
             </svg>
         </div>
         <h2 class="fs-4 fw-bold mb-0">VietTour</h2>
-    </div>
+    </a>
     <nav class="d-none d-lg-flex flex-grow-1 justify-content-center align-items-center gap-4">
         <a class="text-decoration-none text-body fw-medium px-2 py-1" href="<?= route('ListTour.index') ?>">Tours</a>
         <a class="text-decoration-none text-body fw-medium px-2 py-1" href="#">Điểm đến</a>
