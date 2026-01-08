@@ -38,8 +38,8 @@
         <?php if (empty($_SESSION['user_id'])): ?>
             <a href="/web_du_lich/public/login.php" class="d-none d-sm-flex btn btn-primary rounded-pill px-4 fw-bold">Đăng
                 nhập</a>
-            <a href="/web_du_lich/public/register.php"
-                class="d-none d-sm-flex btn btn-light rounded-pill px-4 fw-bold border">Đăng ký</a>
+                <a href="/web_du_lich/public/signup.php"
+                    class="d-none d-sm-flex btn btn-light rounded-pill px-4 fw-bold border">Đăng ký</a>
         <?php else: ?>
             <?php if ($currentScript !== 'index.php'): ?>
                 <a href="<?= route('settinguser.edit'); ?>"
