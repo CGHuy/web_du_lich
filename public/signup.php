@@ -1,3 +1,16 @@
+<?php
+require_once __DIR__ . '/../src/controllers/AuthController.php';
+
+if (session_status() === PHP_SESSION_NONE)
+    session_start();
+
+$auth = new AuthController();
+$result = $auth->signup();
+
+$message = $result['message'];
+$message_type = $result['message_type'];
+$form_data = $result['form_data'];
+?>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -28,22 +41,29 @@
                     <h1 class="h4 text-center fw-bold mb-2">Tạo tài khoản mới</h1>
                     <p class="text-center text-muted mb-4">Cùng khám phá Việt Nam với hàng ngàn tour du lịch hấp dẫn.</p>
 
-                    <form action="#" method="post" class="needs-validation" novalidate>
+                    <?php if ($message): ?>
+                        <div class="alert alert-<?php echo htmlspecialchars($message_type); ?> alert-dismissible fade show" role="alert">
+                            <?php echo htmlspecialchars($message); ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    <?php endif; ?>
+
+                    <form action="signup.php" method="post" class="needs-validation" novalidate>
                         <div class="mb-3">
                             <label class="form-label small">Họ và tên</label>
-                            <input name="fullname" type="text" class="form-control form-control-lg" placeholder="Nhập họ và tên của bạn" required>
+                            <input name="fullname" type="text" class="form-control form-control-lg" placeholder="Nhập họ và tên của bạn" value="<?php echo htmlspecialchars($form_data['fullname']); ?>" required>
                             <div class="invalid-feedback">Vui lòng nhập họ và tên.</div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label small">Số điện thoại</label>
-                            <input name="phone" type="tel" class="form-control form-control-lg" placeholder="Nhập số điện thoại" required>
+                            <input name="phone" type="tel" class="form-control form-control-lg" placeholder="Nhập số điện thoại" value="<?php echo htmlspecialchars($form_data['phone']); ?>" required>
                             <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ.</div>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label small">Email</label>
-                            <input name="email" type="email" class="form-control form-control-lg" placeholder="Nhập địa chỉ email" required>
+                            <input name="email" type="email" class="form-control form-control-lg" placeholder="Nhập địa chỉ email" value="<?php echo htmlspecialchars($form_data['email']); ?>" required>
                             <div class="invalid-feedback">Vui lòng nhập email hợp lệ.</div>
                         </div>
 
