@@ -45,6 +45,11 @@ class User
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+
+    public function getConnection()
+    {
+        return $this->conn;
+    }
     public function __destruct()
     {
         $this->db->close();

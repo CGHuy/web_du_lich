@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/../src/controllers/AuthController.php';
+require_once __DIR__ . '/../src/controllers/SignupController.php';
 
 if (session_status() === PHP_SESSION_NONE)
     session_start();
 
-$auth = new AuthController();
+$auth = new SignupController();
 $result = $auth->signup();
 
 $message = $result['message'];
@@ -57,8 +57,9 @@ $form_data = $result['form_data'];
 
                         <div class="mb-3">
                             <label class="form-label small">Số điện thoại</label>
-                            <input name="phone" type="tel" class="form-control form-control-lg" placeholder="Nhập số điện thoại" value="<?php echo htmlspecialchars($form_data['phone']); ?>" required>
-                            <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ.</div>
+                            <input name="phone" type="tel" class="form-control form-control-lg" placeholder="Nhập số điện thoại" pattern="0[0-9]{9}" value="<?php echo htmlspecialchars($form_data['phone']); ?>" required>
+                            <small class="form-text text-muted">Phải có 10 số và bắt đầu bằng 0</small>
+                            <div class="invalid-feedback">Vui lòng nhập số điện thoại hợp lệ (10 chữ số, bắt đầu bằng 0).</div>
                         </div>
 
                         <div class="mb-3">

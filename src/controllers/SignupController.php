@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../../config/database.php';
 require_once __DIR__ . '/../models/User.php';
 
-class AuthController
+class SignupController
 {
     private $db;
     private $conn;
@@ -29,6 +29,10 @@ class AuthController
 
             if (empty($fullname) || empty($phone) || empty($email) || empty($password)) {
                 $message = 'Vui lòng điền đầy đủ tất cả các trường.';
+                $message_type = 'danger';
+                $form_data = ['fullname' => $fullname, 'phone' => $phone, 'email' => $email, 'password' => $password];
+            } elseif (!preg_match('/^0[0-9]{9}$/', $phone)) {
+                $message = 'Số điện thoại phải có 10 chữ số và bắt đầu bằng 0.';
                 $message_type = 'danger';
                 $form_data = ['fullname' => $fullname, 'phone' => $phone, 'email' => $email, 'password' => $password];
             } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
