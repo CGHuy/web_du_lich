@@ -15,13 +15,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (itineraryModalLabel && modalBody) {
             // Load form when Bootstrap modal is shown (use event.relatedTarget)
             itineraryModalEl.addEventListener('show.bs.modal', function (event) {
-                const trigger = event.relatedTarget; // button that opened the modal
-                if (!trigger) return;
+                const button = event.relatedTarget; // button that opened the modal
+                if (!button) return;
 
-                const tourId = trigger.dataset.tourId;
-                const tourName = trigger.dataset.tourName;
-                const actionName = trigger.dataset.actionName;
-                const formUrl = trigger.dataset.formUrl || `index.php?controller=TourItinerary&action=getForm&tour_id=${tourId}`;
+                const tourId = button.getAttribute('data-tour-id');
+                const tourName = button.getAttribute('data-tour-name');
+                const actionName = button.getAttribute('data-action-name');
+                const formUrl = button.getAttribute('data-form-url') || `index.php?controller=TourItinerary&action=getForm&tour_id=${tourId}`;
 
                 itineraryModalLabel.textContent = `${actionName} Lịch Trình cho Tour: ${tourName}`;
 
