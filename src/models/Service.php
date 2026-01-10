@@ -27,18 +27,64 @@ class Service
         $result = $stmt->get_result();
         return $result->fetch_assoc();
     }
-    public function create($name, $slug, $description, $icon = null, $status = 1)
+        public function create($name, $slug, $description, $status = 1)
     {
-        $stmt = $this->conn->prepare("INSERT INTO services (name, slug, description, icon, status) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("ssssi", $name, $slug, $description, $icon, $status);
+        $stmt = $this->conn->prepare(
+            "INSERT INTO services (name, slug, description, status)
+            VALUES (?, ?, ?, ?)"
+        );
+        $stmt->bind_param("sssi", $name, $slug, $description, $status);
+
+        if ($stmt->execute()) {
+            return $this->conn->insert_id;
+        }
+        return false;
+    }
+
+        public function update($id, $name, $slug, $description, $status)
+        {
+            $stmt = $this->conn->prepare(
+                "UPDATE services
+                SET name = ?, slug = ?, description = ?, status = ?
+                WHERE id = ?"
+            );
+            $stmt->bind_param("sssii", $name, $slug, $description, $status, $id);
+            return $stmt->execute();
+        }
+
+
+    public function getPaged($limit, $offset)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM services ORDER BY id DESC LIMIT ? OFFSET ?");
+        $stmt->bind_param("ii", $limit, $offset);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $items = [];
+        while ($row = $res->fetch_assoc()) $items[] = $row;
+        return $items;
+    }
+
+    public function count()
+    {
+        $res = $this->conn->query("SELECT COUNT(*) AS cnt FROM services");
+        return $res ? (int)$res->fetch_assoc()['cnt'] : 0;
+    }
+
+    public function toggleStatus($id)
+    {
+        $stmt = $this->conn->prepare("UPDATE services SET status = 1 - status WHERE id = ?");
+        $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
-    public function update($id, $name, $slug, $description, $icon, $status)
+
+    public function getBySlug($slug)
     {
-        $stmt = $this->conn->prepare("UPDATE services SET name = ?, slug = ?, description = ?, icon = ?, status = ? WHERE id = ?");
-        $stmt->bind_param("sssisi", $name, $slug, $description, $icon, $status, $id);
-        return $stmt->execute();
+        $stmt = $this->conn->prepare("SELECT * FROM services WHERE slug = ?");
+        $stmt->bind_param("s", $slug);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
     }
+
     public function delete($id)
     {
         $stmt = $this->conn->prepare("DELETE FROM services WHERE id = ?");
