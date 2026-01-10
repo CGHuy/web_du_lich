@@ -1,4 +1,4 @@
-<form action="index.php?controller=itinerary&action=save" method="POST" id="itinerary-form">
+<form action="<?= route('TourItinerary.save')?>" method="POST" id="itinerary-form">
      <input type="hidden" name="tour_id" id="form-tour-id" value="<?= htmlspecialchars($tour['id']) ?>">
      <div id="itinerary-days-container">
           <?php if (!empty($itineraries)): ?>

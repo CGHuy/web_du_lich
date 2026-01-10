@@ -28,13 +28,13 @@
                     <ul class="menu-list">
                         <li class="menu-item mb-1 <?= $currentPage === 'tour' ? 'active' : '' ?>">
                             <i class="fa-solid fa-map"></i>
-                            <a href="<?= route('tour.index'); ?>" class="text-decoration-none flex-grow-1"
+                            <a href="<?= route('Tour.index'); ?>" class="text-decoration-none flex-grow-1"
                                 style="color: inherit;">
                                 Quản lý tour</a>
                         </li>
                         <li class="menu-item mb-1 <?= $currentPage === 'itinerary' ? 'active' : '' ?>">
                             <i class="fa-solid fa-route"></i>
-                            <a href="<?= route('itinerary.index'); ?>" class="text-decoration-none flex-grow-1"
+                            <a href="<?= route('TourItinerary.index'); ?>" class="text-decoration-none flex-grow-1"
                                 style="color: inherit;">
                                 Quản lý lịch trình</a>
                         </li>
@@ -42,7 +42,7 @@
                             <i class="fa-solid fa-location-dot"></i>
                             <a href="<?= route('destination.index'); ?>" class="text-decoration-none flex-grow-1"
                                 style="color: inherit;">
-                                Quản lý điểm đến</a>
+                                Quản lý điểm khởi hành</a>
                         </li>
                         <li class="menu-item mb-1 <?= $currentPage === 'booking' ? 'active' : '' ?>">
                             <i class="fa-solid fa-calendar-check"></i>

@@ -14,6 +14,9 @@
                         data-tour-id="<?= $tour['id'] ?>"
                         data-tour-name="<?= htmlspecialchars($tour['name']) ?>"
                         data-action-name="<?= $tour['has_itinerary'] ? 'Sửa' : 'Thêm' ?>"
+                        data-form-url="<?= route('TourItinerary.getForm', ['tour_id' => $tour['id']]) ?>"
+                        data-bs-toggle="modal"
+                        data-bs-target="#itineraryModal"
                     >
                         <?php if ($tour['has_itinerary']): ?>
                             <i class="fas fa-edit me-1"></i> Sửa Lịch Trình
@@ -50,4 +53,4 @@
     </div>
 </div>
 
-<script src="/web_du_lich/public/js/admin/QuanLyItinerary.js"></script>
+<script src="/web_du_lich/public/js/admin/QuanLyLichTrinh.js"></script>

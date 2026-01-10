@@ -27,7 +27,7 @@
         <a class="text-decoration-none text-body fw-medium px-2 py-1" href="#">Về chúng tôi</a>
         <a class="text-decoration-none text-body fw-medium px-2 py-1" href="#">Liên hệ</a>
         <?php if (!empty($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-            <a class="text-decoration-none text-body fw-medium px-2 py-1" href="<?= route('tour.index'); ?>">Admin</a>
+            <a class="text-decoration-none text-body fw-medium px-2 py-1" href="<?= route('Tour.index'); ?>">Admin</a>
         <?php endif; ?>
     </nav>
     <div class="d-flex align-items-center gap-2">
