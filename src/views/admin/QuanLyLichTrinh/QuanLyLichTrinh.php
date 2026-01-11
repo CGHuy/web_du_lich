@@ -1,33 +1,68 @@
 <div class="card-header d-flex justify-content-between align-items-center p-0 px-4">
     <div>
-        <h5 class="card-title">Quản lý Lịch trình</h5>
+        <h5 class="card-title">
+            <i class="fas fa-route me-2"></i>Quản lý Lịch trình Tour
+        </h5>
+    </div>
+    <div class="text-end d-flex align-items-top">
+        <span class="badge bg-info">Tổng: <?= count($tours) ?> tour</span>
     </div>
 </div>
 <div class="card-body">
-    <ul class="list-group" id="tour-itinerary-list">
+    <div class="input-group search-group mb-3">
+        <span class="input-group-text search-icon">
+            <i class="fa-solid fa-magnifying-glass fa-sm"></i>
+        </span>
+        <input class="form-control search-input" placeholder="Tìm kiếm tour theo id, tên..." value="" aria-label="Tìm kiếm" />
+    </div>
+    <ul class="list-group list-group-flush" id="tour-itinerary-list">
         <?php if (!empty($tours)): ?>
             <?php foreach ($tours as $tour): ?>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span><?= htmlspecialchars($tour['name']) ?></span>
-                    <button 
-                        class="btn btn-sm open-itinerary-modal <?= $tour['has_itinerary'] ? 'btn-outline-primary' : 'btn-primary' ?>"
-                        data-tour-id="<?= $tour['id'] ?>"
-                        data-tour-name="<?= htmlspecialchars($tour['name']) ?>"
-                        data-action-name="<?= $tour['has_itinerary'] ? 'Sửa' : 'Thêm' ?>"
-                        data-form-url="<?= route('TourItinerary.getForm', ['tour_id' => $tour['id']]) ?>"
-                        data-bs-toggle="modal"
-                        data-bs-target="#itineraryModal"
-                    >
-                        <?php if ($tour['has_itinerary']): ?>
-                            <i class="fas fa-edit me-1"></i> Sửa Lịch Trình
-                        <?php else: ?>
-                            <i class="fas fa-plus me-1"></i> Thêm Lịch Trình
-                        <?php endif; ?>
-                    </button>
+                <li class="list-group-item p-3 hover-shadow">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-start align-items-center">
+                                <div class="me-3">
+                                    <span class="badge bg-secondary"><?= htmlspecialchars($tour['tour_code']) ?></span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1"><?= htmlspecialchars($tour['name']) ?></h6>
+                                    <small class="text-muted">
+                                        <i class="fas fa-calendar-alt me-1"></i>
+                                        <?php if ($tour['has_itinerary']): ?>
+                                            <span class="text-success"><i class="fas fa-check-circle me-1"></i> Đã có lịch trình</span>
+                                        <?php else: ?>
+                                            <span class="text-warning"><i class="fas fa-exclamation-circle me-1"></i> Chưa có lịch trình</span>
+                                        <?php endif; ?>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button 
+                                class="btn btn-sm open-itinerary-modal <?= $tour['has_itinerary'] ? 'btn-outline-primary' : 'btn-primary' ?>"
+                                data-tour-id="<?= $tour['id'] ?>"
+                                data-tour-name="<?= htmlspecialchars($tour['name']) ?>"
+                                data-action-name="<?= $tour['has_itinerary'] ? 'Sửa' : 'Thêm' ?>"
+                                data-form-url="<?= route('TourItinerary.getForm', ['tour_id' => $tour['id']]) ?>"
+                                data-bs-toggle="modal"
+                                data-bs-target="#itineraryModal"
+                            >
+                                <?php if ($tour['has_itinerary']): ?>
+                                    <i class="fas fa-edit"></i> Chỉnh sửa
+                                <?php else: ?>
+                                    <i class="fas fa-plus"></i> Thêm mới
+                                <?php endif; ?>
+                            </button>
+                        </div>
+                    </div>
                 </li>
             <?php endforeach; ?>
         <?php else: ?>
-            <li class="list-group-item text-center">Chưa có tour nào. Vui lòng thêm tour trước.</li>
+            <li class="list-group-item text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted mb-0">Chưa có tour nào. Vui lòng thêm tour trước.</p>
+            </li>
         <?php endif; ?>
     </ul>
 </div>
