@@ -91,6 +91,30 @@ class Service
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+    public function search($keyword)
+{
+    $kw = '%' . $keyword . '%';
+
+    $stmt = $this->conn->prepare(
+        "SELECT * FROM services
+         WHERE service_code LIKE ?
+            OR name LIKE ?
+            OR description LIKE ?"
+    );
+
+    $stmt->bind_param("sss", $kw, $kw, $kw);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    $services = [];
+    while ($row = $result->fetch_assoc()) {
+        $services[] = $row;
+    }
+
+    return $services;
+}
+
+
     public function __destruct()
     {
         $this->db->close();

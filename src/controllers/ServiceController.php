@@ -9,7 +9,13 @@ class ServiceController {
     }
 
     public function index() {
+        $keyword = $_GET['keyword'] ?? '';
+
+    if ($keyword !== '') {
+        $services = $this->model->search($keyword);
+    } else {
         $services = $this->model->getAll();
+    }
         $currentPage = 'Service';
         ob_start();
         include __DIR__ . '/../views/admin/QuanLyDichVu/QuanLyService.php';

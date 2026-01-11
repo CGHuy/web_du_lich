@@ -4,12 +4,25 @@
     </div>
 </div>
 <div class="card-body">
-    <div class="input-group search-group mb-3">
-        <span class="input-group-text search-icon">
-            <i class="fa-solid fa-magnifying-glass fa-sm"></i>
-        </span>
-        <input class="form-control search-input" placeholder="Tìm kiếm dịch vụ theo id, tên..." value="" aria-label="Tìm kiếm" />
+   <form method="GET" action="" class="mb-3">
+    <input type="hidden" name="controller" value="Service">
+    <input type="hidden" name="action" value="index">
+
+    <div class="input-group search-group">
+       <button class="input-group-text search-icon" type="submit">
+    <i class="fa-solid fa-magnifying-glass fa-sm"></i>
+</button>
+
+        <input
+            type="text"
+            name="keyword"
+            class="form-control search-input"
+            placeholder="Tìm kiếm dịch vụ theo mã, tên..."
+            value="<?= $_GET['keyword'] ?? '' ?>"
+        />
     </div>
+</form>
+
     <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#serviceModal">Thêm Dịch vụ Mới</a>
     <div class="table-responsive">
         <table class="table table-striped">
