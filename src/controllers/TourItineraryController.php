@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../models/TourItinerary.php';
 require_once __DIR__ . '/../models/Tour.php';
 
-class ItineraryController {
+class TourItineraryController {
     private $itineraryModel;
     private $tourModel;
 
@@ -22,9 +22,9 @@ class ItineraryController {
             return $tour;
         }, $all_tours);
 
-        $currentPage = 'itinerary';
+        $currentPage = 'TourItinerary';
         ob_start();
-        include __DIR__ . '/../views/admin/QuanLyItinerary.php';
+        include __DIR__ . '/../views/admin/QuanLyLichTrinh/QuanLyLichTrinh.php';
         $content = ob_get_clean();
         include __DIR__ . '/../views/admin/admin_layout.php';
     }
@@ -48,38 +48,7 @@ class ItineraryController {
         $itineraries = $this->itineraryModel->getByTourId($tour_id);
 
         // Include view để render HTML form
-        include __DIR__ . '/../views/admin/FormItinerary.php';
-    }
-
-    /**
-     * Trang chỉnh sửa lịch trình (dạng full page - ít dùng)
-     */
-    public function edit() {
-        $tour_id = isset($_GET['tour_id']) ? intval($_GET['tour_id']) : 0;
-        $layout = isset($_GET['layout']) ? $_GET['layout'] : 'full';
-
-        if ($tour_id === 0) {
-            die('Invalid Tour ID');
-        }
-
-        $tour = $this->tourModel->getById($tour_id);
-        if (!$tour) {
-            die('Tour not found');
-        }
-
-        $itineraries = $this->itineraryModel->getByTourId($tour_id);
-
-        // Nếu layout là 'bare', chỉ render view của form
-        if ($layout === 'bare') {
-            include __DIR__ . '/../views/admin/ChinhSuaItinerary.php';
-        } else {
-            // Render với layout admin đầy đủ
-            $currentPage = 'itinerary';
-            ob_start();
-            include __DIR__ . '/../views/admin/ChinhSuaItinerary.php';
-            $content = ob_get_clean();
-            include __DIR__ . '/../views/admin/admin_layout.php';
-        }
+        include __DIR__ . '/../views/admin/QuanLyLichTrinh/FormLichTrinh.php';
     }
 
     public function save() {
@@ -116,7 +85,7 @@ class ItineraryController {
         }
         
         // Redirect về trang quản lý itinerary
-        header('Location: index.php?controller=itinerary&action=index');
+        header('Location: ' . route('TourItinerary.index'));
         exit;
     }
 }

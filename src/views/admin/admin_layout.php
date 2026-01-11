@@ -20,29 +20,29 @@
     <div class="container-fluid my-4">
         <div class="d-flex gap-4 px-5">
             <?php
-            $currentPage = $currentPage ?? 'tour';
+            $currentPage = $currentPage ?? 'Tour';
             ?>
             <div class="card menu menu-card" style="flex: 0 0 20%;">
                 <div class="card-body p-3">
                     <h5 class="card-title mb-3">Quản lý</h5>
                     <ul class="menu-list">
-                        <li class="menu-item mb-1 <?= $currentPage === 'tour' ? 'active' : '' ?>">
+                        <li class="menu-item mb-1 <?= $currentPage === 'Tour' ? 'active' : '' ?>">
                             <i class="fa-solid fa-map"></i>
-                            <a href="<?= route('tour.index'); ?>" class="text-decoration-none flex-grow-1"
+                            <a href="<?= route('Tour.index'); ?>" class="text-decoration-none flex-grow-1"
                                 style="color: inherit;">
                                 Quản lý tour</a>
                         </li>
-                        <li class="menu-item mb-1 <?= $currentPage === 'itinerary' ? 'active' : '' ?>">
+                        <li class="menu-item mb-1 <?= $currentPage === 'TourItinerary' ? 'active' : '' ?>">
                             <i class="fa-solid fa-route"></i>
-                            <a href="<?= route('itinerary.index'); ?>" class="text-decoration-none flex-grow-1"
+                            <a href="<?= route('TourItinerary.index'); ?>" class="text-decoration-none flex-grow-1"
                                 style="color: inherit;">
                                 Quản lý lịch trình</a>
                         </li>
-                        <li class="menu-item mb-1 <?= $currentPage === 'destination' ? 'active' : '' ?>">
+                        <li class="menu-item mb-1 <?= $currentPage === 'TourDeparture' ? 'active' : '' ?>">
                             <i class="fa-solid fa-location-dot"></i>
-                            <a href="<?= route('destination.index'); ?>" class="text-decoration-none flex-grow-1"
+                            <a href="<?= route('TourDeparture.index'); ?>" class="text-decoration-none flex-grow-1"
                                 style="color: inherit;">
-                                Quản lý điểm đến</a>
+                                Quản lý điểm khởi hành</a>
                         </li>
                         <li class="menu-item mb-1 <?= $currentPage === 'booking' ? 'active' : '' ?>">
                             <i class="fa-solid fa-calendar-check"></i>
@@ -55,6 +55,12 @@
                             <a href="<?= route('service.index'); ?>" class="text-decoration-none flex-grow-1"
                                 style="color: inherit;">
                                 Quản lý dịch vụ</a>
+                        </li>
+                        <li class="menu-item mb-1 <?= $currentPage === 'TourService' ? 'active' : '' ?>">
+                            <i class="fa-solid fa-concierge-bell"></i>
+                            <a href="<?= route('TourService.index'); ?>" class="text-decoration-none flex-grow-1"
+                                style="color: inherit;">
+                                Quản lý dịch vụ tour</a>
                         </li>
                         <li class="menu-item <?= $currentPage === 'user' ? 'active' : '' ?>">
                             <i class="fa-solid fa-users"></i>

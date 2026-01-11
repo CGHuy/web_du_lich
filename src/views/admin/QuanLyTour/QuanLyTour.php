@@ -65,7 +65,7 @@
                 <h5 class="modal-title" id="addTourModalLabel">Thêm Tour Mới</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body pb-0 pt-0">
                 <!-- Nội dung form sẽ được load động -->
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
@@ -86,7 +86,7 @@
                 <h5 class="modal-title" id="editTourModalLabel">Sửa Tour</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body pb-0">
+            <div class="modal-body pb-0 pt-0">
                 <!-- Nội dung form sẽ được load động -->
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
@@ -108,7 +108,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
 
-            <form method="post" action="<?= route('tour.delete') ?>">
+            <form method="post" action="<?= route('Tour.delete') ?>">
                 <input type="hidden" name="id" id="delete_id">
 
                 <div class="modal-body">

@@ -13,41 +13,38 @@ document.addEventListener('DOMContentLoaded', function () {
         const modalBody = itineraryModalEl.querySelector('.modal-body');
 
         if (itineraryModalLabel && modalBody) {
-            // Open modal and load form
-            document.querySelectorAll('.open-itinerary-modal').forEach(button => {
-                button.addEventListener('click', function () {
-                    const tourId = this.dataset.tourId;
-                    const tourName = this.dataset.tourName;
-                    const actionName = this.dataset.actionName;
+            // Load form when Bootstrap modal is shown (use event.relatedTarget)
+            itineraryModalEl.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget; // button that opened the modal
+                if (!button) return;
 
-                    itineraryModalLabel.textContent = `${actionName} Lịch Trình cho Tour: ${tourName}`;
-                    
-                    // Show loading
-                    modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Đang tải...</span></div><p class="mt-2">Đang tải dữ liệu...</p></div>';
-                    
-                    itineraryModal.show();
+                const tourId = button.getAttribute('data-tour-id');
+                const tourName = button.getAttribute('data-tour-name');
+                const actionName = button.getAttribute('data-action-name');
+                const formUrl = button.getAttribute('data-form-url') || `index.php?controller=TourItinerary&action=getForm&tour_id=${tourId}`;
 
-                    // Load form HTML
-                    const formUrl = `index.php?controller=itinerary&action=getForm&tour_id=${tourId}`;
-                    
-                    fetch(formUrl)
-                        .then(response => {
-                            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                            return response.text();
-                        })
-                        .then(html => {
-                            modalBody.innerHTML = html;
-                            initializeItineraryForm();
-                        })
-                        .catch(error => {
-                            modalBody.innerHTML = `
-                                <div class="alert alert-danger" role="alert">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                    <strong>Lỗi!</strong> Không thể tải form: ${error.message}
-                                </div>
-                            `;
-                        });
-                });
+                itineraryModalLabel.textContent = `${actionName} Lịch Trình cho Tour: ${tourName}`;
+
+                // Show loading
+                modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Đang tải...</span></div><p class="mt-2">Đang tải dữ liệu...</p></div>';
+
+                fetch(formUrl)
+                    .then(response => {
+                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                        return response.text();
+                    })
+                    .then(html => {
+                        modalBody.innerHTML = html;
+                        initializeItineraryForm();
+                    })
+                    .catch(error => {
+                        modalBody.innerHTML = `
+                            <div class="alert alert-danger" role="alert">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Lỗi!</strong> Không thể tải form: ${error.message}
+                            </div>
+                        `;
+                    });
             });
 
             // Clear modal on close
@@ -119,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
             addDayBtn.addEventListener('click', addDay);
         }
 
-        // Form submit handler
+        // Form submit handler: update day inputs then allow normal form submit (like QuanLyTour)
         if (itineraryForm) {
             itineraryForm.addEventListener('submit', function() {
                 updateDayInputs();
