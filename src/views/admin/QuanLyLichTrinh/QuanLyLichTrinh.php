@@ -31,10 +31,10 @@
                         <div class="col-md-8">
                             <div class="d-flex align-items-start align-items-center">
                                 <div class="me-3">
-                                    <span class="badge bg-secondary"><?= htmlspecialchars($tour['tour_code']) ?></span>
+                                    <span class="badge bg-secondary find_id"><?= htmlspecialchars($tour['tour_code']) ?></span>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-1"><?= htmlspecialchars($tour['name']) ?></h6>
+                                    <h6 class="mb-1 find_name"><?= htmlspecialchars($tour['name']) ?></h6>
                                     <small class="text-muted">
                                         <i class="fas fa-calendar-alt me-1"></i>
                                         <?php if ($tour['has_itinerary']): ?>

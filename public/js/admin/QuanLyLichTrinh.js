@@ -132,4 +132,29 @@ document.addEventListener('DOMContentLoaded', function () {
             addDay();
         }
     }
+
+    // Tìm kiếm
+    var searchInput = document.querySelector('.search-input');
+    if (searchInput) {
+        searchInput.addEventListener('keyup', function() {
+            var filter = searchInput.value.toLowerCase();
+            var list = document.querySelector('.list-group');
+            var items = list.getElementsByClassName('list-group-item');
+
+            for (var i = 0; i < items.length; i++) {
+                var nameElement = items[i].querySelector('.find_name');
+                var idElement = items[i].querySelector('.find_id');
+
+                var nameText = nameElement ? nameElement.textContent || nameElement.innerText : '';
+                var idText = idElement ? idElement.textContent || idElement.innerText : '';
+
+                if (nameText.toLowerCase().indexOf(filter) > -1 ||
+                    idText.toLowerCase().indexOf(filter) > -1) {
+                    items[i].classList.remove('d-none');
+                } else {
+                    items[i].classList.add('d-none');
+                }
+            }
+        });
+    }
 });

@@ -59,13 +59,6 @@ class TourDeparture
         return $departures;
     }
 
-    public function decreaseSeatsAvailable($departure_id, $quantity)
-    {
-        $stmt = $this->conn->prepare("UPDATE tour_departures SET seats_available = seats_available - ? WHERE id = ? AND
-seats_available >= ?");
-        $stmt->bind_param("iii", $quantity, $departure_id, $quantity);
-        return $stmt->execute();
-    }
     public function __destruct()
     {
         $this->db->close();
