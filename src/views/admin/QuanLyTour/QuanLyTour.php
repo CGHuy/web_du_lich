@@ -1,6 +1,11 @@
 <div class="card-header d-flex justify-content-between align-items-center p-0 px-4">
     <div>
-        <h5 class="card-title">Quản lý Tour</h5>
+        <h5 class="card-title">
+            <i class="fa-solid fa-map me-2"></i>Quản lý Tour
+        </h5>
+    </div>
+    <div class="text-end mb-2">
+        <span class="badge bg-info">Tổng: <?= count($tours) ?> tour</span>
     </div>
 </div>
 <div class="card-body">

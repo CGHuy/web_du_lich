@@ -1,11 +1,19 @@
 <div class="card-header d-flex justify-content-between align-items-center p-0 px-4">
     <div>
         <h5 class="card-title">
-            <i class="fas fa-route me-2"></i>Quản lý Lịch trình Tour
+            <i class="fa-solid fa-route me-2"></i>Quản lý Lịch trình Tour
         </h5>
     </div>
-    <div class="text-end d-flex align-items-top">
-        <span class="badge bg-info">Tổng: <?= count($tours) ?> tour</span>
+    <div class="text-end mb-2">
+        <?php
+        $count = 0;
+        foreach ($tours as $tour) {
+            if ($tour['has_itinerary']) {
+                $count++;
+            }
+        }
+        ?>
+        <span class="badge bg-info">Tổng: <?= $count ?> lịch trình</span>
     </div>
 </div>
 <div class="card-body">

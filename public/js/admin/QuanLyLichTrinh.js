@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
+    
     // Check if Bootstrap is loaded
     if (typeof bootstrap === 'undefined') {
         alert('Bootstrap chưa được load! Kiểm tra lại file bootstrap.js');

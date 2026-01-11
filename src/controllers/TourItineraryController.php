@@ -29,7 +29,6 @@ class TourItineraryController {
         include __DIR__ . '/../views/admin/admin_layout.php';
     }
 
-    // trả về HTML form để load vào modal
     public function getForm() {
         $tour_id = isset($_GET['tour_id']) ? intval($_GET['tour_id']) : 0;
 
@@ -47,7 +46,6 @@ class TourItineraryController {
         // Lấy itineraries từ database
         $itineraries = $this->itineraryModel->getByTourId($tour_id);
 
-        // Include view để render HTML form
         include __DIR__ . '/../views/admin/QuanLyLichTrinh/FormLichTrinh.php';
     }
 
@@ -60,31 +58,25 @@ class TourItineraryController {
         $days = isset($_POST['days']) ? $_POST['days'] : [];
 
         if ($tour_id > 0) {
-            // Xóa itineraries cũ
+            // Xóa lịch trình cũ
             $this->itineraryModel->deleteByTourId($tour_id);
             
             // Thêm itineraries mới
             if (!empty($days)) {
                 foreach ($days as $day) {
-                    $description = isset($day['description']) ? trim($day['description']) : '';
                     $day_number = isset($day['day_number']) ? intval($day['day_number']) : 1;
+                    $description = isset($day['description']) ? trim($day['description']) : '';
                     
                     // Bỏ qua nếu description trống
                     if (empty($description)) {
                         continue;
                     }
                     
-                    // Lưu vào database
-                    $this->itineraryModel->create(
-                        $tour_id,
-                        $day_number,
-                        $description
-                    );
+                    $this->itineraryModel->create($tour_id, $day_number, $description);
                 }
             }
         }
-        
-        // Redirect về trang quản lý itinerary
+ 
         header('Location: ' . route('TourItinerary.index'));
         exit;
     }
