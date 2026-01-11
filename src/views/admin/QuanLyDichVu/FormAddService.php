@@ -1,4 +1,4 @@
-<form method="post" action="?controller=Service&action=create" enctype="multipart/form-data">
+<form method="post" action="<?= route("Service.create") ?>" enctype="multipart/form-data">
     <div class="modal-body">
         <div class="mb-3">
             <label for="name" class="form-label">Tên Dịch vụ <span class="text-danger">*</span></label>
