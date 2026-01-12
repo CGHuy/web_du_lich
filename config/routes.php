@@ -48,5 +48,9 @@ return [
     'user.checkDuplicate' => ['controller' => 'UserController', 'action' => 'checkDuplicate'],
     'user.getAddForm' => ['controller' => 'UserController', 'action' => 'getAddForm'],
     'user.getEditForm' => ['controller' => 'UserController', 'action' => 'getEditForm'],
+    'TourImage.index' => ['controller' => 'TourImageController', 'action' => 'index'],
+    'TourImage.getForm' => ['controller' => 'TourImageController', 'action' => 'getForm'],
+    'TourImage.upload' => ['controller' => 'TourImageController', 'action' => 'upload'],
+    'TourImage.delete' => ['controller' => 'TourImageController', 'action' => 'delete'],
 ];
 ?>

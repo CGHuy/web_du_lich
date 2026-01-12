@@ -31,7 +31,7 @@ class TourImage
     public function create($tour_id, $image)
     {
         $stmt = $this->conn->prepare("INSERT INTO tour_images (tour_id, image) VALUES (?, ?)");
-        $stmt->bind_param("ib", $tour_id, $image);
+        $stmt->bind_param("is", $tour_id, $image);
         return $stmt->execute();
     }
     public function delete($id)

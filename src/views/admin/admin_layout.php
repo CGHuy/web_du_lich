@@ -1,5 +1,3 @@
-<?php include __DIR__ . '/../partials/header.php'; ?>
-
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -17,6 +15,8 @@
 </head>
 
 <body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <?php include __DIR__ . '/../partials/header.php'; ?>
     <div class="container-fluid my-4">
         <div class="d-flex gap-4 px-5">
             <?php
@@ -88,11 +88,8 @@
         </div>
     </div>
 
-    <!-- Load Bootstrap trước -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <?php include __DIR__ . '/../partials/footer.php'; ?>
 
 </body>
-
-<?php include __DIR__ . '/../partials/footer.php'; ?>
 
 </html>
