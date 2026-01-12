@@ -27,7 +27,12 @@
             </div>
             <div class="mb-3">
                 <label for="region" class="form-label">Miền</label>
-                <input type="text" class="form-control" id="region" name="region" required>
+                <select class="form-control" id="region" name="region" required>
+                    <option value="">Chọn miền</option>
+                    <option value="Miền Bắc">Miền Bắc</option>
+                    <option value="Miền Trung">Miền Trung</option>
+                    <option value="Miền Nam">Miền Nam</option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="price_child" class="form-label">Giá Trẻ Em</label>

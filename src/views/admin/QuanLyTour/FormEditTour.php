@@ -26,7 +26,12 @@
             </div>
             <div class="mb-3">
                 <label for="edit_region" class="form-label">Miền</label>
-                <input type="text" class="form-control" id="edit_region" name="edit_region" value="<?= htmlspecialchars($tour['region']) ?>" required>
+                <select class="form-control" id="edit_region" name="edit_region" required>
+                    <option value="">Chọn miền</option>
+                    <option value="Miền Bắc" <?= $tour['region'] == 'Miền Bắc' ? 'selected' : '' ?>>Miền Bắc</option>
+                    <option value="Miền Trung" <?= $tour['region'] == 'Miền Trung' ? 'selected' : '' ?>>Miền Trung</option>
+                    <option value="Miền Nam" <?= $tour['region'] == 'Miền Nam' ? 'selected' : '' ?>>Miền Nam</option>
+                </select>
             </div>
             <div class="mb-3">
                 <label for="edit_price_child" class="form-label">Giá Trẻ Em</label>
