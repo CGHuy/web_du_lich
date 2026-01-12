@@ -3,163 +3,189 @@ function validateBookingForm() {
 	const phone = document.getElementById("contact_phone");
 	const email = document.getElementById("contact_email");
 	const departure = document.getElementById("departure_id");
-	const quantity = document.getElementById("quantity");
-	const bookBtn = document.querySelector(
-		'button[form="booking-form"], button[type="submit"]'
-	);
+	const adults = document.getElementById("adults");
+	const children = document.getElementById("children");
+	const bookBtn = document.querySelector('button[form="booking-form"]');
 
-	// Kiểm tra các trường bắt buộc
-	let valid = true;
-	if (!name || !name.value.trim()) valid = false;
-	if (!phone || !phone.value.trim()) valid = false;
-	if (!email || !email.value.trim()) valid = false;
-	if (!departure || !departure.value) valid = false;
-	if (!quantity || !quantity.value || parseInt(quantity.value) < 1)
-		valid = false;
+	const hasName = name && name.value.trim();
+	const hasPhone = phone && phone.value.trim();
+	const hasEmail = email && email.value.trim();
+	const hasDeparture = departure && departure.value;
+	const adultsCount = parseInt(adults?.value || 0);
+	const childrenCount = parseInt(children?.value || 0);
+	const totalQuantity = adultsCount + childrenCount;
+	const hasQuantity = totalQuantity >= 1;
+
+	const warningAlert = document.getElementById("quantity-warning");
+	const hasWarning = warningAlert && warningAlert.style.display !== "none";
+
+	const valid =
+		hasName &&
+		hasPhone &&
+		hasEmail &&
+		hasDeparture &&
+		hasQuantity &&
+		!hasWarning;
 
 	if (bookBtn) {
+		bookBtn.disabled = !valid;
 		if (valid) {
-			bookBtn.disabled = false;
 			bookBtn.classList.remove("disabled");
-			bookBtn.style.opacity = "";
-			bookBtn.style.pointerEvents = "";
+			bookBtn.style.opacity = "1";
 		} else {
-			bookBtn.disabled = true;
 			bookBtn.classList.add("disabled");
 			bookBtn.style.opacity = "0.6";
-			bookBtn.style.pointerEvents = "none";
 		}
 	}
 }
-// BookingTour.js - Xử lý logic giao diện đặt tour (chọn ngày khởi hành, số lượng người, giá di chuyển)
+
 function formatCurrency(num) {
 	return Number(num).toLocaleString("vi-VN") + "đ";
 }
 
-function updateMovingPrice() {
-	const departureSelect = document.getElementById("departure_id");
-	const quantityInput = document.getElementById("quantity");
-	const movingPriceValue = document.getElementById("moving-price-value");
-	const movingTotalValue = document.getElementById("moving-total-value");
-	const tourMovingTotal = document.getElementById("tour-moving-total");
-
-	if (!departureSelect || !movingPriceValue || !movingTotalValue) return;
-
-	const quantity = parseInt(quantityInput.value) || 1;
-	const selected = departureSelect.options[departureSelect.selectedIndex];
-	const price =
-		selected && selected.dataset.price ? parseInt(selected.dataset.price) : 0;
-
-	movingPriceValue.textContent = price > 0 ? formatCurrency(price) : "0đ";
-	movingTotalValue.textContent =
-		price > 0 ? formatCurrency(price * quantity) : "0đ";
-
-	if (tourMovingTotal) {
-		tourMovingTotal.textContent =
-			price > 0 ? formatCurrency(price * quantity) : "Chưa chọn điểm khởi hành";
-	}
+function getTotalQuantity() {
+	const adults = parseInt(document.getElementById("adults")?.value || 1) || 1;
+	const children =
+		parseInt(document.getElementById("children")?.value || 0) || 0;
+	return adults + children;
 }
 
-function updateQuantityLimit() {
+function checkQuantityWarning() {
 	const departureSelect = document.getElementById("departure_id");
-	const quantityInput = document.getElementById("quantity");
+	const adultsInput = document.getElementById("adults");
+	const childrenInput = document.getElementById("children");
 
-	if (!departureSelect || !quantityInput) return;
+	if (!departureSelect || !adultsInput || !childrenInput) return;
 
 	const selected = departureSelect.options[departureSelect.selectedIndex];
-	const max =
-		selected && selected.dataset.max ? parseInt(selected.dataset.max) : null;
+	const maxSeats = parseInt(selected?.dataset.max || 0);
+	const currentTotal =
+		parseInt(adultsInput.value || 1) + parseInt(childrenInput.value || 0);
 
-	if (max) {
-		quantityInput.max = max;
-		if (parseInt(quantityInput.value) > max) quantityInput.value = max;
-	} else {
-		quantityInput.max = "";
+	let warningAlert = document.getElementById("quantity-warning");
+	const hasOverflow = currentTotal > maxSeats && maxSeats > 0;
+
+	if (!warningAlert && hasOverflow) {
+		warningAlert = document.createElement("div");
+		warningAlert.id = "quantity-warning";
+		warningAlert.className =
+			"alert alert-warning alert-dismissible fade show mt-3";
+		warningAlert.setAttribute("role", "alert");
+		warningAlert.innerHTML = `<strong>Cảnh báo!</strong> <span id="warning-text"></span><button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+		const lastCol = document.querySelector(".col-md-6:last-of-type");
+		lastCol?.parentElement?.parentElement?.insertAdjacentElement(
+			"afterend",
+			warningAlert
+		);
+		warningAlert = document.getElementById("quantity-warning");
+	}
+
+	if (warningAlert) {
+		if (hasOverflow) {
+			document.getElementById(
+				"warning-text"
+			).textContent = `Số lượng người (${currentTotal}) vượt quá số chỗ còn (${maxSeats}). Vui lòng giảm số lượng.`;
+			warningAlert.style.display = "block";
+		} else {
+			warningAlert.style.display = "none";
+		}
+	}
+
+	validateBookingForm();
+}
+
+function updateMovingPrice() {
+	const departureSelect = document.getElementById("departure_id");
+	const totalQuantity = getTotalQuantity();
+	const price = parseInt(
+		departureSelect?.options[departureSelect.selectedIndex]?.dataset.price || 0
+	);
+
+	document.getElementById("moving-price-value").textContent =
+		price > 0 ? formatCurrency(price) : "0đ";
+
+	const totalPrice = price * totalQuantity;
+	document.getElementById("moving-total-value").textContent =
+		price > 0 ? formatCurrency(totalPrice) : "0đ";
+
+	const tourMovingTotal = document.getElementById("tour-moving-total");
+	if (tourMovingTotal) {
+		tourMovingTotal.textContent =
+			price > 0 ? formatCurrency(totalPrice) : "Chưa chọn điểm khởi hành";
 	}
 }
 
 function updateTourCost() {
-	const quantityInput = document.getElementById("quantity");
-	const tourQuantity = document.getElementById("tour-quantity");
-	const tourCost = document.getElementById("tour-cost");
-	const movingTotalValue = document.getElementById("moving-total-value");
-	const tourTotalAmount = document.getElementById("tour-total-amount");
+	const adults = parseInt(document.getElementById("adults")?.value || 1) || 1;
+	const children =
+		parseInt(document.getElementById("children")?.value || 0) || 0;
+	const totalQuantity = adults + children;
 
-	if (
-		!quantityInput ||
-		!tourQuantity ||
-		!tourCost ||
-		!movingTotalValue ||
-		!tourTotalAmount
-	)
-		return;
-
-	const quantity = parseInt(quantityInput.value) || 1;
 	const tourCard = document.querySelector(".tour-info");
-	const pricePerPerson = tourCard
-		? parseInt(tourCard.getAttribute("data-price-per-person"))
-		: 0;
+	const priceAdult = parseInt(
+		tourCard?.getAttribute("data-price-per-person") || 0
+	);
+	const priceChild = parseInt(tourCard?.getAttribute("data-price-child") || 0);
 
-	tourQuantity.textContent = quantity;
+	document.getElementById("tour-quantity").textContent = totalQuantity;
+	document.getElementById("adults-count").textContent = adults;
+	document.getElementById("children-count").textContent = children;
 
-	let tourCostValue = 0;
-	if (pricePerPerson > 0) {
-		tourCostValue = pricePerPerson * quantity;
-		tourCost.textContent = formatCurrency(tourCostValue);
-	}
+	const adultsCost = adults * priceAdult;
+	const childrenCost = children * priceChild;
 
-	// Lấy tổng phí di chuyển (đã format, cần chuyển về số)
-	let movingTotal = 0;
+	document.getElementById("adults-cost").textContent =
+		formatCurrency(adultsCost);
+	document.getElementById("children-cost").textContent =
+		formatCurrency(childrenCost);
+	document.getElementById("tour-cost").textContent = formatCurrency(
+		adultsCost + childrenCost
+	);
+
 	const departureSelect = document.getElementById("departure_id");
-	const selectedDeparture = departureSelect ? departureSelect.value : "";
-	const movingText = movingTotalValue.textContent.replace(/\D/g, "");
-	if (movingText) {
-		movingTotal = parseInt(movingText);
-	}
-
-	// Nếu chưa chọn lịch khởi hành thì báo chưa đủ thông tin
-	if (!selectedDeparture) {
-		tourTotalAmount.textContent = "Chưa chọn đủ thông tin";
+	if (!departureSelect?.value) {
+		document.getElementById("tour-total-amount").textContent =
+			"Chưa chọn đủ thông tin";
 	} else {
-		// Tổng tiền = chi phí tour + tổng phí di chuyển
-		const total = tourCostValue + movingTotal;
-		tourTotalAmount.textContent = formatCurrency(total);
+		const movingText = document
+			.getElementById("moving-total-value")
+			?.textContent.replace(/\D/g, "");
+		const movingTotal = parseInt(movingText || 0);
+		const total = adultsCost + childrenCost + movingTotal;
+		document.getElementById("tour-total-amount").textContent =
+			formatCurrency(total);
 	}
 }
 
 document.addEventListener("DOMContentLoaded", function () {
 	const departureSelect = document.getElementById("departure_id");
-	const quantityInput = document.getElementById("quantity");
-	const nameInput = document.getElementById("contact_name");
-	const phoneInput = document.getElementById("contact_phone");
-	const emailInput = document.getElementById("contact_email");
+	const adultsInput = document.getElementById("adults");
+	const childrenInput = document.getElementById("children");
 
 	if (!departureSelect) return;
 
-	// Cập nhật giá khi chọn lịch khởi hành
 	departureSelect.addEventListener("change", function () {
-		updateQuantityLimit();
+		checkQuantityWarning();
 		updateMovingPrice();
 		updateTourCost();
-		validateBookingForm();
 	});
 
-	// Cập nhật tổng phí khi thay đổi số lượng
-	if (quantityInput) {
-		quantityInput.addEventListener("input", function () {
-			updateQuantityLimit();
-			updateMovingPrice();
-			updateTourCost();
-			validateBookingForm();
-		});
-	}
+	adultsInput?.addEventListener("input", function () {
+		checkQuantityWarning();
+		updateMovingPrice();
+		updateTourCost();
+	});
 
-	// Validate khi nhập các trường liên lạc
-	if (nameInput) nameInput.addEventListener("input", validateBookingForm);
-	if (phoneInput) phoneInput.addEventListener("input", validateBookingForm);
-	if (emailInput) emailInput.addEventListener("input", validateBookingForm);
+	childrenInput?.addEventListener("input", function () {
+		checkQuantityWarning();
+		updateMovingPrice();
+		updateTourCost();
+	});
 
-	// Khởi tạo lần đầu
+	["contact_name", "contact_phone", "contact_email"].forEach((id) => {
+		document.getElementById(id)?.addEventListener("input", validateBookingForm);
+	});
+
 	updateMovingPrice();
 	updateTourCost();
 	validateBookingForm();

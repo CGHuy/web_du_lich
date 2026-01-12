@@ -206,7 +206,13 @@ include __DIR__ . '/../partials/header.php';
                     <span class="fw-bold text-primary self-align-center" style="font-size: 1.4rem;">
                         <?php echo number_format($tour['price_default'], 0, ',', '.') . 'đ'; ?>
                     </span>
-                    <span style="color: #888; font-size: 1rem; opacity: 0.8;">/Người</span>
+                    <span style="color: #888; font-size: 1rem; opacity: 0.8;">/Người Lớn</span>
+                </span>
+                <span class="d-flex align-items-baseline" style="gap: 4px;">
+                    <span class="fw-bold text-primary self-align-center" style="font-size: 1.4rem;">
+                        <?php echo number_format($tour['price_child'], 0, ',', '.') . 'đ'; ?>
+                    </span>
+                    <span style="color: #888; font-size: 1rem; opacity: 0.8;" class="mb-2">/Trẻ Nhỏ</span>
                 </span>
                 <div class="d-flex gap-2">
                     <a href="<?php echo route('BookingTour.index', ['tour_id' => $tour['id']]); ?>"

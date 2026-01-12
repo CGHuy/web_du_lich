@@ -29,7 +29,7 @@ include __DIR__ . '/../partials/header.php';
     <div class="container my-4">
         <div class="row g-4">
             <main class="col-7">
-                <form method="post" action="<?= route('BookingTour.book') ?>" id="booking-form">
+                <form method="post" action="<?= route('BookingTour.payment') ?>" id="booking-form">
                     <input type="hidden" name="tour_id" value="<?php echo htmlspecialchars($tour['id'] ?? ''); ?>">
                     <div class="card mb-4">
                         <div class="card-header">
@@ -65,8 +65,18 @@ include __DIR__ . '/../partials/header.php';
                         </div>
                         <div class="card-body">
                             <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="departure_id" class="form-label fw-bold">Chọn lịch khởi hành</label>
+                                <div class="col-md-12">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <label for="departure_id" class="form-label fw-bold">Chọn lịch khởi hành</label>
+                                        <?php
+                                        $hasAvailable = count(array_filter($departures, function ($dep) {
+                                            return $dep['seats_available'] > 0;
+                                        })) > 0;
+                                        ?>
+                                        <span class="badge <?php echo $hasAvailable ? 'bg-success' : 'bg-danger'; ?>">
+                                            <?php echo $hasAvailable ? '✓ Còn lịch' : '✗ Hết lịch'; ?>
+                                        </span>
+                                    </div>
                                     <select class="form-select" id="departure_id" name="departure_id" required>
                                         <option value="">-- Chọn ngày khởi hành --</option>
                                         <?php foreach ($departures as $dep): ?>
@@ -74,8 +84,7 @@ include __DIR__ . '/../partials/header.php';
                                                 <option value="<?php echo $dep['id']; ?>"
                                                     data-max="<?php echo $dep['seats_available']; ?>"
                                                     data-price="<?php echo $dep['price_moving']; ?>"
-                                                    <?php echo ($dep['seats_available'] == 0 ? 'disabled style=\'color:#ccc;\'' : ''); ?>
-                                                >
+                                                    <?php echo ($dep['seats_available'] == 0 ? 'disabled style=\'color:#ccc;\'' : ''); ?>>
                                                     <?php echo htmlspecialchars($dep['departure_date']) . " - " . htmlspecialchars($dep['departure_location']) . " (Còn " . $dep['seats_available'] . " chỗ)"; ?>
                                                 </option>
                                             <?php endif; ?>
@@ -83,8 +92,12 @@ include __DIR__ . '/../partials/header.php';
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="quantity" class="form-label fw-bold">Số lượng người</label>
-                                    <input type="number" class="form-control" id="quantity" name="quantity" min="1" value="1" required>
+                                    <label for="adults" class="form-label fw-bold">Số lượng người lớn</label>
+                                    <input type="number" class="form-control" id="adults" name="adults" min="1" value="1" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="children" class="form-label fw-bold">Số lượng trẻ em</label>
+                                    <input type="number" class="form-control" id="children" name="children" min="0" value="0" required>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label fw-bold">Đơn giá di chuyển</label>
@@ -104,7 +117,7 @@ include __DIR__ . '/../partials/header.php';
                 </form>
             </main>
             <div class="col-5">
-                <div class="card p-4 tour-info" style="align-self: start; border: none; box-shadow: none;font-family: 'Lexend Deca', sans-serif;" data-price-per-person="<?php echo htmlspecialchars($tour['price_default'] ?? 0); ?>">
+                <div class="card p-4 tour-info" style="align-self: start; border: none; box-shadow: none;font-family: 'Lexend Deca', sans-serif;" data-price-per-person="<?php echo htmlspecialchars($tour['price_default'] ?? 0); ?>" data-price-child="<?php echo htmlspecialchars($tour['price_child'] ?? 0); ?>">
                     <?php if (!empty($tour)): ?>
                         <div class="w-100 d-flex flex-column align-items-center" style="margin:auto;">
                             <div style="width:75%;height:25vh;overflow:hidden;border-radius:12px;margin-left:auto;margin-right:auto;">
@@ -127,14 +140,30 @@ include __DIR__ . '/../partials/header.php';
                                 <div class="fw-bold my-1" style="font-size:1.4rem;line-height:1.3;"><?php echo htmlspecialchars($tour['name']); ?></div>
                                 <div><strong>Mã Tour:</strong> <?php echo htmlspecialchars($tour['tour_code']); ?></div>
                                 <div><strong>Thời lượng:</strong> <?php echo htmlspecialchars($tour['duration']); ?></div>
-                                <div><strong>Đơn giá:</strong> <span class="text-primary fw-bold"><?php echo number_format($tour['price_default'], 0, ',', '.'); ?>đ/Người</span></div>
+                                <div>
+                                    <strong>Đơn giá:</strong>
+                                    <div style="font-size: 1.25rem;">
+                                        <div class="text-primary fw-bold"><?php echo number_format($tour['price_default'], 0, ',', '.'); ?>đ/Người Lớn</div>
+                                        <div class="text-primary fw-bold"><?php echo number_format($tour['price_child'], 0, ',', '.'); ?>đ/Trẻ Em</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <hr>
                         <div class="text-start" style="width:75%;margin-left:auto;margin-right:auto;">
-                            <div class="mb-2"><strong>Số lượng người:</strong> <span id="tour-quantity" class="text-primary fw-bold">1</span></div>
-                            <div class="mb-2"><strong>Chi phí tour:</strong> <span id="tour-cost" class="text-primary fw-bold"><?php echo number_format($tour['price_default'], 0, ',', '.'); ?>đ</span></div>
-                            <div><strong>Tổng phí di chuyển:</strong> <span id="tour-moving-total" class="text-primary fw-bold">Chưa chọn điểm khởi hành</span></div>
+                            <!-- Phần Số lượng -->
+                            <div style="background-color:#f8f9fa;padding:12px;border-radius:8px;margin-bottom:15px;">
+                                <div class="my-2"><strong>Số lượng người:</strong> <span id="tour-quantity" class="text-danger fw-bold" style="font-size:1.1rem;">1</span></div>
+                                <div class="my-2"><strong>Số lượng người lớn:</strong> <span id="adults-count" class="text-primary fw-bold" style="font-size:1rem;">1</span></div>
+                                <div class="my-2"><strong>Số lượng trẻ em:</strong> <span id="children-count" class="text-primary fw-bold" style="font-size:1rem;">0</span></div>
+                            </div>
+                            <!-- Phần Chi phí -->
+                            <div style="background-color:#e7f3ff;padding:12px;border-radius:8px;margin-bottom:15px;border-left:4px solid #0d6efd;">
+                                <div class="my-2"><strong>Chi phí người lớn:</strong> <span id="adults-cost" class="text-primary fw-bold">0đ</span></div>
+                                <div class="my-2"><strong>Chi phí trẻ em:</strong> <span id="children-cost" class="text-primary fw-bold">0đ</span></div>
+                                <div class="my-2"><strong>Chi phí tour:</strong> <span id="tour-cost" class="text-primary fw-bold"><?php echo number_format($tour['price_default'], 0, ',', '.'); ?>đ</span></div>
+                                <div><strong>Tổng phí di chuyển:</strong> <span id="tour-moving-total" class="text-primary fw-bold">Chưa chọn điểm khởi hành</span></div>
+                            </div>
                         </div>
                         <hr>
                         <div class="text-start" style="width:75%;margin-left:auto;margin-right:auto;">

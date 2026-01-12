@@ -32,21 +32,57 @@ class BookingTourController
         if (isset($_GET['tour_id'])) {
             $tour = $this->tourModel->getById($_GET['tour_id']);
             if (!empty($tour['id'])) {
-                $departures = $this->tour_departureModel->getByTourIdForBookingTour($tour['id']);
+                $allDepartures = $this->tour_departureModel->getByTourIdForBookingTour($tour['id']);
+                // Lọc chỉ lấy những tour departure có ngày khởi hành >= ngày hôm nay
+                $today = date('Y-m-d');
+                foreach ($allDepartures as $dep) {
+                    if ($dep['departure_date'] >= $today) {
+                        $departures[] = $dep;
+                    }
+                }
             }
         }
         // Truyền $userInfo sang view
         return include __DIR__ . '/../views/components/BookingTour.php';
     }
 
-    public function book()
+
+    public function payment()
+    {
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
+
+        $departure_id = $_POST['departure_id'];
+        $adults = (int) $_POST['adults'];
+        $children = (int) $_POST['children'];
+        $tour_id = $_POST['tour_id'];
+
+        $tour = $this->tourModel->getById($tour_id);
+        $departure = $this->tour_departureModel->getById($departure_id);
+
+        $adults_cost = $adults * $tour['price_default'];
+        $children_cost = $children * $tour['price_child'];
+        $moving_total = $departure['price_moving'] * ($adults + $children);
+        $total_price = $adults_cost + $children_cost + $moving_total;
+        $total_quantity = $adults + $children;
+
+        $contact_name = $_POST['contact_name'];
+        $contact_phone = $_POST['contact_phone'];
+        $contact_email = $_POST['contact_email'];
+        $note = $_POST['note'];
+
+        return include __DIR__ . '/../views/components/Payment.php';
+    }
+
+    public function confirmPayment()
     {
         if (session_status() === PHP_SESSION_NONE)
             session_start();
 
         $user_id = $_SESSION['user_id'];
         $departure_id = $_POST['departure_id'];
-        $quantity = $_POST['quantity'];
+        $adults = isset($_POST['adults']) ? (int) $_POST['adults'] : 1;
+        $children = isset($_POST['children']) ? (int) $_POST['children'] : 0;
         $contact_name = $_POST['contact_name'];
         $contact_phone = $_POST['contact_phone'];
         $contact_email = $_POST['contact_email'];
@@ -59,26 +95,30 @@ class BookingTourController
             $tour = $this->tourModel->getById($_POST['tour_id']);
         }
         $departure = $this->tour_departureModel->getById($departure_id);
-        $tour_price = $tour['price_default'] ?? 0;
+        $tour_price_adult = $tour['price_default'] ?? 0;
+        $tour_price_child = $tour['price_child'] ?? 0;
         $moving_price = $departure['price_moving'] ?? 0;
-        $total_price = ($tour_price + $moving_price) * $quantity;
+
+        // Tính tổng giá
+        $total_quantity = $adults + $children;
+        $total_price = ($adults * $tour_price_adult + $children * $tour_price_child + $moving_price * $total_quantity);
 
         // Tạo booking
         $this->bookingModel->create(
             $user_id,
             $departure_id,
-            $quantity,
+            $total_quantity,
             $total_price,
-            'unpaid',
-            'pending',
+            'paid',
+            'confirmed',
             $contact_name,
             $contact_phone,
             $contact_email,
             $note
         );
 
-        //Cập nhật departure 
-        $this->tour_departureModel->decreaseSeatsAvailable($departure_id, $quantity);
+        // Cập nhật departure 
+        $this->tour_departureModel->decreaseSeatsAvailable($departure_id, $total_quantity);
 
         // Lưu thông báo thành công và redirect
         $_SESSION['booking_success'] = true;
@@ -86,5 +126,4 @@ class BookingTourController
         header('Location: ' . route('settinguser.bookingHistory'));
         exit;
     }
-
 }
