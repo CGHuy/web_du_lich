@@ -1,22 +1,4 @@
--- Seed dữ liệu thực tế cho dự án đặt tour du lịch
--- File này giả định schema đúng như CauTrucBangSQL.md
--- Gồm: users, services, tours, tour_images, tour_itineraries,
---       tour_departures, tour_services, bookings, wishlist, reviews
-
 USE db_web_du_lich;
-
-SET FOREIGN_KEY_CHECKS = 0;
-TRUNCATE TABLE wishlist;
-TRUNCATE TABLE reviews;
-TRUNCATE TABLE bookings;
-TRUNCATE TABLE tour_services;
-TRUNCATE TABLE tour_departures;
-TRUNCATE TABLE tour_itineraries;
-TRUNCATE TABLE tour_images;
-TRUNCATE TABLE services;
-TRUNCATE TABLE tours;
-TRUNCATE TABLE users;
-SET FOREIGN_KEY_CHECKS = 1;
 
 -- =====================
 -- USERS
@@ -55,50 +37,35 @@ INSERT INTO tours (id, name, slug, description, location, region, duration, pric
  (1, 'Hà Nội - Hạ Long 3N2Đ',
    'ha-noi-ha-long-3n2d',
    'Khởi hành từ Hà Nội, tham quan Vịnh Hạ Long, ngủ tàu, khám phá hang động và thưởng thức hải sản.',
-   'Hà Nội', 'Miền Bắc', '3 ngày 2 đêm', 3500000.00, 2200000.00, 0xffd8ffe0),
+   'Hà Nội', 'Miền Bắc', '3 ngày 2 đêm', 3500000.00, 2200000.00, LOAD_FILE('C:\\AnhTour\\HaLong\\halong1.jpg')),
  (2, 'Hà Nội - Sapa - Fansipan 4N3Đ',
    'ha-noi-sapa-fansipan-4n3d',
    'Khám phá Sapa, trekking bản làng, chinh phục đỉnh Fansipan bằng cáp treo.',
-   'Hà Nội', 'Miền Bắc', '4 ngày 3 đêm', 5200000.00, 3000000.00, 0xffd8ffe0),
+   'Hà Nội', 'Miền Bắc', '4 ngày 3 đêm', 5200000.00, 3000000.00, LOAD_FILE('C:\\AnhTour\\Sapa\\sapa1.jpg')),
  (3, 'Ninh Bình - Tràng An - Tam Cốc 2N1Đ',
    'ninh-binh-trang-an-tam-coc',
    'Thuyền trên sông Tràng An, tham quan Tam Cốc - Bích Động và cố đô Hoa Lư.',
-   'Ninh Bình', 'Miền Bắc', '2 ngày 1 đêm', 1900000.00, 1200000.00, 0xffd8ffe0),
+   'Ninh Bình', 'Miền Bắc', '2 ngày 1 đêm', 1900000.00, 1200000.00, LOAD_FILE('C:\\AnhTour\\NinhBinh\\ninhbinh1.jpg')),
  (4, 'Đà Nẵng - Hội An - Bà Nà 4N3Đ',
    'da-nang-hoi-an-ba-na',
    'Tham quan biển Mỹ Khê, phố cổ Hội An, Bà Nà Hills và Cầu Vàng.',
-   'Đà Nẵng', 'Miền Trung', '4 ngày 3 đêm', 4500000.00, 2600000.00, 0xffd8ffe0),
+   'Đà Nẵng', 'Miền Trung', '4 ngày 3 đêm', 4500000.00, 2600000.00, LOAD_FILE('C:\\AnhTour\\Hoi An\\hoian1.jpg')),
  (5, 'Huế - Động Phong Nha 3N2Đ',
    'hue-dong-phong-nha',
    'Tham quan cố đô Huế, Đại Nội, chùa Thiên Mụ và động Phong Nha.',
-   'Huế', 'Miền Trung', '3 ngày 2 đêm', 4200000.00, 2500000.00, 0xffd8ffe0),
+   'Huế', 'Miền Trung', '3 ngày 2 đêm', 4200000.00, 2500000.00, LOAD_FILE('C:\\AnhTour\\Hue\\hue1.jpeg')),
  (6, 'Đà Lạt - Thành phố ngàn hoa 3N2Đ',
    'da-lat-thanh-pho-ngan-hoa',
    'Không khí se lạnh, vườn hoa, hồ Tuyền Lâm, nông trại dâu, quán cà phê view đồi núi.',
-   'Đà Lạt', 'Miền Nam', '3 ngày 2 đêm', 3300000.00, 2000000.00, 0xffd8ffe0),
+   'Đà Lạt', 'Miền Nam', '3 ngày 2 đêm', 3300000.00, 2000000.00, LOAD_FILE('C:\\AnhTour\\DaLat\\dalat1.jpg')),
  (7, 'Nha Trang - Biển đảo 3N2Đ',
    'nha-trang-bien-dao',
    'Tắm biển, tham quan đảo, lặn ngắm san hô và thưởng thức hải sản.',
-   'Nha Trang', 'Miền Nam', '3 ngày 2 đêm', 3600000.00, 2100000.00, 0xffd8ffe0),
+   'Nha Trang', 'Miền Nam', '3 ngày 2 đêm', 3600000.00, 2100000.00, LOAD_FILE('C:\\AnhTour\\NhaTrang\\NhaTrang1.jpg')),
  (8, 'Phú Quốc - Thiên đường nghỉ dưỡng 4N3Đ',
    'phu-quoc-thien-duong-nghi-duong',
    'Nghỉ dưỡng resort, VinWonders, Safari, câu cá, lặn ngắm san hô.',
-   'Phú Quốc', 'Miền Nam', '4 ngày 3 đêm', 7200000.00, 4200000.00, 0xffd8ffe0);
-
--- =====================
--- TOUR_IMAGES (mỗi tour ít nhất 1 ảnh)
--- =====================
-INSERT INTO tour_images (id, tour_id, image) VALUES
- (1, 1, 0xffd8ffe0),
- (2, 1, 0xffd8ffe0),
- (3, 2, 0xffd8ffe0),
- (4, 3, 0xffd8ffe0),
- (5, 4, 0xffd8ffe0),
- (6, 5, 0xffd8ffe0),
- (7, 6, 0xffd8ffe0),
- (8, 7, 0xffd8ffe0),
- (9, 8, 0xffd8ffe0);
-
+   'Phú Quốc', 'Miền Nam', '4 ngày 3 đêm', 7200000.00, 4200000.00, LOAD_FILE('C:\\AnhTour\\Phu Quoc\\phuquoc1.jpg'));
 -- =====================
 -- TOUR_ITINERARIES (lịch trình rõ ràng cho từng tour)
 -- =====================
@@ -251,14 +218,14 @@ INSERT INTO bookings (
 ) VALUES
  -- Tour 1, departure 1
  (1, 1, 1, 2, 1, 9500000.00, 'paid',    'confirmed', 'Nguyễn Văn An',  '0901000001', 'an.nguyen@example.com',   'Yêu cầu phòng 3 người, gần cửa sổ.'),
- (2, 2, 1, 1, 0, 4300000.00, 'unpaid',  'pending',   'Trần Thị Bình',  '0901000002', 'binh.tran@example.com',   'Sẽ thanh toán trước ngày khởi hành.'),
+(2, 2, 1, 1, 0, 4300000.00, 'paid',    'confirmed', 'Trần Thị Bình',  '0901000002', 'binh.tran@example.com',   'Đã thanh toán, xác nhận đặt chỗ.'),
 
  -- Tour 1, departure 2 (sắp đầy)
  (3, 3, 2, 3, 0, 10800000.00, 'paid',   'confirmed', 'Lê Hoàng Nam',    '0901000003', 'nam.le@example.com',     'Nhóm bạn 3 người.'),
 
  -- Tour 2, departure 4
  (4, 4, 4, 2, 2, 15200000.00, 'paid',   'confirmed', 'Phạm Thu Hà',     '0901000004', 'ha.pham@example.com',    'Gia đình có trẻ nhỏ.'),
- (5, 5, 4, 1, 0, 5200000.00,  'unpaid', 'pending',   'Đỗ Minh Quân',    '0901000005', 'quan.do@example.com',    'Cần hóa đơn công ty.'),
+ (5, 5, 4, 1, 0, 5200000.00,  'paid',   'confirmed', 'Đỗ Minh Quân',    '0901000005', 'quan.do@example.com',    'Đã thanh toán. Cần hóa đơn công ty.'),
 
  -- Tour 2, departure 5 (huỷ, hoàn tiền)
  (6, 6, 5, 2, 0, 10400000.00, 'refunded','cancelled','Hoàng Yến Nhi',   '0901000006', 'nhi.hoang@example.com',  'Khách hủy do công tác đột xuất.'),
@@ -270,25 +237,25 @@ INSERT INTO bookings (
  (8, 8, 9, 2, 1, 11800000.00, 'paid',   'confirmed', 'Bùi Khánh Linh',  '0901000008', 'linh.bui@example.com',   'Phòng có view biển nếu được.'),
 
  -- Tour 4, departure 11 (chờ thanh toán)
- (9, 1,11, 1, 1, 7800000.00,  'unpaid', 'pending',   'Nguyễn Văn An',   '0901000001', 'an.nguyen@example.com',  'Đặt giữ chỗ, chờ xác nhận nghỉ phép.'),
+ (9, 1,11, 1, 1, 7800000.00,  'paid',   'confirmed', 'Nguyễn Văn An',   '0901000001', 'an.nguyen@example.com',  'Đã xác nhận, đã thanh toán.'),
 
  -- Tour 5, departure 12
  (10,2,12, 2, 0, 8400000.00,  'paid',   'confirmed', 'Trần Thị Bình',   '0901000002', 'binh.tran@example.com',  'Muốn ở phòng giường đôi.'),
 
  -- Tour 6, departure 14
  (11,3,14, 2, 0, 6600000.00,  'paid',   'confirmed', 'Lê Hoàng Nam',    '0901000003', 'nam.le@example.com',     'Trăng mật.'),
- (12,4,14, 1, 1, 5200000.00,  'unpaid', 'pending',   'Phạm Thu Hà',     '0901000004', 'ha.pham@example.com',    'Cần phòng có nôi em bé.'),
+ (12,4,14, 1, 1, 5200000.00,  'paid',   'confirmed', 'Phạm Thu Hà',     '0901000004', 'ha.pham@example.com',    'Đã xác nhận, cần phòng có nôi em bé.'),
 
  -- Tour 7, departure 16
  (13,5,16, 3, 1, 16800000.00, 'paid',   'confirmed', 'Đỗ Minh Quân',    '0901000005', 'quan.do@example.com',    'Team building công ty.'),
 
  -- Tour 8, departure 18
  (14,6,18, 2, 0, 14400000.00, 'paid',   'confirmed', 'Hoàng Yến Nhi',   '0901000006', 'nhi.hoang@example.com',  'Kỷ niệm ngày cưới.'),
- (15,7,18, 2, 2, 19600000.00, 'unpaid', 'pending',   'Vũ Thành Long',   '0901000007', 'long.vu@example.com',    'Đang cân nhắc ngày nghỉ.'),
+ (15,7,18, 2, 2, 19600000.00, 'paid',   'confirmed', 'Vũ Thành Long',   '0901000007', 'long.vu@example.com',    'Đã xác nhận và thanh toán.'),
 
  -- Một số booking khách lẻ (gán vào user có sẵn, contact trùng thông tin user)
  (16,1, 8, 2, 0, 3800000.00, 'paid',    'confirmed', 'Nguyễn Văn An',   '0901000001','an.nguyen@example.com','Đặt trực tiếp tại văn phòng.'),
- (17,2,15, 1, 1, 5200000.00, 'unpaid',  'pending',   'Trần Thị Bình',   '0901000002','binh.tran@example.com','Đặt online, chờ thanh toán.'),
+ (17,2,15, 1, 1, 5200000.00, 'paid',    'confirmed',   'Trần Thị Bình',   '0901000002','binh.tran@example.com','Đặt online, đã thanh toán.'),
  (18,3,19, 4, 0, 28800000.00,'paid',    'confirmed', 'Lê Hoàng Nam',    '0901000003','nam.le@example.com','Đoàn incentive 4 người.');
 
 -- =====================
@@ -331,4 +298,70 @@ INSERT INTO reviews (id, user_id, tour_id, rating, comment) VALUES
  (11,1, 4, 5, 'Hội An về đêm rất lung linh, đồ ăn ngon.'),
  (12,2, 6, 4, 'Đà Lạt khá đông nhưng vẫn rất chill.');
 
--- Kết thúc seed dữ liệu
+
+-- Tour 1: Hà Nội - Hạ Long (LOAD_FILE)
+INSERT INTO tour_images (tour_id, image) VALUES
+ (1, LOAD_FILE('C:\\AnhTour\\HaLong\\halong1.jpg')),
+ (1, LOAD_FILE('C:\\AnhTour\\HaLong\\halong2.jpg')),
+ (1, LOAD_FILE('C:\\AnhTour\\HaLong\\halong3.jpg')),
+ (1, LOAD_FILE('C:\\AnhTour\\HaLong\\halong4.jpg')),
+ (1, LOAD_FILE('C:\\AnhTour\\HaLong\\halong5.jpg'));
+
+-- Tour 2: Hà Nội - Sapa (LOAD_FILE)
+INSERT INTO tour_images (tour_id, image) VALUES
+ (2, LOAD_FILE('C:\\AnhTour\\Sapa\\sapa1.jpg')),
+ (2, LOAD_FILE('C:\\AnhTour\\Sapa\\sapa2.jpeg')),
+ (2, LOAD_FILE('C:\\AnhTour\\Sapa\\sapa3.jpg')),
+ (2, LOAD_FILE('C:\\AnhTour\\Sapa\\sapa4.jpg')),
+ (2, LOAD_FILE('C:\\AnhTour\\Sapa\\sapa5.jpg'));
+
+-- Tour 3: Ninh Bình (LOAD_FILE)
+INSERT INTO tour_images (tour_id, image) VALUES
+ (3, LOAD_FILE('C:\\AnhTour\\NinhBinh\\ninhbinh1.jpg')),
+ (3, LOAD_FILE('C:\\AnhTour\\NinhBinh\\ninhbinh2.jpg')),
+ (3, LOAD_FILE('C:\\AnhTour\\NinhBinh\\ninhbinh3.jpg')),
+ (3, LOAD_FILE('C:\\AnhTour\\NinhBinh\\ninhbinh4.jpg')),
+ (3, LOAD_FILE('C:\\AnhTour\\NinhBinh\\ninhbinh5.jpg'));
+
+-- Tour 4: Đà Nẵng - Hội An (LOAD_FILE)
+INSERT INTO tour_images (tour_id, image) VALUES
+ (4, LOAD_FILE('C:\\AnhTour\\Hoi An\\hoian1.jpg')),
+ (4, LOAD_FILE('C:\\AnhTour\\Hoi An\\hoian2.jpg')),
+ (4, LOAD_FILE('C:\\AnhTour\\Hoi An\\hoian3.jpg')),
+ (4, LOAD_FILE('C:\\AnhTour\\Hoi An\\hoian4.jpg')),
+ (4, LOAD_FILE('C:\\AnhTour\\Hoi An\\hoian5.jpg'));
+
+-- Tour 5: Huế (LOAD_FILE)
+INSERT INTO tour_images (tour_id, image) VALUES
+ (5, LOAD_FILE('C:\\AnhTour\\Hue\\hue1.jpeg')),
+ (5, LOAD_FILE('C:\\AnhTour\\Hue\\hue2.jpg')),
+ (5, LOAD_FILE('C:\\AnhTour\\Hue\\hue3.jpg')),
+ (5, LOAD_FILE('C:\\AnhTour\\Hue\\hue4.jpg')),
+ (5, LOAD_FILE('C:\\AnhTour\\Hue\\hue5.jpg'));
+
+-- Tour 6: Đà Lạt (LOAD_FILE)
+INSERT INTO tour_images (tour_id, image) VALUES
+ (6, LOAD_FILE('C:\\AnhTour\\DaLat\\dalat1.jpg')),
+ (6, LOAD_FILE('C:\\AnhTour\\DaLat\\dalat2.jpg')),
+ (6, LOAD_FILE('C:\\AnhTour\\DaLat\\dalat3.jpg')),
+ (6, LOAD_FILE('C:\\AnhTour\\DaLat\\dalat4.jpg')),
+ (6, LOAD_FILE('C:\\AnhTour\\DaLat\\dalat5.jpg'));
+
+-- Tour 7: Nha Trang (LOAD_FILE)
+INSERT INTO tour_images (tour_id, image) VALUES
+ (7, LOAD_FILE('C:\\AnhTour\\NhaTrang\\NhaTrang1.jpg')),
+ (7, LOAD_FILE('C:\\AnhTour\\NhaTrang\\NhaTrang2.jpg')),
+ (7, LOAD_FILE('C:\\AnhTour\\NhaTrang\\NhaTrang3.jpg')),
+ (7, LOAD_FILE('C:\\AnhTour\\NhaTrang\\NhaTrang4.jpg')),
+ (7, LOAD_FILE('C:\\AnhTour\\NhaTrang\\NhaTrang5.jpg'));
+
+-- Tour 8: Phú Quốc (LOAD_FILE)
+INSERT INTO tour_images (tour_id, image) VALUES
+ (8, LOAD_FILE('C:\\AnhTour\\Phu Quoc\\phuquoc1.jpg')),
+ (8, LOAD_FILE('C:\\AnhTour\\Phu Quoc\\phuquoc2.jpg')),
+ (8, LOAD_FILE('C:\\AnhTour\\Phu Quoc\\phuquoc3.jpg')),
+ (8, LOAD_FILE('C:\\AnhTour\\Phu Quoc\\phuquoc4.jpg')),
+ (8, LOAD_FILE('C:\\AnhTour\\Phu Quoc\\phuquoc5.jpg'));
+
+
+
