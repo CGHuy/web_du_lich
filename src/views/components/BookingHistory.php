@@ -86,7 +86,7 @@ include __DIR__ . '/../partials/header.php';
                                                     <td>
                                                         <?php
                                                         $statusBadge = [
-                                                            'pending' => '<span class="badge bg-warning">Chờ xác nhận</span>',
+                                                            'pending_cancellation' => '<span class="badge bg-warning">Yêu cầu hủy</span>',
                                                             'confirmed' => '<span class="badge bg-success">Đã xác nhận</span>',
                                                             'cancelled' => '<span class="badge bg-danger">Đã hủy</span>'
                                                         ];

@@ -12,6 +12,7 @@ return [
     'settinguser.bookingHistory' => ['controller' => 'SettingUserController', 'action' => 'bookingHistory'],
     'settinguser.updateBookingHistory' => ['controller' => 'SettingUserController', 'action' => 'updateBookingHistory'],
     'settinguser.detailBookingHistory' => ['controller' => 'SettingUserController', 'action' => 'detailBookingHistory'],
+    'settinguser.requestCancelBooking' => ['controller' => 'SettingUserController', 'action' => 'requestCancelBooking'],
     'settinguser.favoriteTour' => ['controller' => 'SettingUserController', 'action' => 'favoriteTour'],
     'settinguser.updateFavoriteTour' => ['controller' => 'SettingUserController', 'action' => 'updateFavoriteTour'],
     'user.index' => ['controller' => 'UserController', 'action' => 'index'],

@@ -93,7 +93,7 @@ include __DIR__ . '/../partials/header.php';
                                 </tr>
 
                                 <tr class="detail-payment-header">
-                                    <th rowspan="4">
+                                    <th rowspan="5">
                                         <h6 style="color: #1a75c4ff;">THÔNG TIN THANH TOÁN</h6>
                                     </th>
 
@@ -109,7 +109,7 @@ include __DIR__ . '/../partials/header.php';
                                     <td>
                                         <?php
                                         $statusBadge = [
-                                            'pending' => '<span class="badge bg-warning">Chờ xác nhận</span>',
+                                            'pending_cancellation' => '<span class="badge bg-warning">Yêu cầu hủy</span>',
                                             'confirmed' => '<span class="badge bg-success">Đã xác nhận</span>',
                                             'cancelled' => '<span class="badge bg-danger">Đã hủy</span>'
                                         ];
@@ -117,6 +117,7 @@ include __DIR__ . '/../partials/header.php';
                                         ?>
                                     </td>
                                 </tr>
+
                                 <tr>
                                     <td class="detail-booking-title">Trạng thái thanh toán</td>
                                     <td>
@@ -128,6 +129,20 @@ include __DIR__ . '/../partials/header.php';
                                         ];
                                         echo $statusBadge[$bookingDetail['payment_status']] ?? $bookingDetail['payment_status'];
                                         ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-booking-title">Hành động</td>
+                                    <td>
+                                        <?php if (($bookingDetail['booking_status'] ?? '') === 'confirmed'): ?>
+                                            <form method="post" action="<?= route('settinguser.requestCancelBooking'); ?>"
+                                                onsubmit="return confirm('Bạn chắc chắn muốn yêu cầu hủy booking này?');">
+                                                <input type="hidden" name="id" value="<?= (int) $bookingDetail['id']; ?>">
+                                                <button type="submit" class="btn btn-outline-danger btn-sm">Yêu cầu hủy</button>
+                                            </form>
+                                        <?php else: ?>
+                                            <span class="text-muted">Không có hành động khả dụng</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endif; ?>

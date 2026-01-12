@@ -24,7 +24,7 @@ class BookingHistoryService
                 b.booking_code,
                 b.user_id,
                 b.departure_id,
-                b.quantity,
+                (b.adults + b.children) AS quantity,
                 b.total_price,
                 b.payment_status,
                 b.status as booking_status,
@@ -62,7 +62,7 @@ class BookingHistoryService
         $params = [$userId];
 
         // Nếu $status có giá trị và nằm trong ds trạng thái hợp lệ thì thêm điều kiện lọc
-        if ($status && in_array($status, ['pending', 'confirmed', 'cancelled'])) {
+        if ($status && in_array($status, ['pending_cancellation', 'confirmed', 'cancelled'])) {
             $query .= " AND b.status = ?"; // thêm điều kiện lọc theo trạng thái
             $types .= 's'; // kiểu string cho tham số $status
             $params[] = $status; // thêm giá trị $status vào mảng tham số truyền vào truy vấn 
@@ -107,7 +107,7 @@ class BookingHistoryService
                 b.booking_code,
                 b.user_id,
                 b.departure_id,
-                b.quantity,
+                (b.adults + b.children) AS quantity,
                 b.total_price,
                 b.payment_status,
                 b.status as booking_status,
@@ -160,7 +160,7 @@ class BookingHistoryService
                 b.booking_code,
                 b.user_id,
                 b.departure_id,
-                b.quantity,
+                (b.adults + b.children) AS quantity,
                 b.total_price,
                 b.payment_status,
                 b.status as booking_status,
@@ -227,7 +227,7 @@ class BookingHistoryService
         $types = 'i';
         $params = [$userId];
 
-        if ($status && in_array($status, ['pending', 'confirmed', 'cancelled'])) {
+        if ($status && in_array($status, ['pending_cancellation', 'confirmed', 'cancelled'])) {
             $query .= " AND status = ?";
             $types .= 's';
             $params[] = $status;

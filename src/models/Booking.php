@@ -52,7 +52,8 @@ class Booking
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-        if (!$row) return 0;
+        if (!$row)
+            return 0;
         $adult_price = ($row['price_default'] + $row['price_moving']) * $adults;
         $child_price = ($row['price_child'] + $row['price_moving_child']) * $children;
         return $adult_price + $child_price;
@@ -61,6 +62,12 @@ class Booking
     {
         $stmt = $this->conn->prepare("DELETE FROM bookings WHERE id = ?");
         $stmt->bind_param("i", $id);
+        return $stmt->execute();
+    }
+    public function updateStatus($id, $status)
+    {
+        $stmt = $this->conn->prepare("UPDATE bookings SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $status, $id);
         return $stmt->execute();
     }
     public function __destruct()

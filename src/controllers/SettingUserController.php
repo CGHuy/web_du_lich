@@ -125,7 +125,7 @@ class SettingUserController
         $status = $_REQUEST['sort'] ?? null; // 'status-warning', 'status-success', 'status-danger'
         // Map giá trị từ combobox sang status DB
         $statusMap = [
-            'status-warning' => 'pending',
+            'status-warning' => 'pending_cancellation',
             'status-success' => 'confirmed',
             'status-danger' => 'cancelled'
         ];
@@ -188,6 +188,43 @@ class SettingUserController
         }
 
         include __DIR__ . '/../views/components/DetailBookingHistory.php';
+    }
+
+    // Yêu cầu hủy booking (chuyển trạng thái từ confirmed -> pending_cancellation)
+    public function requestCancelBooking()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . route('settinguser.bookingHistory'));
+            return;
+        }
+        $bookingId = isset($_POST['id']) ? (int) $_POST['id'] : null;
+        if (!$bookingId) {
+            http_response_code(400);
+            echo "Thiếu mã booking";
+            return;
+        }
+
+        $bookingDetail = $this->bookingHistoryModel->getById($bookingId);
+        if (!$bookingDetail || (int) $bookingDetail['user_id'] !== (int) $this->userId) {
+            http_response_code(404);
+            echo "Booking không tồn tại hoặc không thuộc về bạn";
+            return;
+        }
+        if (($bookingDetail['booking_status'] ?? '') !== 'confirmed') {
+            http_response_code(400);
+            echo "Chỉ có thể yêu cầu hủy với booking đã xác nhận";
+            return;
+        }
+
+        require_once __DIR__ . '/../models/Booking.php';
+        $bookingModel = new Booking();
+        $bookingModel->updateStatus($bookingId, 'pending_cancellation');
+
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
+        $_SESSION['booking_success'] = true;
+        $_SESSION['booking_message'] = 'Đã gửi yêu cầu hủy booking.';
+        header('Location: ' . route('settinguser.detailBookingHistory', ['id' => $bookingId]));
     }
 
     //=================== Tour yêu thích ===================//
