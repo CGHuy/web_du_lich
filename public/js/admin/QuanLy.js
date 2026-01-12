@@ -1,25 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-     // Modal xem
-     var viewModal = document.getElementById('viewTourModal');
-     if (viewModal) {
-          viewModal.addEventListener('show.bs.modal', function (event) {
-               var button = event.relatedTarget;
-               var id = button.getAttribute('data-id');
-               var modalBody = viewModal.querySelector('.modal-body');
-               modalBody.innerHTML = '<p>Đang tải chi tiết tour...</p>';
-               // Có thể dùng AJAX để lấy dữ liệu tour và hiển thị
-          });
-     }
-
      // Modal thêm
-     var addModal = document.getElementById('addTourModal');
+     var addModal = document.getElementById('addServiceModal');
      if (addModal) {
           addModal.addEventListener('show.bs.modal', function () {
                var modalBody = addModal.querySelector('.modal-body');
                modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Đang tải form...</p></div>';
-               
-               fetch('index.php?controller=tour&action=getAddForm')
+
+               fetch('index.php?controller=Service&action=getAddForm')
                     .then(response => response.text())
                     .then(html => {
                          modalBody.innerHTML = html;
@@ -31,15 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
      }
 
      // Modal sửa
-     var editModal = document.getElementById('editTourModal');
+     var editModal = document.getElementById('editServiceModal');
      if (editModal) {
           editModal.addEventListener('show.bs.modal', function (event) {
                var button = event.relatedTarget;
                var id = button.getAttribute('data-id');
                var modalBody = editModal.querySelector('.modal-body');
                modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div><p class="mt-2">Đang tải form...</p></div>';
-               
-               fetch('index.php?controller=tour&action=getEditForm&id=' + id)
+
+               fetch('index.php?controller=Service&action=getEditForm&id=' + id)
                     .then(response => response.text())
                     .then(html => {
                          modalBody.innerHTML = html;
@@ -51,15 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
      }
 
      // Modal xóa
-     var deleteModal = document.getElementById('deleteTourModal');
+     var deleteModal = document.getElementById('deleteServiceModal');
      if (deleteModal) {
           deleteModal.addEventListener('show.bs.modal', function (event) {
                var button = event.relatedTarget;
                var id = button.getAttribute('data-id');
                var name = button.getAttribute('data-name');
 
-               document.getElementById('delete_id').value = id;
-               document.getElementById('delete_name').innerText = name;
+               document.getElementById('delete_service_id').value = id;
+               document.getElementById('delete_service_name').innerText = name;
           });
      }
 
@@ -68,24 +56,19 @@ document.addEventListener('DOMContentLoaded', function() {
      if (searchInput) {
           searchInput.addEventListener('keyup', function() {
                var filter = searchInput.value.toLowerCase();
-               var list = document.querySelector('.list-group');
-               var items = list.getElementsByClassName('list-group-item');
+               var rows = document.querySelectorAll('tbody tr');
 
-               for (var i = 0; i < items.length; i++) {
-                    var nameElement = items[i].querySelector('.find_name');
-                    var idElement = items[i].querySelector('.find_id');
-                    var locationElement = items[i].querySelector('.find_location');
-
-                    var nameText = nameElement ? nameElement.textContent || nameElement.innerText : '';
-                    var idText = idElement ? idElement.textContent || idElement.innerText : '';
-                    var locationText = locationElement ? locationElement.textContent || locationElement.innerText : '';
-
-                    if (nameText.toLowerCase().indexOf(filter) > -1 || idText.toLowerCase().indexOf(filter) > -1 || locationText.toLowerCase().indexOf(filter) > -1) {
-                         items[i].classList.remove('d-none');
+               for (var i = 0; i < rows.length; i++) {
+                    var idText = rows[i].cells[0].textContent.toLowerCase();
+                    var nameText = rows[i].cells[1].textContent.toLowerCase();
+                    
+                    if (idText.indexOf(filter) > -1 || nameText.indexOf(filter) > -1) {
+                         rows[i].style.display = '';
                     } else {
-                         items[i].classList.add('d-none');
+                         rows[i].style.display = 'none';
                     }
                }
           });
      }
+
 });

@@ -28,15 +28,21 @@
                                 <small class="text-muted find_id">ID: <?= htmlspecialchars($tour['tour_code']) ?></small>
                             </div>
                             <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-sm btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#viewTourModal"
+                                <a href="#" class="btn btn-sm btn-outline-secondary" 
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#viewTourModal"
                                     data-id="<?= $tour['id'] ?>">
                                     <i class="fa-solid fa-eye me-1"></i> Xem
                                 </a>
-                                <a href="#" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#editTourModal" 
+                                <a href="#" class="btn btn-sm btn-outline-primary" 
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editTourModal"
                                     data-id="<?= $tour['id'] ?>">
                                     <i class="fa-solid fa-pen-to-square me-1"></i> Sửa
                                 </a>
-                                <a href="#" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteTourModal"
+                                <a href="#" class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteTourModal"
                                     data-id="<?= $tour['id'] ?>"
                                     data-name="<?= htmlspecialchars($tour['name']) ?>">   
                                     <i class="fa-solid fa-trash me-1"></i> Xóa

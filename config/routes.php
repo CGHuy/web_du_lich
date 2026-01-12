@@ -28,5 +28,13 @@ return [
     'BookingAdmin.index' => ['controller' => 'BookingAdminController', 'action' => 'index'],
     'BookingAdmin.detail' => ['controller' => 'BookingAdminController', 'action' => 'detail'],
     'Service.index' => ['controller' => 'ServiceController', 'action' => 'index'],
+    'Service.create' => ['controller' => 'ServiceController', 'action' => 'create'],
+    'Service.update' => ['controller' => 'ServiceController', 'action' => 'update'],
+    'Service.delete' => ['controller' => 'ServiceController', 'action' => 'delete'],
+    'Service.getAddForm' => ['controller' => 'ServiceController', 'action' => 'getAddForm'],
+    'Service.getEditForm' => ['controller' => 'ServiceController', 'action' => 'getEditForm'],
+    'TourService.index' => ['controller' => 'TourServiceController', 'action' => 'index'],
+    'TourService.getForm' => ['controller' => 'TourServiceController', 'action' => 'getForm'],
+    'TourService.save' => ['controller' => 'TourServiceController', 'action' => 'save'],
 ];
 ?>

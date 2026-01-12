@@ -57,7 +57,7 @@
                                 Quản lý dịch vụ</a>
                         </li>
                         <li class="menu-item mb-1 <?= $currentPage === 'TourService' ? 'active' : '' ?>">
-                            <i class="fa-solid fa-concierge-bell"></i>
+                            <i class="fa-solid fa-list"></i>
                             <a href="<?= route('TourService.index'); ?>" class="text-decoration-none flex-grow-1"
                                 style="color: inherit;">
                                 Quản lý dịch vụ tour</a>

@@ -9,7 +9,13 @@ class ServiceController {
     }
 
     public function index() {
+        $keyword = $_GET['keyword'] ?? '';
+
+    if ($keyword !== '') {
+        $services = $this->model->search($keyword);
+    } else {
         $services = $this->model->getAll();
+    }
         $currentPage = 'Service';
         ob_start();
         include __DIR__ . '/../views/admin/QuanLyDichVu/QuanLyService.php';
@@ -18,53 +24,49 @@ class ServiceController {
     }
 
     public function create() {
-        // Add is handled via modal on index page; redirect to index
-        header('Location: ?controller=Service&action=index');
-        exit;
-    }
-
-    public function store() {
-        $name = trim($_POST['name'] ?? '');
-        $slug = trim($_POST['slug'] ?? '');
-        $description = trim($_POST['description'] ?? '');
-        $status = (int)($_POST['status'] ?? 0);
-
-        // handle upload
-    $this->model->create($name, $slug, $description, $status);
-
-
-               header('Location: ?controller=Service&action=index');
-    }
-
-    public function edit() {
-        // Edit is handled via modal on index page; redirect to index
-        header('Location: ?controller=Service&action=index');
-        exit;
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $name = $_POST['name'];
+            $slug = $_POST['slug'];
+            $description = $_POST['description'];
+            $status = (int)$_POST['status'];
+            $this->model->create($name, $slug, $description, $status);
+            header('Location: ?controller=Service&action=index');
+        }
     }
 
     public function update() {
-        $id = (int)($_GET['id'] ?? 0);
-        $service = $this->model->getById($id);
-        if (!$service) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $id = $_POST['id'];
+            $name = $_POST['name'];
+            $slug = $_POST['slug'];
+            $description = $_POST['description'];
+            $status = (int)$_POST['status'];
+            $this->model->update($id, $name, $slug, $description, $status);
             header('Location: ?controller=Service&action=index');
-            exit;
         }
-
-        $name = trim($_POST['name'] ?? '');
-        $slug = trim($_POST['slug'] ?? '');
-        $description = trim($_POST['description'] ?? '');
-        $status = (int)($_POST['status'] ?? 0);
-
-        // handle upload
-   $this->model->update($id, $name, $slug, $description, $status);
-        header('Location: ?controller=Service&action=index');
     }
 
     public function delete() {
-        $id = (int)($_GET['id'] ?? 0);
-        if ($id) {
-            $this->model->delete($id);
-        }
+        $id = $_POST['id'];
+        $this->model->delete($id);
         header('Location: ?controller=Service&action=index');
+    }
+
+    public function getAddForm() {
+        include __DIR__ . '/../views/admin/QuanLyDichVu/FormAddService.php';
+    }
+
+    public function getEditForm() {
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            echo "ID dịch vụ không hợp lệ.";
+            return;
+        }
+        $service = $this->model->getById($id);
+        if (!$service) {
+            echo "Dịch vụ không tồn tại.";
+            return;
+        }
+        include __DIR__ . '/../views/admin/QuanLyDichVu/FormEditService.php';
     }
 }

@@ -1,16 +1,18 @@
 <div class="card-header d-flex justify-content-between align-items-center p-0 px-4">
     <div>
-        <h5 class="card-title">Quản lý Dịch vụ</h5>
+        <h5 class="card-title">
+            <i class="fa-solid fa-concierge-bell me-2"></i>Quản lý Dịch vụ
+        </h5>
     </div>
 </div>
 <div class="card-body">
-    <div class="input-group search-group mb-3">
+   <div class="input-group search-group mb-3">
         <span class="input-group-text search-icon">
             <i class="fa-solid fa-magnifying-glass fa-sm"></i>
         </span>
         <input class="form-control search-input" placeholder="Tìm kiếm dịch vụ theo id, tên..." value="" aria-label="Tìm kiếm" />
     </div>
-    <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#serviceModal">Thêm Dịch vụ Mới</a>
+    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addServiceModal">Thêm Dịch vụ Mới</button>
     <div class="table-responsive">
         <table class="table table-striped">
             <thead>
@@ -26,8 +28,8 @@
                 <?php if (!empty($services)): ?>
                     <?php foreach ($services as $service): ?>
                         <tr>
-                            <td><?= htmlspecialchars($service['service_code'] ?? '') ?></td>
-                            <td><?= htmlspecialchars($service['name']) ?></td>
+                            <td class="find_id"><?= htmlspecialchars($service['service_code'] ?? '') ?></td>
+                            <td class="find_name"><?= htmlspecialchars($service['name']) ?></td>
                             <?php
                                 $desc = $service['description'] ?? '';
                                 $short = mb_substr($desc, 0, 50);
@@ -45,17 +47,19 @@
                             <?php endif; ?>
                             </td>
                             <td>
-                                <button type="button"
-                                    class="btn btn-sm btn-outline-primary btn-edit-service"
-                                    data-id="<?= htmlspecialchars($service['id']) ?>"
-                                    data-name="<?= htmlspecialchars($service['name']) ?>"
-                                    data-slug="<?= htmlspecialchars($service['slug'] ?? '') ?>"
-                                    data-service_code="<?= htmlspecialchars($service['service_code'] ?? '') ?>"
-                                    data-description="<?= htmlspecialchars($service['description'] ?? '') ?>"
-                                    data-icon="<?= htmlspecialchars($service['icon'] ?? '') ?>"
-                                    data-status="<?= ($service['status'] ?? 0) ?>"
-                                >Sửa</button>
-                                <a href="?controller=Service&action=delete&id=<?= htmlspecialchars($service['id']) ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('Xác nhận xóa dịch vụ này?')">Xóa</a>
+                                <button type="button" class="btn btn-sm btn-outline-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editServiceModal"
+                                    data-id="<?= $service['id'] ?>">
+                                    <i class="fa-solid fa-pen-to-square me-1"></i> Sửa
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteServiceModal"
+                                    data-id="<?= $service['id'] ?>"
+                                    data-name="<?= htmlspecialchars($service['name']) ?>">
+                                    <i class="fa-solid fa-trash me-1"></i> Xóa
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -69,61 +73,74 @@
     </div>
 </div>
 
-<!-- Modal thêm dịch vụ-->
-<div class="modal fade" id="serviceModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="serviceModalTitle">Thêm Dịch vụ</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <?php
-          $action = '?controller=Service&action=store';
-          $service = null;
-          $errors = [];
-          include __DIR__ . '/FormService.php';
-        ?>
-      </div>
+<!-- Modal Thêm Dịch vụ -->
+<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addServiceModalLabel">Thêm Dịch vụ Mới</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pb-0 pt-0">
+                <!-- Nội dung form sẽ được load động -->
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Đang tải form...</p>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  const modal = document.getElementById('serviceModal');
-  const modalTitle = document.getElementById('serviceModalTitle');
-  const form = modal.querySelector('form');
 
-  document.querySelectorAll('.btn-edit-service').forEach(btn => {
-    btn.addEventListener('click', function(){
-      const id = this.dataset.id;
-      const name = this.dataset.name || '';
-      const slug = this.dataset.slug || '';
-      const description = this.dataset.description || '';
-      const serviceCode = this.dataset.service_code || '';
-      const status = this.dataset.status == '1';
+<!-- Modal Sửa Dịch vụ -->
+<div class="modal fade" id="editServiceModal" tabindex="-1" aria-labelledby="editServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editServiceModalLabel">Sửa Dịch vụ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pb-0 pt-0">
+                <!-- Nội dung form sẽ được load động -->
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Đang tải form...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-      modalTitle.textContent = 'Sửa Dịch vụ';
-      form.action = '?controller=Service&action=update&id=' + id;
+<!-- Modal Xóa Dịch vụ -->
+<div class="modal fade" id="deleteServiceModal" tabindex="-1" aria-labelledby="deleteServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title text-white" id="deleteServiceModalLabel">Xác nhận xóa dịch vụ</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
 
-      form.querySelector('[name="name"]').value = name;
-      form.querySelector('[name="slug"]').value = slug;
-      form.querySelector('[name="description"]').value = description;
-      form.querySelector('#service-status').checked = status;
+            <form method="post" action="?controller=Service&action=delete">
+                <input type="hidden" name="id" id="delete_service_id">
 
-      if (serviceCode) {
-        const scField = form.querySelector('.service-code-display');
-        if (scField) scField.value = serviceCode;
-      }
+                <div class="modal-body">
+                    <p class="m-0 p-2">Bạn có chắc chắn muốn xóa dịch vụ:</p>
+                    <strong id="delete_service_name" class="p-2"></strong>
+                    <p class="text-danger m-0 p-2"><strong>Hành động này không thể hoàn tác.</strong></p>
+                </div>
 
-      new bootstrap.Modal(modal).show();
-    });
-  });
+                <div class="modal-footer pb-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-  modal.addEventListener('hidden.bs.modal', function(){
-    modalTitle.textContent = 'Thêm Dịch vụ';
-    form.action = '?controller=Service&action=store';
-    form.reset();
-  });
-});
-</script>
+<script src="/web_du_lich/public/js/admin/QuanLy.js"></script>
+
