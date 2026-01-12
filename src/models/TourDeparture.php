@@ -11,12 +11,24 @@ class TourDeparture
     }
     public function getAll()
     {
-        $sql = "SELECT * FROM tour_departures";
+        $sql = "SELECT td.*, t.name AS tour_name FROM tour_departures td JOIN tours t ON td.tour_id = t.id";
         $result = $this->conn->query($sql);
         $departures = [];
-        if ($result)
-            while ($row = $result->fetch_assoc())
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                // Kiểm tra và cập nhật status nếu đã quá thời gian khởi hành
+                if ($row['status'] != 'closed' && strtotime($row['departure_date']) < time()) {
+                    $this->updateStatus($row['id'], 'closed');
+                    $row['status'] = 'closed';
+                }
+                // Kiểm tra và cập nhật status nếu hết chỗ
+                elseif ($row['seats_available'] == 0 && $row['status'] != 'full') {
+                    $this->updateStatus($row['id'], 'full');
+                    $row['status'] = 'full';
+                }
                 $departures[] = $row;
+            }
+        }
         return $departures;
     }
     public function getById($id)
@@ -57,6 +69,13 @@ class TourDeparture
             $departures[] = $row;
         }
         return $departures;
+    }
+
+    public function updateStatus($id, $status)
+    {
+        $stmt = $this->conn->prepare("UPDATE tour_departures SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $status, $id);
+        return $stmt->execute();
     }
 
     public function __destruct()

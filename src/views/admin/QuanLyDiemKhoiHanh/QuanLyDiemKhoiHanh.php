@@ -1,7 +1,7 @@
 <div class="card-header d-flex justify-content-between align-items-center p-0 px-4">
     <div>
         <h5 class="card-title">
-            <i class="fa-solid fa-plane-departure me-2"></i>Quản lý Điểm Khởi Hành
+            <i class="fa-solid fa-location-dot me-2"></i>Quản lý Điểm Khởi Hành
         </h5>
     </div>
     <div class="text-end mb-2">
@@ -13,7 +13,7 @@
         <span class="input-group-text search-icon">
             <i class="fa-solid fa-magnifying-glass fa-sm"></i>
         </span>
-        <input class="form-control search-input" id="searchTourDeparture" placeholder="Tìm kiếm điểm khởi hành theo id, tên, địa điểm..." value="" aria-label="Tìm kiếm" />
+        <input class="form-control search-input" id="searchTourDeparture" placeholder="Tìm kiếm điểm khởi hành theo mã, tên tour, địa điểm..." value="" aria-label="Tìm kiếm" />
     </div>
     <button class="btn btn-primary mb-3" id="addTourDepartureBtn">Thêm Điểm Khởi Hành Mới</button>
     <div class="list-group">
@@ -23,8 +23,26 @@
                     <div class="flex-grow-1">
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
-                                <h5 class="mb-1 fw-bold find_name"><?= htmlspecialchars($departure['departure_code']) ?></h5>
-                                <small class="text-muted find_id">ID: <?= htmlspecialchars($departure['id']) ?></small>
+                                <h5 class="mb-1 fw-bold find_name">
+                                    <?= htmlspecialchars($departure['tour_name']) ?>
+                                    <?php
+                                    $status = $departure['status'];
+                                    $badgeClass = '';
+                                    $badgeText = '';
+                                    if ($status == 'open') {
+                                        $badgeClass = 'bg-success';
+                                        $badgeText = 'Mở';
+                                    } elseif ($status == 'closed') {
+                                        $badgeClass = 'bg-danger';
+                                        $badgeText = 'Đóng';
+                                    } elseif ($status == 'full') {
+                                        $badgeClass = 'bg-warning';
+                                        $badgeText = 'Đầy';
+                                    }
+                                    ?>
+                                    <span class="badge <?= $badgeClass ?> ms-2"><?= $badgeText ?></span>
+                                </h5>
+                                <small class="text-muted find_id">Mã: <?= htmlspecialchars($departure['departure_code']) ?></small>
                             </div>
                             <div class="d-flex gap-2">
                                 <button class="btn btn-sm btn-outline-primary edit-tour-departure-btn"
@@ -33,7 +51,7 @@
                                 </button>
                                 <button class="btn btn-sm btn-outline-danger delete-tour-departure-btn"
                                     data-id="<?= $departure['id'] ?>"
-                                    data-name="<?= htmlspecialchars($departure['departure_code']) ?>">
+                                    data-name="<?= htmlspecialchars($departure['tour_name']) ?>">
                                     <i class="fa-solid fa-trash me-1"></i> Xóa
                                 </button>
                             </div>
@@ -54,6 +72,16 @@
                                 <i class="fa-solid fa-tag me-2"></i>
                                 <strong class="me-1">Giá:</strong>
                                 <span><?= number_format($departure['price_moving']) ?> VNĐ</span>
+                            </span>
+                            <span class="d-flex align-items-center">
+                                <i class="fa-solid fa-child me-2"></i>
+                                <strong class="me-1">Giá trẻ em:</strong>
+                                <span><?= number_format($departure['price_moving_child']) ?> VNĐ</span>
+                            </span>
+                             <span class="d-flex align-items-center">
+                                <i class="fa-solid fa-users me-2"></i>
+                                <strong class="me-1">Chỗ ngồi:</strong>
+                                <span><?= htmlspecialchars($departure['seats_available']) ?>/<?= htmlspecialchars($departure['seats_total']) ?></span>
                             </span>
                         </div>
                     </div>
