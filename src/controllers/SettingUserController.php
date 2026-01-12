@@ -197,7 +197,7 @@ class SettingUserController
             header('Location: ' . route('settinguser.bookingHistory'));
             return;
         }
-        $bookingId = isset($_POST['id']) ? (int) $_POST['id'] : null;
+        $bookingId = isset($_POST['cancel_id']) ? (int) $_POST['cancel_id'] : null;
         if (!$bookingId) {
             http_response_code(400);
             echo "Thiếu mã booking";

@@ -63,14 +63,17 @@ class BookingTourController
         $moving_price = $departure['price_moving'] ?? 0;
         $total_price = ($tour_price + $moving_price) * $quantity;
 
-        // Tạo booking
+        // Tạo booking (tạm gán tất cả là người lớn; trẻ em = 0)
+        $adults = max(1, (int) $quantity);
+        $children = 0;
         $this->bookingModel->create(
             $user_id,
             $departure_id,
-            $quantity,
+            $adults,
+            $children,
             $total_price,
             'unpaid',
-            'pending',
+            'confirmed',
             $contact_name,
             $contact_phone,
             $contact_email,
@@ -78,7 +81,7 @@ class BookingTourController
         );
 
         //Cập nhật departure 
-        $this->tour_departureModel->decreaseSeatsAvailable($departure_id, $quantity);
+        $this->tour_departureModel->decreaseSeatsAvailable($departure_id, $adults);
 
         // Lưu thông báo thành công và redirect
         $_SESSION['booking_success'] = true;

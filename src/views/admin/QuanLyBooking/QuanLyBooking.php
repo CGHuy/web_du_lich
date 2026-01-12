@@ -13,8 +13,8 @@
                 <label for="" style="margin-bottom:0;">Sắp xếp</label>
                 <select name="sort" class="custom-combobox" onchange="this.form.submit()">
                     <option value="" <?= empty($status) ? 'selected' : '' ?>>Tất cả</option>
-                    <option value="status-warning" <?= ($status ?? '') === 'status-warning' ? 'selected' : '' ?>>Chờ xác
-                        nhận</option>
+                    <option value="status-warning" <?= ($status ?? '') === 'status-warning' ? 'selected' : '' ?>>Yêu cầu
+                        hủy</option>
                     <option value="status-success" <?= ($status ?? '') === 'status-success' ? 'selected' : '' ?>>Đã xác
                         nhận</option>
                     <option value="status-danger" <?= ($status ?? '') === 'status-danger' ? 'selected' : '' ?>>Đã hủy
@@ -56,7 +56,7 @@
                                     <td>
                                         <?php
                                         $statusBadge = [
-                                            'pending' => '<span class="badge bg-warning">Chờ xác nhận</span>',
+                                            'pending_cancellation' => '<span class="badge bg-warning">Yêu cầu hủy</span>',
                                             'confirmed' => '<span class="badge bg-success">Đã xác nhận</span>',
                                             'cancelled' => '<span class="badge bg-danger">Đã hủy</span>'
                                         ];

@@ -26,6 +26,14 @@ include __DIR__ . '/../partials/header.php';
                 <h2 class="card-title">CHI TIẾT BOOKING</h2>
                 <p style="color: #636465ff ;">Thông tin chi tiết về chuyến đi của bạn đã đặt</p>
             </div>
+            <?php if (session_status() === PHP_SESSION_NONE)
+                session_start(); ?>
+            <?php if (isset($_SESSION['booking_success']) && $_SESSION['booking_success']): ?>
+                <div class="alert alert-success m-3" role="alert">
+                    <?= htmlspecialchars($_SESSION['booking_message'] ?? 'Thao tác thành công') ?>
+                </div>
+                <?php unset($_SESSION['booking_success'], $_SESSION['booking_message']); ?>
+            <?php endif; ?>
             <div class="table-responsive">
                 <form method="post" action="<?= route('settinguser.detailBookingHistory'); ?>">
                     <table class="table align-middle detail-booking-table ">
@@ -135,11 +143,12 @@ include __DIR__ . '/../partials/header.php';
                                     <td class="detail-booking-title">Hành động</td>
                                     <td>
                                         <?php if (($bookingDetail['booking_status'] ?? '') === 'confirmed'): ?>
-                                            <form method="post" action="<?= route('settinguser.requestCancelBooking'); ?>"
-                                                onsubmit="return confirm('Bạn chắc chắn muốn yêu cầu hủy booking này?');">
-                                                <input type="hidden" name="id" value="<?= (int) $bookingDetail['id']; ?>">
-                                                <button type="submit" class="btn btn-outline-danger btn-sm">Yêu cầu hủy</button>
-                                            </form>
+                                            <input type="hidden" name="cancel_id" value="<?= (int) $bookingDetail['id']; ?>">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                formaction="<?= route('settinguser.requestCancelBooking'); ?>" formmethod="post"
+                                                onclick="return confirm('Bạn chắc chắn muốn yêu cầu hủy booking này?');">
+                                                Yêu cầu hủy
+                                            </button>
                                         <?php else: ?>
                                             <span class="text-muted">Không có hành động khả dụng</span>
                                         <?php endif; ?>

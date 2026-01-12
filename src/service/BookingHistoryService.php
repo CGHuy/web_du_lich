@@ -68,7 +68,7 @@ class BookingHistoryService
             $params[] = $status; // thêm giá trị $status vào mảng tham số truyền vào truy vấn 
         }
         //Mục đích:
-        // Giúp hàm getByUserId có thể lấy tất cả booking của user hoặc chỉ lấy booking theo trạng thái mong muốn (chờ xác nhận, đã xác nhận, đã hủy), 
+        // Giúp hàm getByUserId có thể lấy tất cả booking của user hoặc chỉ lấy booking theo trạng thái mong muốn (đã xác nhận, yêu cầu hủy, đã hủy), 
         // tùy theo giá trị truyền vào từ controller.
 
         $query .= " ORDER BY b.created_at DESC";

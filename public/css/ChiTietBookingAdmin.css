@@ -1,60 +1,86 @@
 .card-header .card-title {
-    font-size: 1.5rem;
-    margin: 0 0 6px 0;
-    letter-spacing: 0.5px;
+	font-size: 1.5rem;
+	margin: 0 0 6px 0;
+	letter-spacing: 0.5px;
 }
 
 .detail-booking-table {
-    width: 100%;
-    border-collapse: collapse;
+	width: 100%;
+	border-collapse: collapse;
 }
 
 .detail-booking-table td,
 .detail-booking-table th {
-    padding-top: 18px !important;
-    padding-bottom: 18px !important;
-    padding-left: 36px !important;
-    padding-right: 36px !important;
-    vertical-align: middle !important;
-    border-bottom: 1px solid #e0e4ea !important;
+	padding-top: 18px !important;
+	padding-bottom: 18px !important;
+	padding-left: 36px !important;
+	padding-right: 36px !important;
+	vertical-align: middle !important;
+	border-bottom: 1px solid #e0e4ea !important;
 }
 
 .detail-booking-table tr.detail-payment-header td,
 .detail-booking-table tr.detail-payment-header th {
-    border-bottom: none !important;
+	border-bottom: none !important;
 }
 
 .detail-booking-table tr:last-child td,
 .detail-booking-table tr:last-child th {
-    border-bottom: none !important;
+	border-bottom: none !important;
 }
 
 .detail-booking-title {
-    color: #636465ff !important;
-    font-weight: 700 !important;
+	color: #636465ff !important;
+	font-weight: 700 !important;
 }
 
 .detail-booking-table h6 {
-    margin: 0;
-    font-size: 0.95rem;
+	margin: 0;
+	font-size: 0.95rem;
 }
 
 /* Payment amount styling */
 .detail-booking-table td .amount,
 .detail-booking-table td strong.amount {
-    color: #d63a3a;
-    font-weight: 700;
+	color: #d63a3a;
+	font-weight: 700;
 }
 
 @media (max-width: 768px) {
+	.detail-booking-table td,
+	.detail-booking-table th {
+		padding-left: 14px !important;
+		padding-right: 14px !important;
+	}
 
-    .detail-booking-table td,
-    .detail-booking-table th {
-        padding-left: 14px !important;
-        padding-right: 14px !important;
-    }
+	.card-header .card-title {
+		font-size: 1.25rem;
+	}
+}
 
-    .card-header .card-title {
-        font-size: 1.25rem;
-    }
+/* Right sidebar styles */
+.detail-layout {
+	display: flex;
+	align-items: flex-start;
+	gap: 24px;
+}
+.right-sidebar {
+	width: 360px;
+}
+.right-sidebar .card {
+	box-shadow: none;
+}
+.policy-box small {
+	display: block;
+}
+.refund-amount {
+	font-size: 1.25rem;
+}
+@media (max-width: 992px) {
+	.detail-layout {
+		flex-direction: column;
+	}
+	.right-sidebar {
+		width: auto;
+	}
 }

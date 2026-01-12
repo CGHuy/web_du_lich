@@ -47,10 +47,10 @@ include __DIR__ . '/../partials/header.php';
                             <div class="d-flex align-items-center" style="gap: 10px;">
                                 <label for="" style="margin-bottom:0;">Sắp xếp</label>
                                 <select name="sort" class="custom-combobox" onchange="this.form.submit()">
-                                    // View nhận $bookings đã lọc từ controller, trả về đúng trạng thái combobox đã chọn
+                                    <!-- View nhận $bookings đã lọc từ controller, trả về đúng trạng thái combobox đã chọn -->
                                     <option value="" <?= empty($status) ? 'selected' : '' ?>>Tất cả</option>
-                                    <option value="status-warning" <?= ($status ?? '') === 'status-warning' ? 'selected' : '' ?>>Chờ xác nhận</option>
                                     <option value="status-success" <?= ($status ?? '') === 'status-success' ? 'selected' : '' ?>>Đã xác nhận</option>
+                                    <option value="status-warning" <?= ($status ?? '') === 'status-warning' ? 'selected' : '' ?>>Yêu cầu hủy</option>
                                     <option value="status-danger" <?= ($status ?? '') === 'status-danger' ? 'selected' : '' ?>>Đã hủy</option>
                                 </select>
                             </div>
