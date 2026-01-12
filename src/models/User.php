@@ -46,6 +46,17 @@ class User
         return $stmt->execute();
     }
 
+    // Count bookings for a user
+    public function countBookings($userId)
+    {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) as cnt FROM bookings WHERE user_id = ?");
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        return isset($row['cnt']) ? (int)$row['cnt'] : 0;
+    }
+
     public function getConnection()
     {
         return $this->conn;

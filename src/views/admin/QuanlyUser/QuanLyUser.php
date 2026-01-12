@@ -124,11 +124,12 @@
                 <div class="modal-body">
                     <p class="m-0 p-2">Bạn có chắc chắn muốn xóa user:</p>
                     <strong id="delete_name" class="p-2"></strong>
+                    <div id="delete_booking_info" class="p-2"></div>
                     <p class="text-danger m-0 p-2"><strong>Hành động này không thể hoàn tác.</strong></p>
                 </div>
                 <div class="modal-footer pb-0">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                    <button type="submit" class="btn btn-danger">Xóa</button>
+                    <button type="submit" id="confirm_delete_btn" class="btn btn-danger">Xóa</button>
                 </div>
             </form>
         </div>
@@ -143,6 +144,33 @@
         const userName = button.getAttribute('data-name');
         document.getElementById('delete_id').value = userId;
         document.getElementById('delete_name').textContent = userName;
+
+        // Reset info
+        const infoEl = document.getElementById('delete_booking_info');
+        const confirmBtn = document.getElementById('confirm_delete_btn');
+        infoEl.textContent = 'Đang kiểm tra lịch đặt...';
+        confirmBtn.disabled = true;
+
+        fetch('index.php?controller=user&action=checkBookings&id=' + encodeURIComponent(userId))
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    if (data.count > 0) {
+                        infoEl.innerHTML = '<span class="text-danger">Người dùng hiện có ' + data.count + ' booking. Không thể xóa.</span>';
+                        confirmBtn.disabled = true;
+                    } else {
+                        infoEl.innerHTML = '<span class="text-success">Người dùng không có booking. Có thể xóa.</span>';
+                        confirmBtn.disabled = false;
+                    }
+                } else {
+                    infoEl.innerHTML = '<span class="text-warning">Không xác định trạng thái đặt chỗ.</span>';
+                    confirmBtn.disabled = false;
+                }
+            })
+            .catch(err => {
+                infoEl.innerHTML = '<span class="text-warning">Lỗi kiểm tra: ' + err.message + '</span>';
+                confirmBtn.disabled = false;
+            });
     });
 </script>
 

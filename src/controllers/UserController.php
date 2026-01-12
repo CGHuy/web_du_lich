@@ -132,9 +132,33 @@ class UserController
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = $_POST['id'];
+            // Server-side check: do not delete if user has bookings
+            $count = $this->model->countBookings($id);
+            if ($count > 0) {
+                if (session_status() === PHP_SESSION_NONE) {
+                    session_start();
+                }
+                $_SESSION['error_message'] = 'Không thể xóa user vì user đang có ' . $count . ' booking.';
+                header('Location: ' . route('user.index'));
+                return;
+            }
+
             $this->model->delete($id);
             header('Location: ' . route('user.index'));
         }
+    }
+
+    // AJAX: check if user has bookings
+    public function checkBookings()
+    {
+        header('Content-Type: application/json');
+        $id = $_GET['id'] ?? null;
+        if (!$id) {
+            echo json_encode(['success' => false, 'count' => 0]);
+            return;
+        }
+        $count = $this->model->countBookings($id);
+        echo json_encode(['success' => true, 'count' => $count, 'hasBookings' => $count > 0]);
     }
 
     public function getAddForm()
