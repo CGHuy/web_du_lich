@@ -1,9 +1,9 @@
 <div class="card-header d-flex justify-content-between align-items-center">
     <div>
-        <h5 class="card-title">Quản lý User</h5>
-        <p style="color: #636465ff;">Danh sách các người dùng</p>
+        <h5 class="card-title">
+            <i class="fa-solid fa-user me-2"></i>Quản lý User
+        </h5>
     </div>
-    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">Thêm User Mới</button>
 </div>
 
 <?php if (isset($_SESSION['success_message'])): ?>
@@ -21,7 +21,9 @@
     </div>
     <?php unset($_SESSION['error_message']); ?>
 <?php endif; ?>
+
 <div class="card-body">
+    <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">Thêm User Mới</a>
     <div class="input-group search-group mb-3">
         <span class="input-group-text search-icon">
             <i class="fa-solid fa-magnifying-glass fa-sm"></i>
@@ -29,7 +31,7 @@
         <input class="form-control search-input" placeholder="Tìm kiếm user theo id, tên, email, số điện thoại..." value="" aria-label="Tìm kiếm" />
     </div>
     <div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-striped table-hover align-middle">
             <thead>
                 <tr>
                     <th>ID</th>

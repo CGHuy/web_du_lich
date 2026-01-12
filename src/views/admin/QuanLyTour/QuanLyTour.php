@@ -8,6 +8,7 @@
         <span class="badge bg-info">Tổng: <?= $total ?> tour</span>
     </div>
 </div>
+
 <div class="card-body">
     <div class="input-group search-group mb-3">
         <span class="input-group-text search-icon">
