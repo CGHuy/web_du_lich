@@ -74,6 +74,12 @@
                                 style="color: inherit;">
                                 Quản lý user</a>
                         </li>
+                        <li class="menu-item mt-1 <?= $currentPage === 'Statistics' ? 'active' : '' ?>">
+                            <i class="fa-solid fa-chart-bar"></i>
+                            <a href="<?= route('Statistics.index'); ?>" class="text-decoration-none flex-grow-1"
+                                style="color: inherit;">
+                                Thống kê</a>
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -53,5 +53,6 @@ return [
     'TourImage.getForm' => ['controller' => 'TourImageController', 'action' => 'getForm'],
     'TourImage.upload' => ['controller' => 'TourImageController', 'action' => 'upload'],
     'TourImage.delete' => ['controller' => 'TourImageController', 'action' => 'delete'],
+    'Statistics.index' => ['controller' => 'StatisticsController', 'action' => 'index'],
 ];
 ?>
