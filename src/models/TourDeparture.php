@@ -9,7 +9,8 @@ class TourDeparture
         $this->db = new Database();
         $this->conn = $this->db->getConnection();
     }
-    public function getAllPaginated($offset, $limit) {
+    public function getAllPaginated($offset, $limit)
+    {
         $sql = "SELECT td.*, t.name AS tour_name FROM tour_departures td JOIN tours t ON td.tour_id = t.id LIMIT ?, ?";
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("ii", $offset, $limit);
@@ -32,7 +33,8 @@ class TourDeparture
         return $departures;
     }
 
-    public function getTotal() {
+    public function getTotal()
+    {
         $sql = "SELECT COUNT(*) as total FROM tour_departures";
         $result = $this->conn->query($sql);
         $row = $result->fetch_assoc();
@@ -82,6 +84,13 @@ class TourDeparture
     {
         $stmt = $this->conn->prepare("UPDATE tour_departures SET status = ? WHERE id = ?");
         $stmt->bind_param("si", $status, $id);
+        return $stmt->execute();
+    }
+
+    public function decreaseSeatsAvailable($departure_id, $quantity)
+    {
+        $stmt = $this->conn->prepare("UPDATE tour_departures SET seats_available = seats_available - ? WHERE id = ?");
+        $stmt->bind_param("ii", $quantity, $departure_id);
         return $stmt->execute();
     }
 
