@@ -61,12 +61,12 @@ tour_id INT NOT NULL,
 departure_location VARCHAR(100) NOT NULL,
 departure_date DATE NOT NULL,
 
-     price_moving DECIMAL(12,2) NOT NULL DEFAULT 0.00,
-     price_moving_child DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+price_moving DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+price_moving_child DECIMAL(12,2) NOT NULL DEFAULT 0.00,
 
-     seats_total INT NOT NULL DEFAULT 1,
-     seats_available INT NOT NULL DEFAULT 1,
-     status ENUM('open','closed','full') DEFAULT 'open',
+seats_total INT NOT NULL DEFAULT 1,
+seats_available INT NOT NULL DEFAULT 1,
+status ENUM('open','closed','full') DEFAULT 'open',
 
      FOREIGN KEY (tour_id) REFERENCES tours(id) ON DELETE CASCADE,
      UNIQUE KEY uk_tour_date (tour_id, departure_date)
@@ -103,21 +103,21 @@ booking_code VARCHAR(20) UNIQUE,
 user_id INT NULL,
 departure_id INT NOT NULL,
 
-     adults INT NOT NULL DEFAULT 1 CHECK(adults > 0),
-     children INT NOT NULL DEFAULT 0 CHECK(children >= 0),
+adults INT NOT NULL DEFAULT 1 CHECK(adults > 0),
+children INT NOT NULL DEFAULT 0 CHECK(children >= 0),
 
-     total_price DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+total_price DECIMAL(12,2) NOT NULL DEFAULT 0.00,
 
-     payment_status ENUM('paid','refunded') NOT NULL DEFAULT 'paid',
-     status ENUM('confirmed','cancelled') NOT NULL DEFAULT 'confirmed',
+payment_status ENUM('paid','refunded') NOT NULL DEFAULT 'paid',
+status ENUM('confirmed','cancelled') NOT NULL DEFAULT 'confirmed',
 
-     contact_name VARCHAR(255) NOT NULL,
-     contact_phone VARCHAR(20) NOT NULL,
-     contact_email VARCHAR(255) NOT NULL,
-     note TEXT DEFAULT NULL,
+contact_name VARCHAR(255) NOT NULL,
+contact_phone VARCHAR(20) NOT NULL,
+contact_email VARCHAR(255) NOT NULL,
+note TEXT DEFAULT NULL,
 
-     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
      FOREIGN KEY (departure_id) REFERENCES tour_departures(id) ON DELETE RESTRICT
