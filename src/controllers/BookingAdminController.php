@@ -101,21 +101,13 @@ class BookingAdminController
             $bookingModel->updateStatus($bookingId, 'cancelled');
             $bookingModel->updatePaymentStatus($bookingId, 'refunded');
 
-            // Append admin note only when there is a positive refund amount or staff provided a note
-            if (floatval($refundAmount) > 0 || trim($refundNote) !== '') {
-                $noteParts = [];
-                if (floatval($refundAmount) > 0) {
-                    // store raw number amount (no thousands separator) for clarity
-                    $noteParts[] = "Hoàn tiền: " . number_format($refundAmount, 0, '', '');
-                }
-                if (trim($refundNote) !== '') {
-                    $noteParts[] = $refundNote;
-                }
-                $bookingModel->appendAdminNote($bookingId, implode(' - ', $noteParts));
+            // Chỉ lưu ghi chú do admin nhập (nếu có)
+            if (trim($adminNote) !== '') {
+                $bookingModel->appendAdminNote($bookingId, $adminNote);
             }
 
-            // Show refund amount in the success message
-            $_SESSION['admin_message'] = 'Đã phê duyệt hoàn tiền: <strong>' . number_format($refundAmount, 0, ',', '.') . ' đ</strong> và hủy booking.';
+            // Thông báo xác nhận phê duyệt hoàn tiền thành công
+            $_SESSION['admin_message'] = 'Phê duyệt hoàn tiền thành công! Số tiền hoàn: ' . number_format($refundAmount, 0, ',', '.') . 'đ';
         } elseif ($action === 'deny') {
             // revert to confirmed state
             $bookingModel->updateStatus($bookingId, 'confirmed');

@@ -80,8 +80,8 @@ class Booking
 
     public function appendAdminNote($id, $admin_note)
     {
-        // Append admin note to existing note with timestamp
-        $stmt = $this->conn->prepare("UPDATE bookings SET note = CONCAT(IFNULL(note, ''), '\n[ADMIN] ', ?, ' (', NOW(), ')') WHERE id = ?");
+        // Ghi đè ghi chú admin (không tự động thêm dòng hoàn tiền)
+        $stmt = $this->conn->prepare("UPDATE bookings SET note = ? WHERE id = ?");
         $stmt->bind_param("si", $admin_note, $id);
         return $stmt->execute();
     }

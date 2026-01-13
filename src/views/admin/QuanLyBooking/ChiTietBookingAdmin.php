@@ -96,7 +96,9 @@ $currentPage = 'booking'; ?>
                     </tr>
                     <tr>
                         <td class="detail-booking-title">Ghi chú</td>
-                        <td><?= htmlspecialchars($bookingDetail['note']) ?></td>
+                        <td>
+                            <?= nl2br(htmlspecialchars(trim($bookingDetail['note'] ?? ''))) ?>
+                        </td>
                     </tr>
 
                     <tr class="detail-payment-header">
@@ -149,7 +151,8 @@ $currentPage = 'booking'; ?>
     aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <form method="post" action="/web_du_lich/public/index.php?route=BookingAdmin.processCancel">
+            <form method="post"
+                action="/web_du_lich/public/index.php?controller=BookingAdmin&action=processCancelRequest">
                 <div class="modal-header">
                     <h5 class="modal-title" id="processCancelModalLabel">Xử lý yêu cầu hủy</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -184,11 +187,7 @@ $currentPage = 'booking'; ?>
                                 <textarea class="form-control" name="refund_note" rows="3"
                                     placeholder="Ghi lý do (nếu khách cung cấp)"></textarea>
                             </div>
-                            <div class="mb-3">
-                                <label class="form-label">Ghi chú xử lý (nội bộ)</label>
-                                <textarea class="form-control" name="admin_note" rows="2"
-                                    placeholder="Ghi chú cho kế toán/thủ quỹ"></textarea>
-                            </div>
+
                         </div>
                         <div class="col-md-5">
                             <div class="card p-3 bg-light">
@@ -207,100 +206,29 @@ $currentPage = 'booking'; ?>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" name="action" value="deny" class="btn btn-outline-secondary">Từ chối / Liên hệ
+                    <button type="submit" name="action" value="deny" class="btn btn-outline-secondary">Từ chối /
+                        Liên hệ
                         lại</button>
-                    <button type="button" id="btnApproveRefund" class="btn btn-danger">Phê duyệt hoàn tiền</button>
+                    <button type="submit" name="action" value="approve" class="btn btn-danger">Phê duyệt/Hoàn
+                        tiền</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+</script>
 
-<!-- Modal xác nhận hoàn tiền sẽ được tạo động bằng JS -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var btn = document.getElementById('openProcessCancel');
-        if (btn) {
-            btn.addEventListener('click', function (e) {
-                var modal = new bootstrap.Modal(document.getElementById('processCancelModal'));
+        var openBtn = document.getElementById('openProcessCancel');
+        var modalEl = document.getElementById('processCancelModal');
+        if (openBtn && modalEl && typeof bootstrap !== 'undefined') {
+            openBtn.addEventListener('click', function () {
+                var modal = new bootstrap.Modal(modalEl);
                 modal.show();
             });
-        }
-
-        // Modal xác nhận hoàn tiền
-        var btnApprove = document.getElementById('btnApproveRefund');
-        if (btnApprove) {
-            btnApprove.addEventListener('click', function (e) {
-                e.preventDefault();
-                var refundAmount = document.querySelector('input[name="refund_amount"]').value;
-                var now = new Date();
-                var timeStr = now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }) + ' ' + now.toLocaleDateString('vi-VN');
-                var confirmModal = document.createElement('div');
-                confirmModal.className = 'modal fade';
-                confirmModal.id = 'confirmRefundModal';
-                confirmModal.innerHTML = `
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Xác nhận hoàn tiền</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body text-center">
-                                                <div class="display-6 text-success mb-2">Hoàn tiền: <strong>${parseInt(refundAmount).toLocaleString('vi-VN')} đ</strong></div>
-                                                <div class="mb-2">Thời gian: <strong>${timeStr}</strong></div>
-                                                <div class="mb-2 text-muted">Bạn chắc chắn muốn phê duyệt hoàn tiền này?</div>
-                                            </div>
-                                            <div class="modal-footer justify-content-center">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                                                <button type="button" id="confirmRefundBtn" class="btn btn-danger">Xác nhận</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
-                document.body.appendChild(confirmModal);
-                var bsModal = new bootstrap.Modal(confirmModal);
-                bsModal.show();
-                confirmModal.addEventListener('hidden.bs.modal', function () {
-                    confirmModal.remove();
-                });
-                setTimeout(function () {
-                    var confirmBtn = document.getElementById('confirmRefundBtn');
-                    if (confirmBtn) {
-                        confirmBtn.onclick = function () {
-                            // Hiển thị thông báo thành công
-                            bsModal.hide();
-                            setTimeout(function () {
-                                // Cập nhật trạng thái ngay trên giao diện (UX tốt hơn)
-                                var statusBadges = document.querySelectorAll('.card-title .badge, td .badge');
-                                statusBadges.forEach(function (badge) {
-                                    if (badge.textContent.trim() === 'Yêu cầu hủy') {
-                                        badge.className = 'badge bg-danger ms-2';
-                                        badge.textContent = 'Đã hủy';
-                                    }
-                                    if (badge.textContent.trim() === 'Chưa thanh toán' || badge.textContent.trim() === 'Đã thanh toán') {
-                                        badge.className = 'badge bg-danger';
-                                        badge.textContent = 'Đã hoàn tiền';
-                                    }
-                                });
-                                // Thêm alert thành công
-                                var alertDiv = document.createElement('div');
-                                alertDiv.className = 'alert alert-success mb-2';
-                                alertDiv.innerHTML = `Hoàn tiền thành công: <strong>${parseInt(refundAmount).toLocaleString('vi-VN')} đ</strong> lúc <strong>${timeStr}</strong>`;
-                                var cardHeader = document.querySelector('.card-header');
-                                if (cardHeader) {
-                                    cardHeader.insertBefore(alertDiv, cardHeader.firstChild);
-                                } else {
-                                    document.body.insertBefore(alertDiv, document.body.firstChild);
-                                }
-                                // Sau 1.5s reload lại trang để lấy dữ liệu mới từ server
-                                setTimeout(function () {
-                                    window.location.reload();
-                                }, 1500);
-                            }, 400); // Đợi modal đóng
-                        };
-                    }
-                }, 300);
-            });
+        } else if (!window.bootstrap) {
+            console.warn('Bootstrap JS chưa được load. Modal sẽ không hoạt động.');
         }
     });
 </script>
