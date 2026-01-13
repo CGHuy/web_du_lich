@@ -158,7 +158,7 @@ $currentPage = 'booking'; ?>
                     <input type="hidden" name="booking_id" value="<?= (int) $bookingDetail['id']; ?>">
                     <div class="row">
                         <div class="col-md-7">
-                            <div style="background-color:#f8f9fa;padding:20px;border-radius:8px;margin-bottom:30px;">
+                            <div style="background-color:#e6f2ff;padding:20px;border-radius:8px;margin-bottom:30px;">
                                 <h4 class="mb-3"><strong>
                                         <?php echo htmlspecialchars($tour['name'] ?? 'Chưa chọn tour'); ?>
                                     </strong></h4>

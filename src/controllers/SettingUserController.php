@@ -122,14 +122,21 @@ class SettingUserController
     public function bookingHistory() // Hiển thị lịch sử đặt tour
     {
         // Lấy giá trị lọc có thể từ POST (form) hoặc GET (thông qua link phân trang)
-        $status = $_REQUEST['sort'] ?? null; // 'status-warning', 'status-success', 'status-danger'
-        // Map giá trị từ combobox sang status DB
-        $statusMap = [
-            'status-warning' => 'pending_cancellation',
-            'status-success' => 'confirmed',
-            'status-danger' => 'cancelled'
-        ];
-        $statusValue = $statusMap[$status] ?? null;
+        $statusRaw = $_REQUEST['sort'] ?? null; // có thể là legacy ('status-warning') hoặc canonical ('pending_cancellation')
+        // Nếu client đã gửi canonical key thì dùng luôn, nếu là legacy thì map sang canonical
+        if ($statusRaw && in_array($statusRaw, ['pending_cancellation', 'confirmed', 'cancelled'])) {
+            $statusValue = $statusRaw;
+        } else {
+            // Map giá trị từ combobox legacy sang status DB
+            $statusMap = [
+                'status-warning' => 'pending_cancellation',
+                'status-success' => 'confirmed',
+                'status-danger' => 'cancelled'
+            ];
+            $statusValue = $statusMap[$statusRaw] ?? null;
+        }
+        // Chuẩn hóa biến $status để view hiển thị đúng option (sử dụng canonical keys)
+        $status = $statusValue ?? null;
 
         // Phân trang (page từ GET)
         $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;

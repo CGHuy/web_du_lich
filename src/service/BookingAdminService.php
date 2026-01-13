@@ -23,10 +23,14 @@ class BookingAdminService
 
         // Lọc theo trạng thái nếu có
         if (!empty($status)) {
+            // Support both legacy option keys and canonical DB status keys
             $statusMap = [
                 'status-warning' => 'pending_cancellation',
                 'status-success' => 'confirmed',
                 'status-danger' => 'cancelled',
+                'pending_cancellation' => 'pending_cancellation',
+                'confirmed' => 'confirmed',
+                'cancelled' => 'cancelled',
             ];
             $filterStatus = $statusMap[$status] ?? '';
             if ($filterStatus) {
@@ -77,10 +81,14 @@ class BookingAdminService
 
         // Lọc theo trạng thái nếu có
         if (!empty($status)) {
+            // Support both legacy option keys and canonical DB status keys
             $statusMap = [
                 'status-warning' => 'pending_cancellation',
                 'status-success' => 'confirmed',
                 'status-danger' => 'cancelled',
+                'pending_cancellation' => 'pending_cancellation',
+                'confirmed' => 'confirmed',
+                'cancelled' => 'cancelled',
             ];
             $filterStatus = $statusMap[$status] ?? '';
             if ($filterStatus) {

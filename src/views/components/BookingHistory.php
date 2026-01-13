@@ -49,9 +49,11 @@ include __DIR__ . '/../partials/header.php';
                                 <select name="sort" class="custom-combobox" onchange="this.form.submit()">
                                     <!-- View nhận $bookings đã lọc từ controller, trả về đúng trạng thái combobox đã chọn -->
                                     <option value="" <?= empty($status) ? 'selected' : '' ?>>Tất cả</option>
-                                    <option value="status-success" <?= ($status ?? '') === 'status-success' ? 'selected' : '' ?>>Đã xác nhận</option>
-                                    <option value="status-warning" <?= ($status ?? '') === 'status-warning' ? 'selected' : '' ?>>Yêu cầu hủy</option>
-                                    <option value="status-danger" <?= ($status ?? '') === 'status-danger' ? 'selected' : '' ?>>Đã hủy</option>
+                                    <option value="confirmed" <?= ($status ?? '') === 'confirmed' ? 'selected' : '' ?>>Đã
+                                        xác nhận</option>
+                                    <option value="pending_cancellation" <?= ($status ?? '') === 'pending_cancellation' ? 'selected' : '' ?>>Yêu cầu hủy</option>
+                                    <option value="cancelled" <?= ($status ?? '') === 'cancelled' ? 'selected' : '' ?>>Đã
+                                        hủy</option>
                                 </select>
                             </div>
                         </div>
