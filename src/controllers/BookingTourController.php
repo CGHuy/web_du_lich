@@ -103,19 +103,14 @@ class BookingTourController
         $total_quantity = $adults + $children;
         $total_price = ($adults * $tour_price_adult + $children * $tour_price_child + $moving_price * $total_quantity);
 
-        // Tạo booking (tạm gán tất cả là người lớn; trẻ em = 0)
-        $adults = max(1, (int) $total_quantity);
-        $children = 0;
+        // Tạo booking
         $this->bookingModel->create(
             $user_id,
             $departure_id,
-            $total_quantity,
-            $total_price,
-            'paid',
             $adults,
             $children,
             $total_price,
-            'pending_cancellation',
+            'paid',
             'confirmed',
             $contact_name,
             $contact_phone,
