@@ -195,7 +195,7 @@ include __DIR__ . '/../partials/header.php';
                                                     </form>
                                                     <button type="button" class="btn btn-outline-primary btn-sm"
                                                         data-bs-toggle="modal" data-bs-target="#reviewModal">
-                                                        <?= !empty($existingReview) ? 'Đánh giá lại' : 'Đánh giá' ?>
+                                                        <?= !empty($existingReview) ? 'Sửa đánh giá' : 'Đánh giá' ?>
                                                     </button>
                                                 <?php else: ?>
                                                     <span class="text-muted">Không có hành động khả dụng</span>
