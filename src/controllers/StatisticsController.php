@@ -29,6 +29,7 @@ class StatisticsController
         // Lấy dữ liệu thống kê
         $stats = [
             'selectedYear' => $selectedYear,
+            'availableYears' => $this->getAvailableYears(),
             'totalRevenue' => $this->getTotalRevenue(),
             'totalBookings' => $this->getTotalBookings(),
             'totalTours' => $this->getTotalTours(),
@@ -117,6 +118,28 @@ class StatisticsController
             'trend' => 0,
             'status' => 'neutral'
         ];
+    }
+
+    // Lấy danh sách năm có sẵn từ database
+    private function getAvailableYears()
+    {
+        $sql = "SELECT DISTINCT YEAR(created_at) as year
+                FROM bookings
+                ORDER BY year DESC";
+
+        $result = $this->conn->query($sql);
+        $years = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $years[] = $row['year'];
+        }
+
+        // Nếu không có dữ liệu, trả về năm hiện tại
+        if (empty($years)) {
+            $years[] = date('Y');
+        }
+
+        return $years;
     }
 
     // Xoá getNewCustomers vì không dùng nữa
@@ -221,13 +244,35 @@ class StatisticsController
         $topTours = [];
 
         while ($row = $result->fetch_assoc()) {
+            // Tính trend so với năm trước
+            $prevYear = $this->currentYear - 1;
+            $prevSql = "SELECT COUNT(b.id) as prev_booking_count
+                        FROM tours t
+                        LEFT JOIN tour_departures td ON t.id = td.tour_id
+                        LEFT JOIN bookings b ON td.id = b.departure_id 
+                                   AND YEAR(b.created_at) = {$prevYear}
+                                   AND b.payment_status = 'paid'
+                                   AND b.status = 'confirmed'
+                        WHERE t.id = {$row['id']}
+                        GROUP BY t.id";
+
+            $prevResult = $this->conn->query($prevSql);
+            $prevRow = $prevResult->fetch_assoc();
+            $prevBookingCount = $prevRow['prev_booking_count'] ?? 0;
+
+            // Chỉ tính trend nếu năm trước có dữ liệu
+            $trend = null;
+            if ($prevBookingCount > 0) {
+                $trend = round((($row['booking_count'] - $prevBookingCount) / $prevBookingCount) * 100, 0);
+            }
+
             $topTours[] = [
                 'id' => $row['id'],
                 'name' => $row['name'],
                 'code' => $row['tour_code'],
                 'bookings' => $row['booking_count'],
                 'revenue' => $row['total_revenue'],
-                'trend' => rand(-5, 15), // Placeholder trend
+                'trend' => $trend,
                 'image' => $row['cover_image']
             ];
         }
