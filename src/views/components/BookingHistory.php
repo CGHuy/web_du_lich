@@ -59,17 +59,17 @@ include __DIR__ . '/../partials/header.php';
                         </div>
                         <div class="table-container">
                             <div class="table-wrapper">
-                                <table class="custom-table">
+                                <table class="custom-table" style="min-width: 1200px;">
                                     <thead>
                                         <tr>
-                                            <th>#</th>
-                                            <th>Mã Booking</th>
-                                            <th>Tên Tour</th>
-                                            <th>Ngày Khởi Hành</th>
-                                            <th>Tổng Tiền</th>
-                                            <th>Trạng Thái</th>
-                                            <th>Ngày Đặt</th>
-                                            <th></th>
+                                            <th style="width: 50px;">#</th>
+                                            <th style="width: 140px;">Mã Booking</th>
+                                            <th style="width: 280px;">Tên Tour</th>
+                                            <th style="width: 150px;">Ngày Khởi Hành</th>
+                                            <th style="width: 130px;">Tổng Tiền</th>
+                                            <th style="width: 140px;">Trạng Thái</th>
+                                            <th style="width: 160px;">Ngày Đặt</th>
+                                            <th style="width: 120px;"></th>
                                         </tr>
                                     </thead>
                                     <tbody>
