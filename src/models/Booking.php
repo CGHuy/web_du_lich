@@ -70,6 +70,22 @@ class Booking
         $stmt->bind_param("si", $status, $id);
         return $stmt->execute();
     }
+
+    public function updatePaymentStatus($id, $payment_status)
+    {
+        $stmt = $this->conn->prepare("UPDATE bookings SET payment_status = ? WHERE id = ?");
+        $stmt->bind_param("si", $payment_status, $id);
+        return $stmt->execute();
+    }
+
+    public function appendAdminNote($id, $admin_note)
+    {
+        // Append admin note to existing note with timestamp
+        $stmt = $this->conn->prepare("UPDATE bookings SET note = CONCAT(IFNULL(note, ''), '\n[ADMIN] ', ?, ' (', NOW(), ')') WHERE id = ?");
+        $stmt->bind_param("si", $admin_note, $id);
+        return $stmt->execute();
+    }
+
     public function __destruct()
     {
         $this->db->close();

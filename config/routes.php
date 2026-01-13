@@ -34,7 +34,7 @@ return [
     'user.getEditForm' => ['controller' => 'UserController', 'action' => 'getEditForm'],
     'BookingAdmin.index' => ['controller' => 'BookingAdminController', 'action' => 'index'],
     'BookingAdmin.detail' => ['controller' => 'BookingAdminController', 'action' => 'detail'],
-    'BookingAdmin.processCancel' => ['controller' => 'BookingAdminController', 'action' => 'processCancel'],
+    'BookingAdmin.processCancel' => ['controller' => 'BookingAdminController', 'action' => 'processCancelRequest'],
     'Service.index' => ['controller' => 'ServiceController', 'action' => 'index'],
     'Service.create' => ['controller' => 'ServiceController', 'action' => 'create'],
     'Service.update' => ['controller' => 'ServiceController', 'action' => 'update'],

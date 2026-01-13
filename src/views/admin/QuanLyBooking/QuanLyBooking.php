@@ -13,10 +13,10 @@
                 <label for="" style="margin-bottom:0;">Sắp xếp</label>
                 <select name="sort" class="custom-combobox" onchange="this.form.submit()">
                     <option value="" <?= empty($status) ? 'selected' : '' ?>>Tất cả</option>
-                    <option value="status-warning" <?= ($status ?? '') === 'status-warning' ? 'selected' : '' ?>>Yêu cầu
-                        hủy</option>
                     <option value="status-success" <?= ($status ?? '') === 'status-success' ? 'selected' : '' ?>>Đã xác
                         nhận</option>
+                    <option value="status-warning" <?= ($status ?? '') === 'status-warning' ? 'selected' : '' ?>>Yêu cầu
+                        hủy</option>
                     <option value="status-danger" <?= ($status ?? '') === 'status-danger' ? 'selected' : '' ?>>Đã hủy
                     </option>
                 </select>

@@ -64,45 +64,62 @@ class BookingAdminController
         include __DIR__ . '/../views/admin/admin_layout.php';
     }
 
-    // Xử lý yêu cầu hủy do admin (approve/reject)
-    public function processCancel()
+    // Xử lý yêu cầu hủy (admin)
+    public function processCancelRequest()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . route('BookingAdmin.index'));
             return;
         }
+
         $bookingId = isset($_POST['booking_id']) ? (int) $_POST['booking_id'] : null;
-        $action = $_POST['admin_action'] ?? '';
+        $action = $_POST['action'] ?? '';
+        $refundAmount = isset($_POST['refund_amount']) ? floatval($_POST['refund_amount']) : 0;
+        $refundNote = $_POST['refund_note'] ?? '';
         $adminNote = $_POST['admin_note'] ?? '';
 
         if (!$bookingId) {
             http_response_code(400);
-            echo 'Missing booking id';
+            echo "Thiếu mã booking";
+            return;
+        }
+
+        $bookingDetail = $this->bookingService->getDetail($bookingId);
+        if (!$bookingDetail) {
+            http_response_code(404);
+            echo "Booking không tồn tại";
             return;
         }
 
         require_once __DIR__ . '/../models/Booking.php';
         $bookingModel = new Booking();
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
 
         if ($action === 'approve') {
-            // mark as cancelled; in real app you might record refund_amount and process payment
+            // mark as cancelled and refunded
             $bookingModel->updateStatus($bookingId, 'cancelled');
-            // store admin note in note field (append)
-            $existing = $bookingModel->getById($bookingId);
-            $newNote = trim(($existing['note'] ?? '') . "\n[Admin] " . $adminNote);
-            $stmt = $bookingModel->update($bookingId, $existing['user_id'], $existing['departure_id'], $existing['adults'], $existing['children'], $existing['total_price'], $existing['payment_status'], 'cancelled', $existing['contact_name'], $existing['contact_phone'], $existing['contact_email'], $newNote);
+            $bookingModel->updatePaymentStatus($bookingId, 'refunded');
 
-            if (session_status() === PHP_SESSION_NONE)
-                session_start();
-            $_SESSION['booking_success'] = true;
-            $_SESSION['booking_message'] = 'Yêu cầu hủy đã được phê duyệt và đánh dấu Đã hủy.';
-        } elseif ($action === 'reject') {
-            // restore to confirmed
+            // Append admin note only when there is a positive refund amount or staff provided a note
+            if (floatval($refundAmount) > 0 || trim($refundNote) !== '') {
+                $noteParts = [];
+                if (floatval($refundAmount) > 0) {
+                    // store raw number amount (no thousands separator) for clarity
+                    $noteParts[] = "Hoàn tiền: " . number_format($refundAmount, 0, '', '');
+                }
+                if (trim($refundNote) !== '') {
+                    $noteParts[] = $refundNote;
+                }
+                $bookingModel->appendAdminNote($bookingId, implode(' - ', $noteParts));
+            }
+
+            $_SESSION['admin_message'] = 'Đã phê duyệt hoàn tiền và hủy booking.';
+        } elseif ($action === 'deny') {
+            // revert to confirmed state
             $bookingModel->updateStatus($bookingId, 'confirmed');
-            if (session_status() === PHP_SESSION_NONE)
-                session_start();
-            $_SESSION['booking_success'] = true;
-            $_SESSION['booking_message'] = 'Yêu cầu hủy đã bị từ chối.';
+            $bookingModel->appendAdminNote($bookingId, "Từ chối yêu cầu hủy: " . $adminNote);
+            $_SESSION['admin_message'] = 'Đã từ chối yêu cầu hủy.';
         }
 
         header('Location: ' . route('BookingAdmin.detail', ['id' => $bookingId]));

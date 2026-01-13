@@ -30,12 +30,9 @@ class BookingAdminService
             ];
             $filterStatus = $statusMap[$status] ?? '';
             if ($filterStatus) {
+                // Filter strictly by canonical DB status (pending_cancellation, confirmed, cancelled)
                 $allBookings = array_filter($allBookings, function ($b) use ($filterStatus) {
-                    $s = $b['status'] ?? '';
-                    if ($filterStatus === 'pending_cancellation') {
-                        return $s === 'pending_cancellation';
-                    }
-                    return $s === $filterStatus;
+                    return ($b['status'] ?? '') === $filterStatus;
                 });
             }
         }
@@ -87,12 +84,9 @@ class BookingAdminService
             ];
             $filterStatus = $statusMap[$status] ?? '';
             if ($filterStatus) {
+                // Filter strictly by canonical DB status (pending_cancellation, confirmed, cancelled)
                 $allBookings = array_filter($allBookings, function ($b) use ($filterStatus) {
-                    $s = $b['status'] ?? '';
-                    if ($filterStatus === 'pending_cancellation') {
-                        return $s === 'pending_cancellation';
-                    }
-                    return $s === $filterStatus;
+                    return ($b['status'] ?? '') === $filterStatus;
                 });
             }
         }

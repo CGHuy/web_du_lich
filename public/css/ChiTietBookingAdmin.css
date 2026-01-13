@@ -57,30 +57,3 @@
 		font-size: 1.25rem;
 	}
 }
-
-/* Right sidebar styles */
-.detail-layout {
-	display: flex;
-	align-items: flex-start;
-	gap: 24px;
-}
-.right-sidebar {
-	width: 360px;
-}
-.right-sidebar .card {
-	box-shadow: none;
-}
-.policy-box small {
-	display: block;
-}
-.refund-amount {
-	font-size: 1.25rem;
-}
-@media (max-width: 992px) {
-	.detail-layout {
-		flex-direction: column;
-	}
-	.right-sidebar {
-		width: auto;
-	}
-}
