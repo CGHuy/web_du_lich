@@ -42,169 +42,175 @@ include __DIR__ . '/../partials/header.php';
 </head>
 
 <body>
-    <div class="container my-4">
-        <div class="card">
-            <div class="card-header">
-                <h2 class="card-title">CHI TIẾT BOOKING</h2>
-                <p style="color: #636465ff ;">Thông tin chi tiết về chuyến đi của bạn đã đặt</p>
-            </div>
-            <?php if (session_status() === PHP_SESSION_NONE)
-                session_start(); ?>
-            <?php if (isset($_SESSION['booking_success']) && $_SESSION['booking_success']):
-                // Preserve values for client-side redirect before clearing session
-                $jsBookingSuccess = true;
-                $jsBookingMessage = $_SESSION['booking_message'] ?? 'Thao tác thành công';
-                unset($_SESSION['booking_success'], $_SESSION['booking_message']);
+    <div class="container-fluid my-4">
+        <div class="d-flex gap-4 px-5">
+            <?php
+            $currentPage = 'booking-history';
+            include __DIR__ . '/../partials/settings-menu.php';
             ?>
-                <div class="alert alert-success m-3" role="alert">
-                    <?= htmlspecialchars($jsBookingMessage) ?>
+            <div class="card card_form" style="flex: 0 0 calc(80% - 1rem);">
+                <div class="card-header">
+                    <h2 class="card-title">CHI TIẾT BOOKING</h2>
+                    <p style="color: #636465ff ;">Thông tin chi tiết về chuyến đi của bạn đã đặt</p>
                 </div>
-            <?php endif; ?>
-            <?php if (isset($_SESSION['error_message'])): ?>
-                <div class="alert alert-danger m-3" role="alert">
-                    <?= htmlspecialchars($_SESSION['error_message']) ?>
-                </div>
-                <?php unset($_SESSION['error_message']); ?>
-            <?php endif; ?>
-            <div class="table-responsive">
-                <form method="post" action="<?= route('settinguser.detailBookingHistory'); ?>">
-                    <table class="table align-middle detail-booking-table ">
-                        <tbody>
-                            <?php if (empty($bookingDetail)): ?>
-                                <tr>
-                                    <td colspan="9" class="text-center">Không tìm thấy booking</td>
-                                </tr>
-                            <?php else: ?>
-                                <tr>
-                                    <th rowspan="4">
-                                        <h6 style="color: #1a75c4ff;">THÔNG TIN LIÊN LẠC</h6>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Họ và tên</td>
-                                    <td><?= htmlspecialchars($bookingDetail['contact_name']) ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Email</td>
-                                    <td><?= htmlspecialchars($bookingDetail['contact_email']) ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Số điện thoại</td>
-                                    <td><?= htmlspecialchars($bookingDetail['contact_phone']) ?></td>
-                                </tr>
+                <?php if (session_status() === PHP_SESSION_NONE)
+                    session_start(); ?>
+                <?php if (isset($_SESSION['booking_success']) && $_SESSION['booking_success']):
+                    // Preserve values for client-side redirect before clearing session
+                    $jsBookingSuccess = true;
+                    $jsBookingMessage = $_SESSION['booking_message'] ?? 'Thao tác thành công';
+                    unset($_SESSION['booking_success'], $_SESSION['booking_message']);
+                ?>
+                    <div class="alert alert-success m-3" role="alert">
+                        <?= htmlspecialchars($jsBookingMessage) ?>
+                    </div>
+                <?php endif; ?>
+                <?php if (isset($_SESSION['error_message'])): ?>
+                    <div class="alert alert-danger m-3" role="alert">
+                        <?= htmlspecialchars($_SESSION['error_message']) ?>
+                    </div>
+                    <?php unset($_SESSION['error_message']); ?>
+                <?php endif; ?>
+                <div class="table-responsive">
+                    <form method="post" action="<?= route('settinguser.detailBookingHistory'); ?>">
+                        <table class="table align-middle detail-booking-table ">
+                            <tbody>
+                                <?php if (empty($bookingDetail)): ?>
+                                    <tr>
+                                        <td colspan="9" class="text-center">Không tìm thấy booking</td>
+                                    </tr>
+                                <?php else: ?>
+                                    <tr>
+                                        <th rowspan="4">
+                                            <h6 style="color: #1a75c4ff;">THÔNG TIN LIÊN LẠC</h6>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Họ và tên</td>
+                                        <td><?= htmlspecialchars($bookingDetail['contact_name']) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Email</td>
+                                        <td><?= htmlspecialchars($bookingDetail['contact_email']) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Số điện thoại</td>
+                                        <td><?= htmlspecialchars($bookingDetail['contact_phone']) ?></td>
+                                    </tr>
 
-                                <tr>
-                                    <th rowspan="9">
-                                        <h6 style="color: #1a75c4ff;">CHI TIẾT BOOKING </h6>
-                                    </th>
-                                </tr>
+                                    <tr>
+                                        <th rowspan="9">
+                                            <h6 style="color: #1a75c4ff;">CHI TIẾT BOOKING </h6>
+                                        </th>
+                                    </tr>
 
-                                <tr>
-                                    <td class="detail-booking-title">Mã Booking</td>
-                                    <td style="color: blue; font-weight: bold;">
-                                        <?= htmlspecialchars($bookingDetail['booking_code']) ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Mã Tour</td>
-                                    <td style="color: blue; font-weight: bold;">
-                                        <?= htmlspecialchars($bookingDetail['tour_code']) ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Tên Tour</td>
-                                    <td><?= htmlspecialchars($bookingDetail['tour_name']) ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Ngày khởi hành</td>
-                                    <td><?= date('d/m/Y', strtotime($bookingDetail['departure_date'])) ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Người lớn</td>
-                                    <td><?= htmlspecialchars($bookingDetail['adults'] ?? 0) ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Trẻ em</td>
-                                    <td><?= htmlspecialchars($bookingDetail['children'] ?? 0) ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Địa điểm khởi hành</td>
-                                    <td><?= htmlspecialchars($bookingDetail['departure_location']) ?></td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Ghi chú</td>
-                                    <td><?= htmlspecialchars($bookingDetail['note']) ?></td>
-                                </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Mã Booking</td>
+                                        <td style="color: blue; font-weight: bold;">
+                                            <?= htmlspecialchars($bookingDetail['booking_code']) ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Mã Tour</td>
+                                        <td style="color: blue; font-weight: bold;">
+                                            <?= htmlspecialchars($bookingDetail['tour_code']) ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Tên Tour</td>
+                                        <td><?= htmlspecialchars($bookingDetail['tour_name']) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Ngày khởi hành</td>
+                                        <td><?= date('d/m/Y', strtotime($bookingDetail['departure_date'])) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Người lớn</td>
+                                        <td><?= htmlspecialchars($bookingDetail['adults'] ?? 0) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Trẻ em</td>
+                                        <td><?= htmlspecialchars($bookingDetail['children'] ?? 0) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Địa điểm khởi hành</td>
+                                        <td><?= htmlspecialchars($bookingDetail['departure_location']) ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Ghi chú</td>
+                                        <td><?= htmlspecialchars($bookingDetail['note']) ?></td>
+                                    </tr>
 
-                                <tr class="detail-payment-header">
-                                    <th rowspan="5">
-                                        <h6 style="color: #1a75c4ff;">THÔNG TIN THANH TOÁN</h6>
-                                    </th>
+                                    <tr class="detail-payment-header">
+                                        <th rowspan="5">
+                                            <h6 style="color: #1a75c4ff;">THÔNG TIN THANH TOÁN</h6>
+                                        </th>
 
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Tổng giá</td>
-                                    <td style="color: red; font-weight: bold;">
-                                        <?= number_format($bookingDetail['total_price'], 0, ',', '.') ?> đ
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Trạng thái</td>
-                                    <td>
-                                        <?php
-                                        $statusBadge = [
-                                            'pending_cancellation' => '<span class="badge bg-warning">Yêu cầu hủy</span>',
-                                            'confirmed' => '<span class="badge bg-success">Đã xác nhận</span>',
-                                            'cancelled' => '<span class="badge bg-danger">Đã hủy</span>'
-                                        ];
-                                        echo $statusBadge[$bookingDetail['booking_status']] ?? $bookingDetail['booking_status'];
-                                        ?>
-                                    </td>
-                                </tr>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Tổng giá</td>
+                                        <td style="color: red; font-weight: bold;">
+                                            <?= number_format($bookingDetail['total_price'], 0, ',', '.') ?> đ
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Trạng thái</td>
+                                        <td>
+                                            <?php
+                                            $statusBadge = [
+                                                'pending_cancellation' => '<span class="badge bg-warning">Yêu cầu hủy</span>',
+                                                'confirmed' => '<span class="badge bg-success">Đã xác nhận</span>',
+                                                'cancelled' => '<span class="badge bg-danger">Đã hủy</span>'
+                                            ];
+                                            echo $statusBadge[$bookingDetail['booking_status']] ?? $bookingDetail['booking_status'];
+                                            ?>
+                                        </td>
+                                    </tr>
 
-                                <tr>
-                                    <td class="detail-booking-title">Trạng thái thanh toán</td>
-                                    <td>
-                                        <?php
-                                        $statusBadge = [
-                                            'unpaid' => '<span class="badge bg-warning">Chưa thanh toán</span>',
-                                            'paid' => '<span class="badge bg-success">Đã thanh toán</span>',
-                                            'refunded' => '<span class="badge bg-danger">Đã hoàn tiền</span>'
-                                        ];
-                                        echo $statusBadge[$bookingDetail['payment_status']] ?? $bookingDetail['payment_status'];
-                                        ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="detail-booking-title">Hành động</td>
-                                    <td>
-                                        <div class="d-flex gap-2">
-                                            <?php if (($bookingDetail['booking_status'] ?? '') === 'confirmed'): ?>
-                                                <form method="post" style="display: inline;">
-                                                    <input type="hidden" name="cancel_id" value="<?= (int) $bookingDetail['id']; ?>">
-                                                    <button type="submit" class="btn btn-outline-danger btn-sm"
-                                                        formaction="<?= route('settinguser.requestCancelBooking'); ?>" formmethod="post"
-                                                        onclick="return confirm('Bạn chắc chắn muốn yêu cầu hủy booking này?');">
-                                                        Yêu cầu hủy
+                                    <tr>
+                                        <td class="detail-booking-title">Trạng thái thanh toán</td>
+                                        <td>
+                                            <?php
+                                            $statusBadge = [
+                                                'unpaid' => '<span class="badge bg-warning">Chưa thanh toán</span>',
+                                                'paid' => '<span class="badge bg-success">Đã thanh toán</span>',
+                                                'refunded' => '<span class="badge bg-danger">Đã hoàn tiền</span>'
+                                            ];
+                                            echo $statusBadge[$bookingDetail['payment_status']] ?? $bookingDetail['payment_status'];
+                                            ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="detail-booking-title">Hành động</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                <?php if (($bookingDetail['booking_status'] ?? '') === 'confirmed'): ?>
+                                                    <form method="post" style="display: inline;">
+                                                        <input type="hidden" name="cancel_id" value="<?= (int) $bookingDetail['id']; ?>">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                            formaction="<?= route('settinguser.requestCancelBooking'); ?>" formmethod="post"
+                                                            onclick="return confirm('Bạn chắc chắn muốn yêu cầu hủy booking này?');">
+                                                            Yêu cầu hủy
+                                                        </button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-outline-primary btn-sm"
+                                                        data-bs-toggle="modal" data-bs-target="#reviewModal">
+                                                        <?= !empty($existingReview) ? 'Đánh giá lại' : 'Đánh giá' ?>
                                                     </button>
-                                                </form>
-                                                <button type="button" class="btn btn-outline-primary btn-sm"
-                                                    data-bs-toggle="modal" data-bs-target="#reviewModal">
-                                                    <?= !empty($existingReview) ? 'Đánh giá lại' : 'Đánh giá' ?>
-                                                </button>
-                                            <?php else: ?>
-                                                <span class="text-muted">Không có hành động khả dụng</span>
-                                            <?php endif; ?>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </form>
+                                                <?php else: ?>
+                                                    <span class="text-muted">Không có hành động khả dụng</span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
             </div>
-        </div>
 
+        </div>
     </div>
 
     <!-- Modal Đánh giá tour -->
