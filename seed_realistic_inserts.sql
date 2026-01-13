@@ -207,7 +207,7 @@ INSERT INTO tour_services (id, tour_id, service_id) VALUES
  (31,8, 8);
 
 -- =====================
--- BOOKINGS (nhiều trạng thái: pending/confirmed/cancelled/refunded)
+-- BOOKINGS (nhiều trạng thái: confirmed/pending_cancellation/cancelled/refunded)
 -- =====================
 -- booking_code được trigger sinh tự động
 INSERT INTO bookings (

@@ -26,6 +26,18 @@ include __DIR__ . '/../partials/header.php';
                 <h2 class="card-title">CHI TIẾT BOOKING</h2>
                 <p style="color: #636465ff ;">Thông tin chi tiết về chuyến đi của bạn đã đặt</p>
             </div>
+            <?php if (session_status() === PHP_SESSION_NONE)
+                session_start(); ?>
+            <?php if (isset($_SESSION['booking_success']) && $_SESSION['booking_success']):
+                // Preserve values for client-side redirect before clearing session
+                $jsBookingSuccess = true;
+                $jsBookingMessage = $_SESSION['booking_message'] ?? 'Thao tác thành công';
+                unset($_SESSION['booking_success'], $_SESSION['booking_message']);
+                ?>
+                <div class="alert alert-success m-3" role="alert">
+                    <?= htmlspecialchars($jsBookingMessage) ?>
+                </div>
+            <?php endif; ?>
             <div class="table-responsive">
                 <form method="post" action="<?= route('settinguser.detailBookingHistory'); ?>">
                     <table class="table align-middle detail-booking-table ">
@@ -54,7 +66,7 @@ include __DIR__ . '/../partials/header.php';
                                 </tr>
 
                                 <tr>
-                                    <th rowspan="8">
+                                    <th rowspan="9">
                                         <h6 style="color: #1a75c4ff;">CHI TIẾT BOOKING </h6>
                                     </th>
                                 </tr>
@@ -80,8 +92,12 @@ include __DIR__ . '/../partials/header.php';
                                     <td><?= date('d/m/Y', strtotime($bookingDetail['departure_date'])) ?></td>
                                 </tr>
                                 <tr>
-                                    <td class="detail-booking-title">Số lượng</td>
-                                    <td><?= htmlspecialchars($bookingDetail['quantity']) ?></td>
+                                    <td class="detail-booking-title">Người lớn</td>
+                                    <td><?= htmlspecialchars($bookingDetail['adults'] ?? 0) ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-booking-title">Trẻ em</td>
+                                    <td><?= htmlspecialchars($bookingDetail['children'] ?? 0) ?></td>
                                 </tr>
                                 <tr>
                                     <td class="detail-booking-title">Địa điểm khởi hành</td>
@@ -93,7 +109,7 @@ include __DIR__ . '/../partials/header.php';
                                 </tr>
 
                                 <tr class="detail-payment-header">
-                                    <th rowspan="4">
+                                    <th rowspan="5">
                                         <h6 style="color: #1a75c4ff;">THÔNG TIN THANH TOÁN</h6>
                                     </th>
 
@@ -109,7 +125,7 @@ include __DIR__ . '/../partials/header.php';
                                     <td>
                                         <?php
                                         $statusBadge = [
-                                            'pending' => '<span class="badge bg-warning">Chờ xác nhận</span>',
+                                            'pending_cancellation' => '<span class="badge bg-warning">Yêu cầu hủy</span>',
                                             'confirmed' => '<span class="badge bg-success">Đã xác nhận</span>',
                                             'cancelled' => '<span class="badge bg-danger">Đã hủy</span>'
                                         ];
@@ -117,6 +133,7 @@ include __DIR__ . '/../partials/header.php';
                                         ?>
                                     </td>
                                 </tr>
+
                                 <tr>
                                     <td class="detail-booking-title">Trạng thái thanh toán</td>
                                     <td>
@@ -128,6 +145,21 @@ include __DIR__ . '/../partials/header.php';
                                         ];
                                         echo $statusBadge[$bookingDetail['payment_status']] ?? $bookingDetail['payment_status'];
                                         ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="detail-booking-title">Hành động</td>
+                                    <td>
+                                        <?php if (($bookingDetail['booking_status'] ?? '') === 'confirmed'): ?>
+                                            <input type="hidden" name="cancel_id" value="<?= (int) $bookingDetail['id']; ?>">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm"
+                                                formaction="<?= route('settinguser.requestCancelBooking'); ?>" formmethod="post"
+                                                onclick="return confirm('Bạn chắc chắn muốn yêu cầu hủy booking này?');">
+                                                Yêu cầu hủy
+                                            </button>
+                                        <?php else: ?>
+                                            <span class="text-muted">Không có hành động khả dụng</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endif; ?>
@@ -142,6 +174,16 @@ include __DIR__ . '/../partials/header.php';
 
 </body>
 <?php include __DIR__ . '/../partials/footer.php'; ?>
+<?php if (!empty($jsBookingSuccess) && $jsBookingSuccess): ?>
+    <script>
+        (function () {
+            // Show message briefly then navigate to booking history to refresh statuses
+            setTimeout(function () {
+                window.location.href = '<?= route('settinguser.bookingHistory'); ?>';
+            }, 1500);
+        })();
+    </script>
+<?php endif; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </html>

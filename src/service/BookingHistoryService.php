@@ -24,7 +24,8 @@ class BookingHistoryService
                 b.booking_code,
                 b.user_id,
                 b.departure_id,
-                b.quantity,
+                b.adults,
+                b.children,
                 b.total_price,
                 b.payment_status,
                 b.status as booking_status,
@@ -62,13 +63,13 @@ class BookingHistoryService
         $params = [$userId];
 
         // Nếu $status có giá trị và nằm trong ds trạng thái hợp lệ thì thêm điều kiện lọc
-        if ($status && in_array($status, ['pending', 'confirmed', 'cancelled'])) {
+        if ($status && in_array($status, ['pending_cancellation', 'confirmed', 'cancelled'])) {
             $query .= " AND b.status = ?"; // thêm điều kiện lọc theo trạng thái
             $types .= 's'; // kiểu string cho tham số $status
             $params[] = $status; // thêm giá trị $status vào mảng tham số truyền vào truy vấn 
         }
         //Mục đích:
-        // Giúp hàm getByUserId có thể lấy tất cả booking của user hoặc chỉ lấy booking theo trạng thái mong muốn (chờ xác nhận, đã xác nhận, đã hủy), 
+        // Giúp hàm getByUserId có thể lấy tất cả booking của user hoặc chỉ lấy booking theo trạng thái mong muốn (đã xác nhận, yêu cầu hủy, đã hủy), 
         // tùy theo giá trị truyền vào từ controller.
 
         $query .= " ORDER BY b.created_at DESC";
@@ -107,7 +108,8 @@ class BookingHistoryService
                 b.booking_code,
                 b.user_id,
                 b.departure_id,
-                b.quantity,
+                b.adults,
+                b.children,
                 b.total_price,
                 b.payment_status,
                 b.status as booking_status,
@@ -160,7 +162,8 @@ class BookingHistoryService
                 b.booking_code,
                 b.user_id,
                 b.departure_id,
-                b.quantity,
+                b.adults,
+                b.children,
                 b.total_price,
                 b.payment_status,
                 b.status as booking_status,
@@ -227,7 +230,7 @@ class BookingHistoryService
         $types = 'i';
         $params = [$userId];
 
-        if ($status && in_array($status, ['pending', 'confirmed', 'cancelled'])) {
+        if ($status && in_array($status, ['pending_cancellation', 'confirmed', 'cancelled'])) {
             $query .= " AND status = ?";
             $types .= 's';
             $params[] = $status;

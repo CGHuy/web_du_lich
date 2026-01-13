@@ -122,14 +122,21 @@ class SettingUserController
     public function bookingHistory() // Hiển thị lịch sử đặt tour
     {
         // Lấy giá trị lọc có thể từ POST (form) hoặc GET (thông qua link phân trang)
-        $status = $_REQUEST['sort'] ?? null; // 'status-warning', 'status-success', 'status-danger'
-        // Map giá trị từ combobox sang status DB
-        $statusMap = [
-            'status-warning' => 'pending',
-            'status-success' => 'confirmed',
-            'status-danger' => 'cancelled'
-        ];
-        $statusValue = $statusMap[$status] ?? null;
+        $statusRaw = $_REQUEST['sort'] ?? null; // có thể là legacy ('status-warning') hoặc canonical ('pending_cancellation')
+        // Nếu client đã gửi canonical key thì dùng luôn, nếu là legacy thì map sang canonical
+        if ($statusRaw && in_array($statusRaw, ['pending_cancellation', 'confirmed', 'cancelled'])) {
+            $statusValue = $statusRaw;
+        } else {
+            // Map giá trị từ combobox legacy sang status DB
+            $statusMap = [
+                'status-warning' => 'pending_cancellation',
+                'status-success' => 'confirmed',
+                'status-danger' => 'cancelled'
+            ];
+            $statusValue = $statusMap[$statusRaw] ?? null;
+        }
+        // Chuẩn hóa biến $status để view hiển thị đúng option (sử dụng canonical keys)
+        $status = $statusValue ?? null;
 
         // Phân trang (page từ GET)
         $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
@@ -188,6 +195,43 @@ class SettingUserController
         }
 
         include __DIR__ . '/../views/components/DetailBookingHistory.php';
+    }
+
+    // Yêu cầu hủy booking (chuyển trạng thái từ confirmed -> pending_cancellation)
+    public function requestCancelBooking()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . route('settinguser.bookingHistory'));
+            return;
+        }
+        $bookingId = isset($_POST['cancel_id']) ? (int) $_POST['cancel_id'] : null;
+        if (!$bookingId) {
+            http_response_code(400);
+            echo "Thiếu mã booking";
+            return;
+        }
+
+        $bookingDetail = $this->bookingHistoryModel->getById($bookingId);
+        if (!$bookingDetail || (int) $bookingDetail['user_id'] !== (int) $this->userId) {
+            http_response_code(404);
+            echo "Booking không tồn tại hoặc không thuộc về bạn";
+            return;
+        }
+        if (($bookingDetail['booking_status'] ?? '') !== 'confirmed') {
+            http_response_code(400);
+            echo "Chỉ có thể yêu cầu hủy với booking đã xác nhận";
+            return;
+        }
+
+        require_once __DIR__ . '/../models/Booking.php';
+        $bookingModel = new Booking();
+        $bookingModel->updateStatus($bookingId, 'pending_cancellation');
+
+        if (session_status() === PHP_SESSION_NONE)
+            session_start();
+        $_SESSION['booking_success'] = true;
+        $_SESSION['booking_message'] = 'Đã gửi yêu cầu hủy booking.';
+        header('Location: ' . route('settinguser.detailBookingHistory', ['id' => $bookingId]));
     }
 
     //=================== Tour yêu thích ===================//

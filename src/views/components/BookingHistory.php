@@ -47,11 +47,13 @@ include __DIR__ . '/../partials/header.php';
                             <div class="d-flex align-items-center" style="gap: 10px;">
                                 <label for="" style="margin-bottom:0;">Sắp xếp</label>
                                 <select name="sort" class="custom-combobox" onchange="this.form.submit()">
-                                    // View nhận $bookings đã lọc từ controller, trả về đúng trạng thái combobox đã chọn
+                                    <!-- View nhận $bookings đã lọc từ controller, trả về đúng trạng thái combobox đã chọn -->
                                     <option value="" <?= empty($status) ? 'selected' : '' ?>>Tất cả</option>
-                                    <option value="status-warning" <?= ($status ?? '') === 'status-warning' ? 'selected' : '' ?>>Chờ xác nhận</option>
-                                    <option value="status-success" <?= ($status ?? '') === 'status-success' ? 'selected' : '' ?>>Đã xác nhận</option>
-                                    <option value="status-danger" <?= ($status ?? '') === 'status-danger' ? 'selected' : '' ?>>Đã hủy</option>
+                                    <option value="confirmed" <?= ($status ?? '') === 'confirmed' ? 'selected' : '' ?>>Đã
+                                        xác nhận</option>
+                                    <option value="pending_cancellation" <?= ($status ?? '') === 'pending_cancellation' ? 'selected' : '' ?>>Yêu cầu hủy</option>
+                                    <option value="cancelled" <?= ($status ?? '') === 'cancelled' ? 'selected' : '' ?>>Đã
+                                        hủy</option>
                                 </select>
                             </div>
                         </div>
@@ -86,7 +88,7 @@ include __DIR__ . '/../partials/header.php';
                                                     <td>
                                                         <?php
                                                         $statusBadge = [
-                                                            'pending' => '<span class="badge bg-warning">Chờ xác nhận</span>',
+                                                            'pending_cancellation' => '<span class="badge bg-warning">Yêu cầu hủy</span>',
                                                             'confirmed' => '<span class="badge bg-success">Đã xác nhận</span>',
                                                             'cancelled' => '<span class="badge bg-danger">Đã hủy</span>'
                                                         ];

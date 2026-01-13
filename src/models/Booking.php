@@ -30,7 +30,7 @@ class Booking
         $result = $stmt->get_result();
         return $result->fetch_assoc();
     }
-    public function create($user_id, $departure_id, $adults, $children, $total_price, $payment_status = 'unpaid', $status = 'pending', $contact_name, $contact_phone, $contact_email, $note = null)
+    public function create($user_id, $departure_id, $adults, $children, $total_price, $payment_status = 'unpaid', $status = 'confirmed', $contact_name, $contact_phone, $contact_email, $note = null)
     {
         $stmt = $this->conn->prepare("INSERT INTO bookings (user_id, departure_id, adults, children, total_price, payment_status, status, contact_name, contact_phone, contact_email, note) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("iiiidssssss", $user_id, $departure_id, $adults, $children, $total_price, $payment_status, $status, $contact_name, $contact_phone, $contact_email, $note);
@@ -52,7 +52,8 @@ class Booking
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
-        if (!$row) return 0;
+        if (!$row)
+            return 0;
         $adult_price = ($row['price_default'] + $row['price_moving']) * $adults;
         $child_price = ($row['price_child'] + $row['price_moving_child']) * $children;
         return $adult_price + $child_price;
@@ -63,6 +64,28 @@ class Booking
         $stmt->bind_param("i", $id);
         return $stmt->execute();
     }
+    public function updateStatus($id, $status)
+    {
+        $stmt = $this->conn->prepare("UPDATE bookings SET status = ? WHERE id = ?");
+        $stmt->bind_param("si", $status, $id);
+        return $stmt->execute();
+    }
+
+    public function updatePaymentStatus($id, $payment_status)
+    {
+        $stmt = $this->conn->prepare("UPDATE bookings SET payment_status = ? WHERE id = ?");
+        $stmt->bind_param("si", $payment_status, $id);
+        return $stmt->execute();
+    }
+
+    public function appendAdminNote($id, $admin_note)
+    {
+        // Append admin note to existing note with timestamp
+        $stmt = $this->conn->prepare("UPDATE bookings SET note = CONCAT(IFNULL(note, ''), '\n[ADMIN] ', ?, ' (', NOW(), ')') WHERE id = ?");
+        $stmt->bind_param("si", $admin_note, $id);
+        return $stmt->execute();
+    }
+
     public function __destruct()
     {
         $this->db->close();
