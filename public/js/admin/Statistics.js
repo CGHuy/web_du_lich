@@ -1,6 +1,6 @@
 // Year selector handler
 (function () {
-	const yearSelect = document.getElementById("yearSelect");
+	const yearSelect = document.getElementById("yearSelector");
 	if (yearSelect) {
 		yearSelect.addEventListener("change", function () {
 			const currentUrl = new URL(window.location.href);
@@ -57,14 +57,29 @@ function initRevenueChart(monthlyData) {
 		},
 		options: {
 			responsive: true,
-			maintainAspectRatio: true,
+			maintainAspectRatio: false,
 			plugins: {
 				legend: {
 					display: true,
 					position: "top",
+					labels: {
+						padding: 4,
+						margin: 0,
+						boxHeight: 10,
+						font: {
+							size: 10,
+						},
+					},
 				},
+				filler: true,
 			},
 			scales: {
+				x: {
+					ticks: {
+						maxRotation: 0,
+						minRotation: 0,
+					},
+				},
 				y: {
 					beginAtZero: true,
 					ticks: {
@@ -72,6 +87,14 @@ function initRevenueChart(monthlyData) {
 							return (value / 1000000).toFixed(0) + "M";
 						},
 					},
+				},
+			},
+			layout: {
+				padding: {
+					top: 5,
+					bottom: 5,
+					left: 5,
+					right: 5,
 				},
 			},
 		},
@@ -110,9 +133,18 @@ function initStatusChart(statusData) {
 		},
 		options: {
 			responsive: true,
+			maintainAspectRatio: false,
 			plugins: {
 				legend: {
 					position: "bottom",
+					labels: {
+						padding: 4,
+						margin: 0,
+						boxHeight: 10,
+						font: {
+							size: 10,
+						},
+					},
 				},
 				tooltip: {
 					callbacks: {
@@ -120,6 +152,14 @@ function initStatusChart(statusData) {
 							return context.label + ": " + context.parsed + " đơn";
 						},
 					},
+				},
+			},
+			layout: {
+				padding: {
+					top: 5,
+					bottom: 5,
+					left: 5,
+					right: 5,
 				},
 			},
 		},

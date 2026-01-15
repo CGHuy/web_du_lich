@@ -1,36 +1,32 @@
 <?php
-require_once __DIR__ . '/../models/Tour.php';
-require_once __DIR__ . '/../models/Booking.php';
-require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../service/StatisticsService.php';
 
 class StatisticsController
 {
-    private $tourModel;
-    private $bookingModel;
-    private $db;
-    private $conn;
-    private $currentYear;
+    private $statisticsService;
 
     public function __construct()
     {
-        $this->tourModel = new Tour();
-        $this->bookingModel = new Booking();
-        $this->db = new Database();
-        $this->conn = $this->db->getConnection();
-        $this->currentYear = date('Y');
+        $this->statisticsService = new StatisticsService();
     }
 
     public function index()
     {
-        // Lấy dữ liệu thống kê
+        // Lấy danh sách các năm có dữ liệu từ database
+        $availableYears = $this->statisticsService->getAvailableYears();
+
+        // Lấy năm từ GET parameter, mặc định là năm đầu tiên có dữ liệu
+        $year = isset($_GET['year']) ? (int)$_GET['year'] : ($availableYears[0] ?? date('Y'));
+
+        // Lấy dữ liệu thống kê từ service
         $stats = [
-            'totalRevenue' => $this->getTotalRevenue(),
-            'totalBookings' => $this->getTotalBookings(),
-            'totalTours' => $this->getTotalTours(),
-            'newCustomers' => $this->getNewCustomers(),
-            'monthlyRevenue' => $this->getMonthlyRevenue(),
-            'bookingStatus' => $this->getBookingStatus(),
-            'topTours' => $this->getTopTours()
+            'totalRevenue' => $this->statisticsService->getTotalRevenue($year),
+            'totalBookings' => $this->statisticsService->getTotalBookings($year),
+            'totalTours' => $this->statisticsService->getTotalTours(),
+            'monthlyRevenue' => $this->statisticsService->getMonthlyRevenue($year),
+            'bookingStatus' => $this->statisticsService->getBookingStatus($year),
+            'topTours' => $this->statisticsService->getTopTours($year),
+            'availableYears' => $availableYears
         ];
 
         ob_start();
@@ -38,182 +34,5 @@ class StatisticsController
         $content = ob_get_clean();
         $currentPage = 'Statistics';
         return include __DIR__ . '/../views/admin/admin_layout.php';
-    }
-
-    // Lấy tổng doanh thu năm hiện tại
-    private function getTotalRevenue()
-    {
-        $sql = "SELECT COALESCE(SUM(b.total_price), 0) as total
-                FROM bookings b
-                WHERE YEAR(b.created_at) = {$this->currentYear}
-                AND b.payment_status = 'paid'
-                AND b.status = 'confirmed'";
-        $result = $this->conn->query($sql);
-        $row = $result->fetch_assoc();
-        return [
-            'value' => $row['total'],
-            'trend' => 12.5,
-            'status' => 'up'
-        ];
-    }
-
-    // Lấy tổng số booking năm hiện tại
-    private function getTotalBookings()
-    {
-        $sql = "SELECT COUNT(id) as total
-                FROM bookings
-                WHERE YEAR(created_at) = {$this->currentYear}
-                AND payment_status = 'paid'
-                AND status = 'confirmed'";
-        $result = $this->conn->query($sql);
-        $row = $result->fetch_assoc();
-        return [
-            'value' => $row['total'],
-            'trend' => 8.2,
-            'status' => 'up'
-        ];
-    }
-
-    // Lấy tổng số tour
-    private function getTotalTours()
-    {
-        $sql = "SELECT COUNT(id) as total FROM tours";
-        $result = $this->conn->query($sql);
-        $row = $result->fetch_assoc();
-        return [
-            'value' => $row['total'],
-            'trend' => 0,
-            'status' => 'neutral'
-        ];
-    }
-
-    // Lấy số khách hàng mới năm hiện tại
-    private function getNewCustomers()
-    {
-        $sql = "SELECT COUNT(DISTINCT b.user_id) as total
-                FROM bookings b
-                WHERE YEAR(b.created_at) = {$this->currentYear}
-                AND b.user_id IS NOT NULL";
-        $result = $this->conn->query($sql);
-        $row = $result->fetch_assoc();
-        return [
-            'value' => $row['total'],
-            'trend' => -2.4,
-            'status' => 'down'
-        ];
-    }
-
-    // Lấy doanh thu theo tháng
-    private function getMonthlyRevenue()
-    {
-        $sql = "SELECT MONTH(b.created_at) as month, COALESCE(SUM(b.total_price), 0) as revenue
-                FROM bookings b
-                WHERE YEAR(b.created_at) = {$this->currentYear}
-                AND b.payment_status = 'paid'
-                AND b.status = 'confirmed'
-                GROUP BY MONTH(b.created_at)
-                ORDER BY MONTH(b.created_at)";
-
-        $result = $this->conn->query($sql);
-        $monthlyData = array_fill(1, 12, 0);
-
-        while ($row = $result->fetch_assoc()) {
-            $monthlyData[$row['month']] = $row['revenue'];
-        }
-
-        // Chuẩn hóa dữ liệu cho biểu đồ (tính % so với max)
-        $maxRevenue = max($monthlyData);
-        $maxRevenue = $maxRevenue > 0 ? $maxRevenue : 100;
-
-        $chartData = [];
-        foreach ($monthlyData as $month => $revenue) {
-            $chartData[] = [
-                'month' => $month,
-                'value' => (int)$revenue,
-                'percentage' => round(($revenue / $maxRevenue) * 100, 2)
-            ];
-        }
-
-        return $chartData;
-    }
-
-    // Lấy trạng thái đơn đặt chỗ
-    private function getBookingStatus()
-    {
-        $sql = "SELECT b.status, COUNT(id) as count
-                FROM bookings b
-                WHERE YEAR(b.created_at) = {$this->currentYear}
-                GROUP BY b.status";
-
-        $result = $this->conn->query($sql);
-        $statusData = [
-            'confirmed' => 0,
-            'pending_cancellation' => 0,
-            'cancelled' => 0
-        ];
-
-        while ($row = $result->fetch_assoc()) {
-            if (isset($statusData[$row['status']])) {
-                $statusData[$row['status']] = $row['count'];
-            }
-        }
-
-        $total = array_sum($statusData);
-
-        return [
-            'confirmed' => [
-                'count' => $statusData['confirmed'],
-                'percentage' => $total > 0 ? round(($statusData['confirmed'] / $total) * 100, 0) : 0,
-                'label' => 'Đã xác nhận',
-                'color' => '#10b981'
-            ],
-            'pending_cancellation' => [
-                'count' => $statusData['pending_cancellation'],
-                'percentage' => $total > 0 ? round(($statusData['pending_cancellation'] / $total) * 100, 0) : 0,
-                'label' => 'Chờ hủy',
-                'color' => '#f59e0b'
-            ],
-            'cancelled' => [
-                'count' => $statusData['cancelled'],
-                'percentage' => $total > 0 ? round(($statusData['cancelled'] / $total) * 100, 0) : 0,
-                'label' => 'Đã hủy',
-                'color' => '#ef4444'
-            ],
-            'total' => $total
-        ];
-    }
-
-    // Lấy top 3 tour được đặt nhiều nhất
-    private function getTopTours()
-    {
-        $sql = "SELECT t.id, t.name, t.tour_code, COUNT(b.id) as booking_count,
-                        COALESCE(SUM(b.total_price), 0) as total_revenue,
-                        t.cover_image
-                FROM tours t
-                LEFT JOIN tour_departures td ON t.id = td.tour_id
-                LEFT JOIN bookings b ON td.id = b.departure_id 
-                           AND YEAR(b.created_at) = {$this->currentYear}
-                           AND b.payment_status = 'paid'
-                           AND b.status = 'confirmed'
-                GROUP BY t.id, t.name, t.tour_code, t.cover_image
-                ORDER BY booking_count DESC, total_revenue DESC
-                LIMIT 3";
-
-        $result = $this->conn->query($sql);
-        $topTours = [];
-
-        while ($row = $result->fetch_assoc()) {
-            $topTours[] = [
-                'id' => $row['id'],
-                'name' => $row['name'],
-                'code' => $row['tour_code'],
-                'bookings' => $row['booking_count'],
-                'revenue' => $row['total_revenue'],
-                'trend' => rand(-5, 15), // Placeholder trend
-                'image' => $row['cover_image']
-            ];
-        }
-
-        return $topTours;
     }
 }

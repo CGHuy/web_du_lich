@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/AppStyle.css">
     <link rel="stylesheet" href="css/SettingAccount.css">
     <link rel="stylesheet" href="css/manage.css">
+    <link rel="stylesheet" href="css/Statistics.css">
 </head>
 
 <body>
