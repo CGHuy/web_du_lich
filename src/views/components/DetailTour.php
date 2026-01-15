@@ -38,21 +38,11 @@ include __DIR__ . '/../partials/header.php';
             </div>
             <div id="carouselExample" class="carousel slide mx-auto my-3 custom-carousel">
                 <div class="carousel-inner h-100">
-                    <?php if (!empty($tourImages) && is_array($tourImages)): ?>
-                        <?php foreach ($tourImages as $idx => $img): ?>
-                            <?php
-                            if (!empty($img['image'])) {
-                                $finfo = new finfo(FILEINFO_MIME_TYPE);
-                                $mime = $finfo->buffer($img['image']);
-                                if (strpos($mime, 'image/') === 0) {
-                                    $imgData = base64_encode($img['image']);
-                                    $src = 'data:' . $mime . ';base64,' . $imgData;
-                                } else {
-                                    $src = '';
-                                }
-                            } else {
-                                $src = '';
-                            }
+                    <?php
+                    // Chỉ hiển thị ảnh từ bảng tour_images, dùng trực tiếp data URI
+                    if (!empty($tourImages) && is_array($tourImages)) {
+                        foreach ($tourImages as $idx => $img) {
+                            $src = !empty($img['image']) ? $img['image'] : '';
                             ?>
                             <div class="carousel-item<?php echo $idx === 0 ? ' active' : ''; ?>">
                                 <?php if ($src): ?>
@@ -61,12 +51,16 @@ include __DIR__ . '/../partials/header.php';
                                     <div class="text-center text-danger">Không có ảnh hợp lệ</div>
                                 <?php endif; ?>
                             </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+                            <?php
+                        }
+                    } else {
+                        ?>
                         <div class="carousel-item active">
                             <div class="text-center text-warning">Chưa có ảnh cho tour này.</div>
                         </div>
-                    <?php endif; ?>
+                        <?php
+                    }
+                    ?>
                 </div>
                 <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample"
                     data-bs-slide="prev">

@@ -32,7 +32,7 @@ class BookingTourController
         if (isset($_GET['tour_id'])) {
             $tour = $this->tourModel->getById($_GET['tour_id']);
             if (!empty($tour['id'])) {
-                $allDepartures = $this->tour_departureModel->getByTourIdForBookingTour($tour['id']);
+                $allDepartures = $this->tour_departureModel->getByTourId($tour['id']);
                 // Lọc chỉ lấy những tour departure có ngày khởi hành >= ngày hôm nay
                 $today = date('Y-m-d');
                 foreach ($allDepartures as $dep) {

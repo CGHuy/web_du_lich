@@ -68,6 +68,7 @@ class ListTourController
         $tourReviews = $this->listTourService->getReviewsWithUserByTourId($id);
         // Lấy ảnh của tour trực tiếp từ model
         $tourImages = $this->tourImageModel->getImagesByTourIdForListTour($id);
+        // Chỉ lấy ảnh từ bảng tour_images, không lấy cover_image
         if (!$tour) {
             header("HTTP/1.0 404 Not Found");
             echo "Tour not found";
