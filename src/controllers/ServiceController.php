@@ -45,7 +45,7 @@ class ServiceController {
             header('Location: ?controller=Service&action=index');
         }
     }
-
+    
     public function delete() {
         $id = $_POST['id'];
         $this->model->delete($id);

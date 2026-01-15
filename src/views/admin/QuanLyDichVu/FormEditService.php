@@ -1,4 +1,4 @@
-<form method="post" action="<?= route("service.update") ?>" enctype="multipart/form-data">
+<form method="post" action="<?= route("Service.update") ?>" enctype="multipart/form-data">
     <input type="hidden" name="id" value="<?= htmlspecialchars($service['id']) ?>">
     <div class="modal-body">
         <div class="mb-3">
