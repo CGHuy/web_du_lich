@@ -66,31 +66,6 @@
                     </div>
                 </li>
             <?php endforeach; ?>
-            <?php if ($totalPages > 1): ?>
-                <nav aria-label="Page navigation" class="mt-3">
-                    <ul class="pagination justify-content-center">
-                        <?php if ($page > 1): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="?controller=TourItinerary&action=index&page=<?= $page - 1 ?>" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                            <li class="page-item <?= $i == $page ? 'active' : '' ?>">
-                                <a class="page-link" href="?controller=TourItinerary&action=index&page=<?= $i ?>"><?= $i ?></a>
-                            </li>
-                        <?php endfor; ?>
-                        <?php if ($page < $totalPages): ?>
-                            <li class="page-item">
-                                <a class="page-link" href="?controller=TourItinerary&action=index&page=<?= $page + 1 ?>" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        <?php endif; ?>
-                    </ul>
-                </nav>
-            <?php endif; ?>
         <?php else: ?>
             <li class="list-group-item text-center py-5">
                 <i class="fas fa-inbox fa-3x text-muted mb-3"></i>

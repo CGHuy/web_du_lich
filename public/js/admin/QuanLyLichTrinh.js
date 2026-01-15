@@ -1,108 +1,83 @@
 document.addEventListener('DOMContentLoaded', function () {
-    
-    // Check if Bootstrap is loaded
-    if (typeof bootstrap === 'undefined') {
-        alert('Bootstrap chưa được load! Kiểm tra lại file bootstrap.js');
-        return;
-    }
-
+    // Lấy modal lịch trình
     const itineraryModalEl = document.getElementById('itineraryModal');
-    
-    if (itineraryModalEl) {
-        const itineraryModal = new bootstrap.Modal(itineraryModalEl);
-        const itineraryModalLabel = document.getElementById('itineraryModalLabel');
-        const modalBody = itineraryModalEl.querySelector('.modal-body');
+    if (!itineraryModalEl) return;
 
-        if (itineraryModalLabel && modalBody) {
-            // Load form when Bootstrap modal is shown (use event.relatedTarget)
-            itineraryModalEl.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget; // button that opened the modal
-                if (!button) return;
+    const itineraryModalLabel = document.getElementById('itineraryModalLabel');
+    const modalBody = itineraryModalEl.querySelector('.modal-body');
 
-                const tourId = button.getAttribute('data-tour-id');
-                const tourName = button.getAttribute('data-tour-name');
-                const actionName = button.getAttribute('data-action-name');
-                const formUrl = button.getAttribute('data-form-url') || `index.php?controller=TourItinerary&action=getForm&tour_id=${tourId}`;
+    // Tải form khi modal được mở
+    itineraryModalEl.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; // Nút đã bấm để mở modal
+        if (!button) return;
 
-                itineraryModalLabel.textContent = `${actionName} Lịch Trình cho Tour: ${tourName}`;
+        // Lấy dữ liệu từ nút
+        const tourId = button.getAttribute('data-tour-id');
+        const tourName = button.getAttribute('data-tour-name');
+        const actionName = button.getAttribute('data-action-name');
+        const formUrl = button.getAttribute('data-form-url') || `index.php?controller=TourItinerary&action=getForm&tour_id=${tourId}`;
 
-                // Show loading
-                modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Đang tải...</span></div><p class="mt-2">Đang tải dữ liệu...</p></div>';
+        // Cập nhật tiêu đề modal
+        itineraryModalLabel.textContent = `${actionName} Lịch Trình cho Tour: ${tourName}`;
+        
+        // Hiển thị loading
+        modalBody.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2">Đang tải...</p></div>';
 
-                fetch(formUrl)
-                    .then(response => {
-                        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                        return response.text();
-                    })
-                    .then(html => {
-                        modalBody.innerHTML = html;
-                        initializeItineraryForm();
-                    })
-                    .catch(error => {
-                        modalBody.innerHTML = `
-                            <div class="alert alert-danger" role="alert">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <strong>Lỗi!</strong> Không thể tải form: ${error.message}
-                            </div>
-                        `;
-                    });
+        // Gọi API để lấy form
+        fetch(formUrl)
+            .then(response => response.ok ? response.text() : Promise.reject(`HTTP error! status: ${response.status}`))
+            .then(html => {
+                modalBody.innerHTML = html;
+                initializeItineraryForm(); // Khởi tạo các chức năng form
+            })
+            .catch(error => {
+                modalBody.innerHTML = `<div class="alert alert-danger"><strong>Lỗi!</strong> Không thể tải form: ${error}</div>`;
             });
+    });
 
-            // Clear modal on close
-            itineraryModalEl.addEventListener('hidden.bs.modal', function () {
-                modalBody.innerHTML = '';
-            });
-        }
-    }
+    // Xóa nội dung modal khi đóng
+    itineraryModalEl.addEventListener('hidden.bs.modal', () => modalBody.innerHTML = '');
 
-    // Initialize form functionality
+    // Khởi tạo các chức năng form lịch trình
     function initializeItineraryForm() {
         const daysContainer = document.getElementById('itinerary-days-container');
-        if (!daysContainer) return;
-
         const addDayBtn = document.getElementById('add-day-btn');
         const itineraryForm = document.getElementById('itinerary-form');
         const dayTemplate = document.getElementById('itinerary-day-template');
+        if (!daysContainer || !dayTemplate) return;
 
-        // Update day numbers and input names
+        // Cập nhật số thứ tự ngày và tên input
         function updateDayInputs() {
-            const dayItems = daysContainer.querySelectorAll('.itinerary-day-item');
-            
-            dayItems.forEach((item, index) => {
+            daysContainer.querySelectorAll('.itinerary-day-item').forEach((item, index) => {
                 const dayNumber = index + 1;
                 
+                // Cập nhật tiêu đề ngày
                 const dayTitle = item.querySelector('.day-title');
-                if (dayTitle) {
-                    dayTitle.innerHTML = `<i class="fas fa-calendar-day text-primary me-2"></i>Ngày ${dayNumber}`;
-                }
-
+                if (dayTitle) dayTitle.innerHTML = `<i class="fas fa-calendar-day text-primary me-2"></i>Ngày ${dayNumber}`;
+                
+                // Cập nhật input số ngày
                 const dayNumberInput = item.querySelector('.day-number-input');
                 if (dayNumberInput) {
-                    dayNumberInput.setAttribute('name', `days[${index}][day_number]`);
+                    dayNumberInput.name = `days[${index}][day_number]`;
                     dayNumberInput.value = dayNumber;
                 }
                 
+                // Cập nhật textarea mô tả
                 const descriptionTextarea = item.querySelector('.day-description-textarea');
-                if (descriptionTextarea) {
-                    descriptionTextarea.setAttribute('name', `days[${index}][description]`);
-                }
+                if (descriptionTextarea) descriptionTextarea.name = `days[${index}][description]`;
             });
         }
 
-        // Add new day
+        // Thêm ngày mới
         function addDay() {
-            if (!dayTemplate) return;
-
-            const dayNode = dayTemplate.content.cloneNode(true);
-            daysContainer.appendChild(dayNode);
+            daysContainer.appendChild(dayTemplate.content.cloneNode(true));
             updateDayInputs();
         }
 
-        // Remove day handler
+        // Xử lý nút xóa ngày
         daysContainer.addEventListener('click', function(e) {
             if (e.target.closest('.remove-day-btn')) {
                 const dayItems = daysContainer.querySelectorAll('.itinerary-day-item');
-                
                 if (dayItems.length > 1) {
                     e.target.closest('.itinerary-day-item').remove();
                     updateDayInputs();
@@ -112,28 +87,18 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Add day button
-        if (addDayBtn) {
-            addDayBtn.addEventListener('click', addDay);
-        }
+        // Gắn sự kiện cho nút thêm ngày
+        if (addDayBtn) addDayBtn.addEventListener('click', addDay);
+        
+        // Cập nhật input trước khi submit form
+        if (itineraryForm) itineraryForm.addEventListener('submit', updateDayInputs);
 
-        // Form submit handler: update day inputs then allow normal form submit (like QuanLyTour)
-        if (itineraryForm) {
-            itineraryForm.addEventListener('submit', function() {
-                updateDayInputs();
-            });
-        }
-
-        // Initial update
+        // Khởi tạo ban đầu
         updateDayInputs();
-
-        // Add first day if empty
-        if (daysContainer.children.length === 0 && dayTemplate) {
-            addDay();
-        }
+        if (daysContainer.children.length === 0) addDay(); // Thêm ngày đầu tiên nếu chưa có
     }
 
-    // Tìm kiếm
+    // Chức năng tìm kiếm
     var searchInput = document.querySelector('.search-input');
     if (searchInput) {
         searchInput.addEventListener('keyup', function() {

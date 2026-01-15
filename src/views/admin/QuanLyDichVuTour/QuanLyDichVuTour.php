@@ -88,7 +88,7 @@
                 <h5 class="modal-title" id="serviceModalLabel">Dịch vụ Tour</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body pb-0 pt-0">
+            <div class="modal-body pt-0">
                 <!-- Form sẽ được load động từ server -->
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">

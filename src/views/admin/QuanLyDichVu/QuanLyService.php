@@ -81,7 +81,7 @@
                 <h5 class="modal-title" id="addServiceModalLabel">Thêm Dịch vụ Mới</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body pb-0 pt-0">
+            <div class="modal-body pt-0">
                 <!-- Nội dung form sẽ được load động -->
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
@@ -102,7 +102,7 @@
                 <h5 class="modal-title" id="editServiceModalLabel">Sửa Dịch vụ</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body pb-0 pt-0">
+            <div class="modal-body pt-0">
                 <!-- Nội dung form sẽ được load động -->
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
@@ -133,7 +133,7 @@
                     <p class="text-danger m-0 p-2"><strong>Hành động này không thể hoàn tác.</strong></p>
                 </div>
 
-                <div class="modal-footer pb-0">
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" class="btn btn-danger">Xóa</button>
                 </div>
@@ -142,5 +142,5 @@
     </div>
 </div>
 
-<script src="/web_du_lich/public/js/admin/QuanLy.js"></script>
+<script src="/web_du_lich/public/js/admin/QuanLyDichVu.js"></script>
 

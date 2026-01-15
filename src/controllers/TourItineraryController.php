@@ -12,13 +12,7 @@ class TourItineraryController {
     }
 
     public function index() {
-        $page = $_GET['page'] ?? 1;
-        $limit = 10;
-        $offset = ($page - 1) * $limit;
-        $all_tours_paginated = $this->tourModel->getAllPaginated($offset, $limit);
-        $total = $this->tourModel->getTotal();
-        $totalPages = ceil($total / $limit);
-
+        $all_tours = $this->tourModel->getAll();
         $all_itineraries = $this->itineraryModel->getAll();
 
         $tour_ids_with_itinerary = array_fill_keys(array_column($all_itineraries, 'tour_id'), true);
@@ -26,7 +20,7 @@ class TourItineraryController {
         $tours = array_map(function($tour) use ($tour_ids_with_itinerary) {
             $tour['has_itinerary'] = isset($tour_ids_with_itinerary[$tour['id']]);
             return $tour;
-        }, $all_tours_paginated);
+        }, $all_tours);
 
         $currentPage = 'TourItinerary';
         ob_start();

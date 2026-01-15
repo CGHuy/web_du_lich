@@ -79,7 +79,7 @@
                 <h5 class="modal-title" id="addUserModalLabel">Thêm User Mới</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-0">
                 <!-- Nội dung form sẽ được load động -->
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
@@ -100,7 +100,7 @@
                 <h5 class="modal-title" id="editUserModalLabel">Sửa User</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body pb-0">
+            <div class="modal-body p-0">
                 <!-- Nội dung form sẽ được load động -->
                 <div class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
@@ -129,7 +129,7 @@
                     <div id="delete_booking_info" class="p-2"></div>
                     <p class="text-danger m-0 p-2"><strong>Hành động này không thể hoàn tác.</strong></p>
                 </div>
-                <div class="modal-footer pb-0">
+                <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" id="confirm_delete_btn" class="btn btn-danger">Xóa</button>
                 </div>
