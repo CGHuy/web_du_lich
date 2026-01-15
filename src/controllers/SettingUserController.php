@@ -1,167 +1,120 @@
 <?php
 require_once __DIR__ . '/../models/User.php';
 require_once __DIR__ . '/../service/BookingHistoryService.php';
+require_once __DIR__ . '/../service/FavouriteTourService.php';
+require_once __DIR__ . '/../models/Wishlist.php';
+
 
 class SettingUserController
 {
     private $userModel;
     private $bookingHistoryModel;
-    private $userId; // lấy từ session
+    private $userId;
 
-    public function __construct() // Khởi tạo model User
+    public function __construct()
     {
         if (session_status() === PHP_SESSION_NONE)
             session_start();
         $this->userId = $_SESSION['user_id'] ?? null;
         if (!$this->userId) {
-            // nếu chưa đăng nhập, chuyển hướng về trang login
             header('Location: /web_du_lich/public/login.php');
             exit;
         }
-
         $this->userModel = new User();
         $this->bookingHistoryModel = new BookingHistoryService();
     }
 
     //=================== Thông tin cá nhân ===================//
+
     public function edit()
     {
-        $user = $this->userModel->getById($this->userId); // Lấy thông tin user theo $userId
-        if (!$user) {
-            http_response_code(404);
-            echo "User không tồn tại";
-            return;
-        } // Hiển thị form chỉnh sửa thông tin cá nhân của user 
-        include __DIR__ . '/../views/components/SettingAccount.php';
-    }
-
-    public function update() // Xử lý cập nhật thông tin cá nhân
-    {
-        if ($_SERVER['REQUEST_METHOD'] !== 'POST') { // ko phải POST thì quay về trang edit
-            header('Location: ' . route('settinguser.edit'));
-            return;
-        }
-
         $user = $this->userModel->getById($this->userId);
         if (!$user) {
             http_response_code(404);
             echo "User không tồn tại";
             return;
         }
-        // Lấy dữ liệu từ form (nếu ko có dữ liệu ms thì giữ nguyên)
+        include __DIR__ . '/../views/components/SettingAccount.php';
+    }
+
+
+    public function update()
+    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header('Location: ' . route('settinguser.edit'));
+            return;
+        }
+        $user = $this->userModel->getById($this->userId);
+        if (!$user) {
+            http_response_code(404);
+            echo "User không tồn tại";
+            return;
+        }
         $fullname = $_POST['fullname'] ?? $user['fullname'];
         $phone = $_POST['phone'] ?? $user['phone'];
         $email = $_POST['email'] ?? $user['email'];
-        $password = $_POST['password'] ?? '';
-        if ($password === '') {
-            $password = $user['password']; // giữ nguyên nếu không đổi
-        }
-        // Gọi hàm update của model User để cập nhật thông tin
-        $this->userModel->update(
-            $this->userId,
-            $fullname,
-            $phone,
-            $email,
-            $password,
-            $user['role'],
-            $user['status']
-        );
-        // Cập nhật dữ liệu chuyển về trang edit
+        $password = $_POST['password'] ?? $user['password'];
+        $this->userModel->update($this->userId, $fullname, $phone, $email, $password, $user['role'], $user['status']);
         header('Location: ' . route('settinguser.edit'));
     }
 
 
     //=================== Đổi mật khẩu ===================//
-    public function changePassword() // Hiển thị form đổi mật khẩu
+
+    public function changePassword()
     {
         include __DIR__ . '/../views/components/ChangePassword.php';
     }
-    public function updatePassword() // Xử lý cập nhật mật khẩu
+    public function updatePassword()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . route('settinguser.changePassword'));
             return;
         }
-
         $user = $this->userModel->getById($this->userId);
         if (!$user) {
             http_response_code(404);
             echo "User không tồn tại";
             return;
         }
-
         $currentPassword = $_POST['current_password'] ?? '';
         $newPassword = $_POST['new_password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
-
-        // Kiểm tra mật khẩu hiện tại (mk nhập ko trùng vs mk trong db thì lỗi)
         if ($currentPassword !== $user['password']) {
             echo "Mật khẩu hiện tại không đúng.";
             return;
         }
-        // Kiểm tra mk mới và xác nhận mk có trùng nhau ko
         if ($newPassword !== $confirmPassword) {
             echo "Mật khẩu mới và xác nhận mật khẩu không khớp.";
             return;
         }
-        // Cập nhật mật khẩu mới
-        $this->userModel->update(
-            $this->userId,
-            $user['fullname'],
-            $user['phone'],
-            $user['email'],
-            $newPassword,
-            $user['role'],
-            $user['status']
-        );
-
+        $this->userModel->update($this->userId, $user['fullname'], $user['phone'], $user['email'], $newPassword, $user['role'], $user['status']);
         header('Location: ' . route('settinguser.changePassword'));
     }
 
     //=================== Lịch sử đặt tour ===================//
-    public function bookingHistory() // Hiển thị lịch sử đặt tour
+    public function bookingHistory() // Hiển thị danh sách booking với lọc
     {
-        // Lấy giá trị lọc có thể từ POST (form) hoặc GET (thông qua link phân trang)
-        $statusRaw = $_REQUEST['sort'] ?? null; // có thể là legacy ('status-warning') hoặc canonical ('pending_cancellation')
-        // Nếu client đã gửi canonical key thì dùng luôn, nếu là legacy thì map sang canonical
-        if ($statusRaw && in_array($statusRaw, ['pending_cancellation', 'confirmed', 'cancelled'])) {
-            $statusValue = $statusRaw;
-        } else {
-            // Map giá trị từ combobox legacy sang status DB
-            $statusMap = [
-                'status-warning' => 'pending_cancellation',
-                'status-success' => 'confirmed',
-                'status-danger' => 'cancelled'
-            ];
-            $statusValue = $statusMap[$statusRaw] ?? null;
-        }
-        // Chuẩn hóa biến $status để view hiển thị đúng option (sử dụng canonical keys)
+        $statusRaw = $_REQUEST['sort'] ?? null;
+        $statusMap = [
+            'status-warning' => 'pending_cancellation',
+            'status-success' => 'confirmed',
+            'status-danger' => 'cancelled'
+        ];
+        $statusValue = in_array($statusRaw, ['pending_cancellation', 'confirmed', 'cancelled']) ? $statusRaw : ($statusMap[$statusRaw] ?? null);
         $status = $statusValue ?? null;
-
-        // Phân trang (page từ GET)
-        $page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
-        $limit = 5; // Số lượng mục trên mỗi trang
-        $offset = ($page - 1) * $limit;
-
-        // Gọi service để lấy tổng số Booking (để tính tổng số trang)
-        $totalBookings = $this->bookingHistoryModel->getTotalByUserId($this->userId, $statusValue);
-        $totalPages = $totalBookings > 0 ? (int) ceil($totalBookings / $limit) : 1;
-
-        // Gọi service để lấy ds Booking đã lọc và phân trang
-        $bookings = $this->bookingHistoryModel->getByUserId($this->userId, $statusValue, $limit, $offset);
-
-        // Biến $bookings, $page, $totalPages, $status sẽ được dùng trong view
+        // Lấy danh sách booking của user theo trạng thái đã lọc.
+        $bookings = $this->bookingHistoryModel->getByUserId($this->userId, $statusValue);
         include __DIR__ . '/../views/components/BookingHistory.php';
     }
-    public function updateBookingHistory() // Xử lý cập nhật lịch sử đặt tour
+    public function updateBookingHistory()
     {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             header('Location: ' . route('settinguser.bookingHistory'));
             return;
         }
-        // Nếu có id thì lấy chi tiết, không có thì lấy danh sách
+        // Cập nhật danh sách booking theo id đc chọn 
         $bookingId = isset($_POST['id']) ? (int) $_POST['id'] : null;
-
         if ($bookingId) {
             $bookingDetail = $this->bookingHistoryModel->getById($bookingId);
             if (!$bookingDetail) {
@@ -173,15 +126,11 @@ class SettingUserController
         } else {
             $bookings = $this->bookingHistoryModel->getByUserId($this->userId);
         }
-
-        // Hiển thị lại view với dữ liệu từ DB
         include __DIR__ . '/../views/components/BookingHistory.php';
     }
-    public function detailBookingHistory() // Hiển thị chi tiết đặt tour
+    public function detailBookingHistory() // Hiển thị chi tiết booking
     {
-        // KHÔNG kiểm tra POST, chỉ lấy id từ GET
         $bookingId = isset($_GET['id']) ? (int) $_GET['id'] : null;
-
         if ($bookingId) {
             $bookingDetail = $this->bookingHistoryModel->getById($bookingId);
             if (!$bookingDetail) {
@@ -189,15 +138,12 @@ class SettingUserController
                 echo "Booking không tồn tại";
                 return;
             }
-
-            // Lấy review cũ nếu user đã đánh giá tour này
             $tourId = $bookingDetail['tour_id'];
             $existingReview = $this->checkExistingReview($this->userId, $tourId);
         } else {
             $bookingDetail = null;
             $existingReview = null;
         }
-
         include __DIR__ . '/../views/components/DetailBookingHistory.php';
     }
 
@@ -214,7 +160,6 @@ class SettingUserController
             echo "Thiếu mã booking";
             return;
         }
-
         $bookingDetail = $this->bookingHistoryModel->getById($bookingId);
         if (!$bookingDetail || (int) $bookingDetail['user_id'] !== (int) $this->userId) {
             http_response_code(404);
@@ -226,11 +171,9 @@ class SettingUserController
             echo "Chỉ có thể yêu cầu hủy với booking đã xác nhận";
             return;
         }
-
         require_once __DIR__ . '/../models/Booking.php';
         $bookingModel = new Booking();
         $bookingModel->updateStatus($bookingId, 'pending_cancellation');
-
         if (session_status() === PHP_SESSION_NONE)
             session_start();
         $_SESSION['booking_success'] = true;
@@ -245,12 +188,9 @@ class SettingUserController
             header('Location: ' . route('settinguser.bookingHistory'));
             return;
         }
-
         $bookingId = isset($_POST['booking_id']) ? (int) $_POST['booking_id'] : null;
         $rating = isset($_POST['rating']) ? (int) $_POST['rating'] : null;
         $comment = isset($_POST['comment']) ? trim($_POST['comment']) : '';
-
-        // Kiểm tra dữ liệu
         if (!$bookingId || !$rating) {
             if (session_status() === PHP_SESSION_NONE)
                 session_start();
@@ -258,7 +198,6 @@ class SettingUserController
             header('Location: ' . route('settinguser.detailBookingHistory', ['id' => $bookingId]));
             return;
         }
-
         if ($rating < 1 || $rating > 5) {
             if (session_status() === PHP_SESSION_NONE)
                 session_start();
@@ -266,44 +205,23 @@ class SettingUserController
             header('Location: ' . route('settinguser.detailBookingHistory', ['id' => $bookingId]));
             return;
         }
-
-        // Lấy thông tin booking để xác minh booking thuộc về user
         $bookingDetail = $this->bookingHistoryModel->getById($bookingId);
         if (!$bookingDetail || (int) $bookingDetail['user_id'] !== (int) $this->userId) {
             http_response_code(404);
             echo "Booking không tồn tại hoặc không thuộc về bạn";
             return;
         }
-
         $tourId = $bookingDetail['tour_id'];
-
         require_once __DIR__ . '/../models/Review.php';
         $reviewModel = new Review();
-
-        // Kiểm tra xem user đã đánh giá tour này chưa
         $existingReview = $this->checkExistingReview($this->userId, $tourId);
-
         if ($existingReview) {
-            // Cập nhật đánh giá cũ
-            $reviewModel->update(
-                $existingReview['id'],
-                $this->userId,
-                $tourId,
-                $rating,
-                $comment
-            );
+            $reviewModel->update($existingReview['id'], $this->userId, $tourId, $rating, $comment);
             $message = 'Cập nhật đánh giá thành công!';
         } else {
-            // Tạo đánh giá mới
-            $reviewModel->create(
-                $this->userId,
-                $tourId,
-                $rating,
-                $comment
-            );
+            $reviewModel->create($this->userId, $tourId, $rating, $comment);
             $message = 'Đánh giá tour thành công!';
         }
-
         if (session_status() === PHP_SESSION_NONE)
             session_start();
         $_SESSION['booking_success'] = true;
@@ -316,49 +234,39 @@ class SettingUserController
         require_once __DIR__ . '/../../config/database.php';
         $db = new Database();
         $conn = $db->getConnection();
-
         $stmt = $conn->prepare("SELECT id FROM reviews WHERE user_id = ? AND tour_id = ?");
         $stmt->bind_param('ii', $userId, $tourId);
         $stmt->execute();
         $result = $stmt->get_result();
         $review = $result->fetch_assoc();
-
         $db->close();
         return $review;
     }
 
     //=================== Tour yêu thích ===================//
-    public function favoriteTour() // Hiển thị tour yêu thích
+    public function favoriteTour()
     {
-        require_once __DIR__ . '/../service/FavouriteTourService.php';
         $favouriteTourService = new FavouriteTourService();
         $favoriteTours = $favouriteTourService->getFavouriteToursByUser($this->userId);
         include __DIR__ . '/../views/components/FavouriteTour.php';
     }
 
-    public function updateFavoriteTour() // Xử lý cập nhật tour yêu thích hoặc xuất danh sách
+    public function updateFavoriteTour()
     {
-        require_once __DIR__ . '/../service/FavouriteTourService.php';
-        require_once __DIR__ . '/../models/Wishlist.php';
         $wishlistModel = new Wishlist();
         $favouriteTourService = new FavouriteTourService();
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $action = $_POST['action'] ?? '';
             $tour_id = isset($_POST['tour_id']) ? (int) $_POST['tour_id'] : null;
             $wishlist_id = isset($_POST['wishlist_id']) ? (int) $_POST['wishlist_id'] : null;
-
             if ($action === 'add' && $tour_id) {
                 $wishlistModel->create($this->userId, $tour_id);
             } elseif ($action === 'delete' && $wishlist_id) {
                 $favouriteTourService->deleteFavourite($wishlist_id);
             }
-
             header('Location: ' . route('settinguser.favoriteTour'));
             return;
         }
-
-        // Nếu là GET, xuất danh sách tour yêu thích
         $favoriteTours = $favouriteTourService->getFavouriteToursByUser($this->userId);
         include __DIR__ . '/../views/components/FavouriteTour.php';
     }

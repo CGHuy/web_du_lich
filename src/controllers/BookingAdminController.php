@@ -12,11 +12,12 @@ class BookingAdminController
 
     public function index()
     {
-        // Lấy trạng thái lọc nếu có
+        // Lấy trạng thái lọc và từ khóa tìm kiếm nếu có
         $status = $_REQUEST['sort'] ?? '';
+        $search = trim((string) ($_REQUEST['search'] ?? ''));
 
-        // Lấy tất cả bookings (không phân trang) để hiển thị trong ô cuộn dọc
-        $bookings = $this->bookingService->getAll($status);
+        // Lấy tất cả bookings (không phân trang) để hiển thị trong ô cuộn dọc, có hỗ trợ tìm kiếm
+        $bookings = $this->bookingService->getAll($status, $search);
 
         // Render view qua layout admin
         $currentPage = 'booking';
@@ -36,7 +37,7 @@ class BookingAdminController
 
         $bookingDetail = $this->bookingService->getDetail($id);
 
-        // Chuẩn hóa dữ liệu (moved from view)
+
         if (!empty($bookingDetail)) {
             require_once __DIR__ . '/../models/TourDeparture.php';
             require_once __DIR__ . '/../models/Tour.php';
@@ -72,7 +73,6 @@ class BookingAdminController
         $bookingId = isset($_POST['booking_id']) ? (int) $_POST['booking_id'] : null;
         $action = $_POST['action'] ?? '';
         $refundAmount = isset($_POST['refund_amount']) ? floatval($_POST['refund_amount']) : 0;
-        $refundNote = $_POST['refund_note'] ?? ''; // admin_note feature disabled
 
         if (!$bookingId) {
             http_response_code(400);
@@ -93,18 +93,17 @@ class BookingAdminController
             session_start();
 
         if ($action === 'approve') {
-            // mark as cancelled and refunded
+
             $bookingModel->updateStatus($bookingId, 'cancelled');
             $bookingModel->updatePaymentStatus($bookingId, 'refunded');
 
             // Thông báo xác nhận phê duyệt hoàn tiền thành công
             $_SESSION['admin_message'] = 'Phê duyệt hoàn tiền thành công! Số tiền hoàn: ' . number_format($refundAmount, 0, ',', '.') . 'đ';
-            // Debug log to confirm message was set
+
             error_log("BookingAdmin: set admin_message for booking {$bookingId} with amount {$refundAmount}");
         } elseif ($action === 'deny') {
-            // revert to confirmed state
+
             $bookingModel->updateStatus($bookingId, 'confirmed');
-            // admin note recording disabled
             $_SESSION['admin_message'] = 'Đã từ chối yêu cầu hủy.';
         }
 

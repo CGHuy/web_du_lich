@@ -18,7 +18,7 @@ $currentPage = 'booking'; ?>
         <p style="color: #636465ff;">Thông tin chi tiết về chuyến đi của bạn đã đặt</p>
     </div>
     <div>
-       
+
 
         <?php if (($bookingDetail['booking_status'] ?? '') === 'pending_cancellation'): ?>
             <button id="openProcessCancel" class="btn btn-danger btn-sm">Xử lý yêu cầu hủy</button>
@@ -128,7 +128,7 @@ $currentPage = 'booking'; ?>
                         <td>
                             <?php
                             $statusBadge = [
-                                'unpaid' => '<span class="badge bg-warning">Chưa thanh toán</span>',
+                                ,
                                 'paid' => '<span class="badge bg-success">Đã thanh toán</span>',
                                 'refunded' => '<span class="badge bg-danger">Đã hoàn tiền</span>'
                             ];
@@ -178,11 +178,7 @@ $currentPage = 'booking'; ?>
                                 </div>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label">Lý do khách hủy</label>
-                                <textarea class="form-control" name="refund_note" rows="3"
-                                    placeholder="Ghi lý do (nếu khách cung cấp)"></textarea>
-                            </div>
+
 
                         </div>
                         <div class="col-md-5">

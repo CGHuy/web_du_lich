@@ -62,7 +62,6 @@ include __DIR__ . '/../partials/header.php';
                                 <table class="custom-table">
                                     <thead>
                                         <tr>
-                                            <th style="width: 50px;">#</th>
                                             <th style="width: 140px;">Mã Booking</th>
                                             <th style="width: 280px;">Tên Tour</th>
                                             <th style="width: 150px;">Ngày Khởi Hành</th>
@@ -75,12 +74,11 @@ include __DIR__ . '/../partials/header.php';
                                     <tbody>
                                         <?php if (empty($bookings)): ?>
                                             <tr>
-                                                <td colspan="9" class="text-center">Chưa có lịch sử đặt tour</td>
+                                                <td colspan="8" class="text-center">Chưa có lịch sử đặt tour</td>
                                             </tr>
                                         <?php else: ?>
                                             <?php foreach ($bookings as $index => $booking): ?>
                                                 <tr>
-                                                    <td><?= $index + 1 ?></td>
                                                     <td><?= htmlspecialchars($booking['booking_code']) ?></td>
                                                     <td><?= htmlspecialchars($booking['tour_name']) ?></td>
                                                     <td><?= date('d/m/Y', strtotime($booking['departure_date'])) ?></td>
@@ -109,9 +107,9 @@ include __DIR__ . '/../partials/header.php';
                                 </table>
                             </div>
                         </div>
-                        <!-- Form đã được loại bỏ, không cần thiết cho nút xem chi tiết -->
+
                     </form>
-                    <!-- Pagination removed: using vertical + horizontal scroll within the table container -->
+
                 </div>
             </div>
 
