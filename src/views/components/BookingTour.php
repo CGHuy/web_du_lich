@@ -84,6 +84,7 @@ include __DIR__ . '/../partials/header.php';
                                                 <option value="<?php echo $dep['id']; ?>"
                                                     data-max="<?php echo $dep['seats_available']; ?>"
                                                     data-price="<?php echo $dep['price_moving']; ?>"
+                                                    data-price-child="<?php echo $dep['price_moving_child']; ?>"
                                                     <?php echo ($dep['seats_available'] == 0 ? 'disabled style=\'color:#ccc;\'' : ''); ?>>
                                                     <?php echo htmlspecialchars($dep['departure_date']) . " - " . htmlspecialchars($dep['departure_location']) . " (Còn " . $dep['seats_available'] . " chỗ)"; ?>
                                                 </option>
@@ -100,15 +101,33 @@ include __DIR__ . '/../partials/header.php';
                                     <input type="number" class="form-control" id="children" name="children" min="0" value="0" required>
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label fw-bold">Đơn giá di chuyển</label>
-                                    <div id="price-moving-info" class="form-control bg-success text-white fw-bold d-flex align-items-center" style="height:44px;padding:0 12px;">
-                                        <i class="fa fa-truck me-2"></i> <span id="moving-price-value">0đ</span>
+                                    <label class="form-label fw-bold">Đơn giá di chuyển - Người lớn</label>
+                                    <div id="price-moving-adult-info" class="form-control bg-success text-white fw-bold d-flex align-items-center" style="height:44px;padding:0 12px;">
+                                        <i class="fa fa-truck me-2"></i> <span id="moving-price-adult-value">0đ</span>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
+                                    <label class="form-label fw-bold">Đơn giá di chuyển - Trẻ em</label>
+                                    <div id="price-moving-child-info" class="form-control bg-success text-white fw-bold d-flex align-items-center" style="height:44px;padding:0 12px;">
+                                        <i class="fa fa-truck me-2"></i> <span id="moving-price-child-value">0đ</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Tổng phí di chuyển - Người lớn</label>
+                                    <div id="total-moving-adult-fee" class="form-control bg-primary text-white fw-bold d-flex align-items-center" style="height:44px;padding:0 12px;">
+                                        <i class="fa fa-calculator me-2"></i> <span id="moving-total-adult-value">0đ</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold">Tổng phí di chuyển - Trẻ em</label>
+                                    <div id="total-moving-child-fee" class="form-control bg-primary text-white fw-bold d-flex align-items-center" style="height:44px;padding:0 12px;">
+                                        <i class="fa fa-calculator me-2"></i> <span id="moving-total-child-value">0đ</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
                                     <label class="form-label fw-bold">Tổng phí di chuyển</label>
-                                    <div id="total-moving-fee" class="form-control bg-primary text-white fw-bold d-flex align-items-center" style="height:44px;padding:0 12px;">
-                                        <i class="fa fa-calculator me-2"></i> <span id="moving-total-value">0đ</span>
+                                    <div id="total-moving-all-fee" class="form-control bg-warning text-dark fw-bold d-flex align-items-center" style="height:44px;padding:0 12px;">
+                                        <i class="fa fa-money-bill me-2"></i> <span id="moving-total-value">Chưa chọn điểm khởi hành</span>
                                     </div>
                                 </div>
                             </div>
@@ -162,7 +181,10 @@ include __DIR__ . '/../partials/header.php';
                                 <div class="my-2"><strong>Chi phí người lớn:</strong> <span id="adults-cost" class="text-primary fw-bold">0đ</span></div>
                                 <div class="my-2"><strong>Chi phí trẻ em:</strong> <span id="children-cost" class="text-primary fw-bold">0đ</span></div>
                                 <div class="my-2"><strong>Chi phí tour:</strong> <span id="tour-cost" class="text-primary fw-bold"><?php echo number_format($tour['price_default'], 0, ',', '.'); ?>đ</span></div>
-                                <div><strong>Tổng phí di chuyển:</strong> <span id="tour-moving-total" class="text-primary fw-bold">Chưa chọn điểm khởi hành</span></div>
+                                <div class="my-2"><strong>Đơn giá di chuyển - Người lớn:</strong> <span id="card-moving-price-adult" class="text-primary fw-bold">0đ</span></div>
+                                <div class="my-2"><strong>Đơn giá di chuyển - Trẻ em:</strong> <span id="card-moving-price-child" class="text-primary fw-bold">0đ</span></div>
+                                <div class="my-2"><strong>Tổng phí - Người lớn:</strong> <span id="card-moving-total-adult" class="text-primary fw-bold">0đ</span></div>
+                                <div><strong>Tổng phí - Trẻ em:</strong> <span id="card-moving-total-child" class="text-primary fw-bold">0đ</span></div>
                             </div>
                         </div>
                         <hr>

@@ -60,10 +60,15 @@ class BookingTourController
         $tour = $this->tourModel->getById($tour_id);
         $departure = $this->tour_departureModel->getById($departure_id);
 
+        // Sử dụng method calculateTotalPrice từ Booking model
+        $total_price = $this->bookingModel->calculateTotalPrice($adults, $children, $tour_id, $departure_id);
+
+        // Tính chi tiết từng loại chi phí để hiển thị
         $adults_cost = $adults * $tour['price_default'];
         $children_cost = $children * $tour['price_child'];
-        $moving_total = $departure['price_moving'] * ($adults + $children);
-        $total_price = $adults_cost + $children_cost + $moving_total;
+        $moving_adults = $adults * $departure['price_moving'];
+        $moving_children = $children * $departure['price_moving_child'];
+        $moving_total = $moving_adults + $moving_children;
         $total_quantity = $adults + $children;
 
         $contact_name = $_POST['contact_name'];
@@ -89,19 +94,9 @@ class BookingTourController
         $note = $_POST['note'];
         $tour_id = $_POST['tour_id'] ?? 0;
 
-        // Lấy thông tin tour và departure để tính giá
-        $tour = null;
-        if (isset($_POST['tour_id'])) {
-            $tour = $this->tourModel->getById($_POST['tour_id']);
-        }
-        $departure = $this->tour_departureModel->getById($departure_id);
-        $tour_price_adult = $tour['price_default'] ?? 0;
-        $tour_price_child = $tour['price_child'] ?? 0;
-        $moving_price = $departure['price_moving'] ?? 0;
-
-        // Tính tổng giá
+        // Sử dụng method calculateTotalPrice từ Booking model để tính tổng giá
         $total_quantity = $adults + $children;
-        $total_price = ($adults * $tour_price_adult + $children * $tour_price_child + $moving_price * $total_quantity);
+        $total_price = $this->bookingModel->calculateTotalPrice($adults, $children, $tour_id, $departure_id);
 
         // Tạo booking
         $this->bookingModel->create(

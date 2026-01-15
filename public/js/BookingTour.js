@@ -43,13 +43,6 @@ function formatCurrency(num) {
 	return Number(num).toLocaleString("vi-VN") + "đ";
 }
 
-function getTotalQuantity() {
-	const adults = parseInt(document.getElementById("adults")?.value || 1) || 1;
-	const children =
-		parseInt(document.getElementById("children")?.value || 0) || 0;
-	return adults + children;
-}
-
 function checkQuantityWarning() {
 	const departureSelect = document.getElementById("departure_id");
 	const adultsInput = document.getElementById("adults");
@@ -60,7 +53,7 @@ function checkQuantityWarning() {
 	const selected = departureSelect.options[departureSelect.selectedIndex];
 	const maxSeats = parseInt(selected?.dataset.max || 0);
 	const currentTotal =
-		parseInt(adultsInput.value || 1) + parseInt(childrenInput.value || 0);
+		(parseInt(adultsInput.value) || 1) + (parseInt(childrenInput.value) || 0);
 
 	let warningAlert = document.getElementById("quantity-warning");
 	const hasOverflow = currentTotal > maxSeats && maxSeats > 0;
@@ -96,29 +89,98 @@ function checkQuantityWarning() {
 
 function updateMovingPrice() {
 	const departureSelect = document.getElementById("departure_id");
-	const totalQuantity = getTotalQuantity();
-	const price = parseInt(
-		departureSelect?.options[departureSelect.selectedIndex]?.dataset.price || 0
+	const adultsInput = document.getElementById("adults");
+	const childrenInput = document.getElementById("children");
+	const adults = parseInt(adultsInput?.value) || 1;
+	const children = parseInt(childrenInput?.value) || 0;
+
+	const selected = departureSelect?.options[departureSelect.selectedIndex];
+	const priceAdult = parseInt(selected?.dataset.price || 0);
+	const priceChild = parseInt(selected?.dataset.priceChild || 0);
+
+	// Cập nhật đơn giá di chuyển
+	const movingPriceAdultElement = document.getElementById(
+		"moving-price-adult-value"
+	);
+	const movingPriceChildElement = document.getElementById(
+		"moving-price-child-value"
 	);
 
-	document.getElementById("moving-price-value").textContent =
-		price > 0 ? formatCurrency(price) : "0đ";
+	if (movingPriceAdultElement) {
+		movingPriceAdultElement.textContent =
+			priceAdult > 0 ? formatCurrency(priceAdult) : "0đ";
+	}
+	if (movingPriceChildElement) {
+		movingPriceChildElement.textContent =
+			priceChild > 0 ? formatCurrency(priceChild) : "0đ";
+	}
 
-	const totalPrice = price * totalQuantity;
-	document.getElementById("moving-total-value").textContent =
-		price > 0 ? formatCurrency(totalPrice) : "0đ";
+	// Tính tổng phí
+	const totalPriceAdult = priceAdult * adults;
+	const totalPriceChild = priceChild * children;
+	const totalPrice = totalPriceAdult + totalPriceChild;
 
-	const tourMovingTotal = document.getElementById("tour-moving-total");
-	if (tourMovingTotal) {
-		tourMovingTotal.textContent =
-			price > 0 ? formatCurrency(totalPrice) : "Chưa chọn điểm khởi hành";
+	// Cập nhật tổng phí riêng lẻ
+	const movingTotalAdultElement = document.getElementById(
+		"moving-total-adult-value"
+	);
+	const movingTotalChildElement = document.getElementById(
+		"moving-total-child-value"
+	);
+
+	if (movingTotalAdultElement) {
+		movingTotalAdultElement.textContent =
+			priceAdult > 0 ? formatCurrency(totalPriceAdult) : "0đ";
+	}
+	if (movingTotalChildElement) {
+		movingTotalChildElement.textContent =
+			priceChild > 0 ? formatCurrency(totalPriceChild) : "0đ";
+	}
+
+	// Cập nhật tổng phí chung
+	const movingTotalElement = document.getElementById("moving-total-value");
+	if (movingTotalElement) {
+		movingTotalElement.textContent =
+			priceAdult > 0 || priceChild > 0
+				? formatCurrency(totalPrice)
+				: "Chưa chọn điểm khởi hành";
+	}
+
+	// Cập nhật card bên phải
+	const cardMovingPriceAdult = document.getElementById(
+		"card-moving-price-adult"
+	);
+	const cardMovingPriceChild = document.getElementById(
+		"card-moving-price-child"
+	);
+	const cardMovingTotalAdult = document.getElementById(
+		"card-moving-total-adult"
+	);
+	const cardMovingTotalChild = document.getElementById(
+		"card-moving-total-child"
+	);
+
+	if (cardMovingPriceAdult) {
+		cardMovingPriceAdult.textContent =
+			priceAdult > 0 ? formatCurrency(priceAdult) : "0đ";
+	}
+	if (cardMovingPriceChild) {
+		cardMovingPriceChild.textContent =
+			priceChild > 0 ? formatCurrency(priceChild) : "0đ";
+	}
+	if (cardMovingTotalAdult) {
+		cardMovingTotalAdult.textContent =
+			priceAdult > 0 ? formatCurrency(totalPriceAdult) : "0đ";
+	}
+	if (cardMovingTotalChild) {
+		cardMovingTotalChild.textContent =
+			priceChild > 0 ? formatCurrency(totalPriceChild) : "0đ";
 	}
 }
 
 function updateTourCost() {
-	const adults = parseInt(document.getElementById("adults")?.value || 1) || 1;
-	const children =
-		parseInt(document.getElementById("children")?.value || 0) || 0;
+	const adults = parseInt(document.getElementById("adults")?.value) || 1;
+	const children = parseInt(document.getElementById("children")?.value) || 0;
 	const totalQuantity = adults + children;
 
 	const tourCard = document.querySelector(".tour-info");
@@ -127,33 +189,64 @@ function updateTourCost() {
 	);
 	const priceChild = parseInt(tourCard?.getAttribute("data-price-child") || 0);
 
-	document.getElementById("tour-quantity").textContent = totalQuantity;
-	document.getElementById("adults-count").textContent = adults;
-	document.getElementById("children-count").textContent = children;
+	// Cập nhật số lượng
+	const tourQuantityElement = document.getElementById("tour-quantity");
+	const adultsCountElement = document.getElementById("adults-count");
+	const childrenCountElement = document.getElementById("children-count");
 
+	if (tourQuantityElement) tourQuantityElement.textContent = totalQuantity;
+	if (adultsCountElement) adultsCountElement.textContent = adults;
+	if (childrenCountElement) childrenCountElement.textContent = children;
+
+	// Tính chi phí tour
 	const adultsCost = adults * priceAdult;
 	const childrenCost = children * priceChild;
 
-	document.getElementById("adults-cost").textContent =
-		formatCurrency(adultsCost);
-	document.getElementById("children-cost").textContent =
-		formatCurrency(childrenCost);
-	document.getElementById("tour-cost").textContent = formatCurrency(
-		adultsCost + childrenCost
-	);
+	const adultsCostElement = document.getElementById("adults-cost");
+	const childrenCostElement = document.getElementById("children-cost");
+	const tourCostElement = document.getElementById("tour-cost");
 
+	if (adultsCostElement) {
+		adultsCostElement.textContent = formatCurrency(adultsCost);
+	}
+	if (childrenCostElement) {
+		childrenCostElement.textContent = formatCurrency(childrenCost);
+	}
+	if (tourCostElement) {
+		tourCostElement.textContent = formatCurrency(adultsCost + childrenCost);
+	}
+
+	// Tính tổng tiền
 	const departureSelect = document.getElementById("departure_id");
+	const tourTotalElement = document.getElementById("tour-total-amount");
+
 	if (!departureSelect?.value) {
-		document.getElementById("tour-total-amount").textContent =
-			"Chưa chọn đủ thông tin";
+		if (tourTotalElement) {
+			tourTotalElement.textContent = "Chưa chọn đủ thông tin";
+		}
 	} else {
-		const movingText = document
-			.getElementById("moving-total-value")
-			?.textContent.replace(/\D/g, "");
-		const movingTotal = parseInt(movingText || 0);
+		// Lấy phí di chuyển từ các phần tử card
+		const movingAdultElement = document.getElementById(
+			"card-moving-total-adult"
+		);
+		const movingChildElement = document.getElementById(
+			"card-moving-total-child"
+		);
+
+		const movingAdultText =
+			movingAdultElement?.textContent.replace(/\D/g, "") || "0";
+		const movingChildText =
+			movingChildElement?.textContent.replace(/\D/g, "") || "0";
+
+		const movingTotalAdult = parseInt(movingAdultText);
+		const movingTotalChild = parseInt(movingChildText);
+		const movingTotal = movingTotalAdult + movingTotalChild;
+
 		const total = adultsCost + childrenCost + movingTotal;
-		document.getElementById("tour-total-amount").textContent =
-			formatCurrency(total);
+
+		if (tourTotalElement) {
+			tourTotalElement.textContent = formatCurrency(total);
+		}
 	}
 }
 
@@ -170,22 +263,30 @@ document.addEventListener("DOMContentLoaded", function () {
 		updateTourCost();
 	});
 
-	adultsInput?.addEventListener("input", function () {
-		checkQuantityWarning();
-		updateMovingPrice();
-		updateTourCost();
-	});
+	if (adultsInput) {
+		adultsInput.addEventListener("input", function () {
+			checkQuantityWarning();
+			updateMovingPrice();
+			updateTourCost();
+		});
+	}
 
-	childrenInput?.addEventListener("input", function () {
-		checkQuantityWarning();
-		updateMovingPrice();
-		updateTourCost();
-	});
+	if (childrenInput) {
+		childrenInput.addEventListener("input", function () {
+			checkQuantityWarning();
+			updateMovingPrice();
+			updateTourCost();
+		});
+	}
 
 	["contact_name", "contact_phone", "contact_email"].forEach((id) => {
-		document.getElementById(id)?.addEventListener("input", validateBookingForm);
+		const element = document.getElementById(id);
+		if (element) {
+			element.addEventListener("input", validateBookingForm);
+		}
 	});
 
+	// Khởi tạo giá trị ban đầu
 	updateMovingPrice();
 	updateTourCost();
 	validateBookingForm();
