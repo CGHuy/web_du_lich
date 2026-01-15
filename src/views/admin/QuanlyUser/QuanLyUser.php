@@ -1,4 +1,4 @@
-<div class="card-header d-flex justify-content-between align-items-center">
+<div class="card-header d-flex justify-content-between align-items-center p-0 px-4">
     <div>
         <h5 class="card-title">
             <i class="fa-solid fa-user me-2"></i>Quản lý User
@@ -23,13 +23,13 @@
 <?php endif; ?>
 
 <div class="card-body">
-    <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">Thêm User Mới</a>
     <div class="input-group search-group mb-3">
         <span class="input-group-text search-icon">
             <i class="fa-solid fa-magnifying-glass fa-sm"></i>
         </span>
         <input class="form-control search-input" placeholder="Tìm kiếm user theo id, tên, email, số điện thoại..." value="" aria-label="Tìm kiếm" />
     </div>
+    <a href="#" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addUserModal">Thêm User Mới</a>
     <div class="table-responsive">
         <table class="table table-striped table-hover align-middle">
             <thead>

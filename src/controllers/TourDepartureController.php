@@ -24,6 +24,9 @@ class TourDepartureController {
 
     public function store() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $tour_id = $_POST['tour_id'];
             $departure_location = $_POST['departure_location'];
             $departure_date = $_POST['departure_date'];
@@ -33,12 +36,17 @@ class TourDepartureController {
             $seats_available = $seats_total; // mặc định
             $status = 'open'; // mặc định
             $this->model->create($tour_id, $departure_location, $departure_date, $price_moving, $price_moving_child, $seats_total, $seats_available, $status);
-            echo json_encode(['success' => true]);
+            $_SESSION['success_message'] = 'Điểm khởi hành đã được thêm thành công.';
+            header('Location: ' . route('TourDeparture.index'));
+            exit;
         }
     }
 
     public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $id = $_POST['id'];
             $tour_id = $_POST['tour_id'];
             $departure_location = $_POST['departure_location'];
@@ -49,15 +57,22 @@ class TourDepartureController {
             $seats_available = $_POST['seats_available'] ?? $seats_total;
             $status = $_POST['status'] ?? 'open';
             $this->model->update($id, $tour_id, $departure_location, $departure_date, $price_moving, $price_moving_child, $seats_total, $seats_available, $status);
-            echo json_encode(['success' => true]);
+            $_SESSION['success_message'] = 'Điểm khởi hành đã được cập nhật thành công.';
+            header('Location: ' . route('TourDeparture.index'));
+            exit;
         }
     }
 
     public function delete() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $id = $_POST['id'];
             $this->model->delete($id);
-            echo json_encode(['success' => true]);
+            $_SESSION['success_message'] = 'Điểm khởi hành đã được xóa thành công.';
+            header('Location: ' . route('TourDeparture.index'));
+            exit;
         }
     }
 

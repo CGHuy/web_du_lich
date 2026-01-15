@@ -10,6 +10,22 @@
 </div>
 
 <div class="card-body">
+    <?php if (isset($_SESSION['error_message'])): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-exclamation me-2"></i><?= htmlspecialchars($_SESSION['error_message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['error_message']); ?>
+    <?php endif; ?>
+    
+    <?php if (isset($_SESSION['success_message'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i><?= htmlspecialchars($_SESSION['success_message']) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['success_message']); ?>
+    <?php endif; ?>
+    
     <div class="input-group search-group mb-3">
         <span class="input-group-text search-icon">
             <i class="fa-solid fa-magnifying-glass fa-sm"></i>
@@ -29,10 +45,7 @@
                                 <small class="text-muted find_id">ID: <?= htmlspecialchars($tour['tour_code']) ?></small>
                             </div>
                             <div class="d-flex gap-2">
-                                <a href="#" class="btn btn-sm btn-outline-secondary" 
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#viewTourModal"
-                                    data-id="<?= $tour['id'] ?>">
+                                <a href="<?= route('ListTour.details', ['id' => $tour['id']]) ?>" class="btn btn-sm btn-outline-secondary" target="_blank">
                                     <i class="fa-solid fa-eye me-1"></i> Xem
                                 </a>
                                 <a href="#" class="btn btn-sm btn-outline-primary" 
@@ -163,19 +176,21 @@
     </div>
 </div>
 
-<!-- Modal Xem Tour -->
-<div class="modal fade" id="viewTourModal" tabindex="-1" aria-labelledby="viewTourModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<!-- Modal Thông báo không thể xóa tour -->
+<div class="modal fade" id="cannotDeleteTourModal" tabindex="-1" aria-labelledby="cannotDeleteTourModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="viewTourModalLabel">Chi Tiết Tour</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="cannotDeleteTourModalLabel">Không thể xóa tour</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body pb-0">
-                <!-- Nội dung chi tiết tour sẽ được tải động bằng JavaScript hoặc AJAX -->
-                <p>Đang tải chi tiết tour...</p>
+
+            <div class="modal-body">
+                <p class="m-0 p-2">Tour: <strong id="cannot_delete_name" class="text-danger"></strong></p>
+                <p class="m-0 p-2">Lý do: <strong id="cannot_delete_reason" class="text-danger"></strong></p>
             </div>
-            <div class="modal-footer">
+
+            <div class="modal-footer pb-0">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
             </div>
         </div>

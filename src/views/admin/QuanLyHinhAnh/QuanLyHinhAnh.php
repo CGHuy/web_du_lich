@@ -8,7 +8,6 @@
         <?php
         $count = 0;
         foreach ($tours as $tour) {
-            // assume each tour may have images
             if (!empty($tour['has_images'])) {
                 $count++;
             }

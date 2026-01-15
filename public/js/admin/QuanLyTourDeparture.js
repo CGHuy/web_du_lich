@@ -47,28 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Sự kiện submit form trong modal
     document.addEventListener('submit', function(e) {
         if (e.target.id === 'tourDepartureForm') {
-            e.preventDefault();
-            const form = e.target;
-            const formData = new FormData(form);
-            
-            fetch(form.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('tourDepartureModal'));
-                    modal.hide();
-                    location.reload(); // Reload để cập nhật danh sách
-                } else {
-                    alert('Lỗi: ' + (data.message || 'Không thể lưu dữ liệu.'));
-                }
-            })
-            .catch(error => {
-                alert('Lỗi server. Vui lòng thử lại.');
-                console.error('Error submitting form:', error);
-            });
+            // Không preventDefault - để form submit bình thường
+            // Form sẽ redirect về trang index với session message
         }
     });
 
@@ -80,25 +60,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const name = btn.getAttribute('data-name');
             
             if (confirm(`Bạn có chắc muốn xóa điểm khởi hành "${name}"?`)) {
-                fetch('?controller=TourDeparture&action=delete', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `id=${id}`
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        location.reload(); // Reload để cập nhật danh sách
-                    } else {
-                        alert('Lỗi: ' + (data.message || 'Không thể xóa.'));
-                    }
-                })
-                .catch(error => {
-                    alert('Lỗi server. Vui lòng thử lại.');
-                    console.error('Error deleting:', error);
-                });
+                // Tạo form ẩn để submit
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '?controller=TourDeparture&action=delete';
+                
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'id';
+                input.value = id;
+                
+                form.appendChild(input);
+                document.body.appendChild(form);
+                form.submit();
             }
         }
     });

@@ -1,17 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-     // Modal xem
-     var viewModal = document.getElementById('viewTourModal');
-     if (viewModal) {
-          viewModal.addEventListener('show.bs.modal', function (event) {
-               var button = event.relatedTarget;
-               var id = button.getAttribute('data-id');
-               var modalBody = viewModal.querySelector('.modal-body');
-               modalBody.innerHTML = '<p>Đang tải chi tiết tour...</p>';
-               // Có thể dùng AJAX để lấy dữ liệu tour và hiển thị
-          });
-     }
-
      // Modal thêm
      var addModal = document.getElementById('addTourModal');
      if (addModal) {

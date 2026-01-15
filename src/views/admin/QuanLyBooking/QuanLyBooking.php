@@ -1,6 +1,8 @@
-<div class="card-header d-flex justify-content-between align-items-center">
+<div class="card-header d-flex justify-content-between align-items-center p-0 px-4">
     <div>
-        <h5 class="card-title">Quản lý Booking</h5>
+        <h5 class="card-title">
+            <i class="fa-solid fa-calendar-check me-2"></i>Quản lý Booking
+        </h5>
         <p style="color: #636465ff;">Danh sách các booking mà các khách hàng đã đặt </p>
     </div>
 </div>

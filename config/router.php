@@ -1,5 +1,11 @@
 <?php
 // Router tối giản tách riêng để dễ bảo trì / giải thích
+
+// Start session nếu chưa có
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 function dispatch()
 {
     $controller = $_GET['controller'] ?? null;

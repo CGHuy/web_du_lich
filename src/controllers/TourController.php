@@ -1,11 +1,14 @@
 <?php
 require_once __DIR__ . '/../models/Tour.php';
+require_once __DIR__ . '/../models/TourDeparture.php';
 
 class TourController {
     private $model;
+    private $departureModel;
 
     public function __construct() {
         $this->model = new Tour();
+        $this->departureModel = new TourDeparture();
     }
 
     public function index() {
@@ -24,6 +27,9 @@ class TourController {
 
     public function create() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $name = $_POST['name'];
             $slug = $_POST['slug'];
             $description = $_POST['description'];
@@ -37,12 +43,17 @@ class TourController {
                 $cover_image = file_get_contents($_FILES['cover_image']['tmp_name']);
             }
             $this->model->create($name, $slug, $description, $location, $region, $duration, $price_default, $price_child, $cover_image);
+            $_SESSION['success_message'] = 'Tour đã được thêm thành công.';
             header('Location: ' . route('Tour.index'));
+            exit;
         }
     }
 
     public function update() {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             $id = $_POST['id'];
             $name = $_POST['edit_name'];
             $slug = $_POST['edit_slug'];
@@ -59,14 +70,29 @@ class TourController {
             }
 
             $this->model->update($id, $name, $slug, $description, $location, $region, $duration, $price_default, $price_child, $cover_image);
+            $_SESSION['success_message'] = 'Tour đã được cập nhật thành công.';
             header('Location: ' . route('Tour.index'));
+            exit;
         }
     }
 
     public function delete() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $id = $_POST['id'];
+        
+        $departures = $this->departureModel->getByTourIdForBookingTour($id);
+        if (!empty($departures)) {
+            $_SESSION['error_message'] = 'Không thể xóa tour vì tour này đã có lịch khởi hành. Vui lòng xóa các lịch khởi hành trước.';
+            header('Location: ' . route('Tour.index'));
+            exit;
+        }
+        
         $this->model->delete($id);
+        $_SESSION['success_message'] = 'Tour đã được xóa thành công.';
         header('Location: ' . route('Tour.index'));
+        exit;
     }
 
     public function getAddForm() {
