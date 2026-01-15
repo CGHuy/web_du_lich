@@ -14,12 +14,9 @@ class BookingAdminController
     {
         // Lấy trạng thái lọc nếu có
         $status = $_REQUEST['sort'] ?? '';
-        $page = isset($_REQUEST['page']) ? max(1, (int) $_REQUEST['page']) : 1;
-        $perPage = 5;
 
-        // Lấy bookings từ service
-        $bookings = $this->bookingService->getAllWithPagination($status, $page, $perPage);
-        $totalPages = $this->bookingService->getTotalPages($status, $perPage);
+        // Lấy tất cả bookings (không phân trang) để hiển thị trong ô cuộn dọc
+        $bookings = $this->bookingService->getAll($status);
 
         // Render view qua layout admin
         $currentPage = 'booking';
@@ -102,6 +99,8 @@ class BookingAdminController
 
             // Thông báo xác nhận phê duyệt hoàn tiền thành công
             $_SESSION['admin_message'] = 'Phê duyệt hoàn tiền thành công! Số tiền hoàn: ' . number_format($refundAmount, 0, ',', '.') . 'đ';
+            // Debug log to confirm message was set
+            error_log("BookingAdmin: set admin_message for booking {$bookingId} with amount {$refundAmount}");
         } elseif ($action === 'deny') {
             // revert to confirmed state
             $bookingModel->updateStatus($bookingId, 'confirmed');
@@ -111,4 +110,6 @@ class BookingAdminController
 
         header('Location: ' . route('BookingAdmin.detail', ['id' => $bookingId]));
     }
+
+
 }

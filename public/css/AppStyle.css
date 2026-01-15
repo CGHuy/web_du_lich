@@ -299,11 +299,21 @@ h6 {
 	margin-bottom: 24px;
 }
 
+/* ===== Admin refund alert style ===== */
+.alert-admin-refund {
+	background-color: #fff5f5; /* light red */
+	color: #7f1d1d; /* dark red text */
+	border: 1px solid #fecaca; /* light red border */
+	font-weight: 700;
+}
+
 .table-wrapper {
-	overflow-x: auto;
+	max-height: 420px; /* adjust as needed */
+	overflow: auto; /* allow vertical + horizontal scrolling */
 }
 
 .custom-table {
+	min-width: 1200px; /* ensure horizontal scroll when container is narrower */
 	width: 100%;
 	font-size: 14px;
 	text-align: left;
@@ -323,6 +333,10 @@ h6 {
 	padding: 14px 24px;
 	font-weight: 700;
 	line-height: 1.4;
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	background-color: #eef2f6; /* ensure header blocks content behind it */
 }
 
 .custom-table thead th.text-right {
@@ -358,6 +372,8 @@ h6 {
 .custom-table tbody td {
 	padding: 16px 24px;
 	line-height: 1.6;
+	white-space: normal; /* allow wrapping */
+	word-break: break-word; /* break long words/URLs */
 }
 
 .custom-table tbody td:first-child {

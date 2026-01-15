@@ -59,7 +59,7 @@ include __DIR__ . '/../partials/header.php';
                         </div>
                         <div class="table-container">
                             <div class="table-wrapper">
-                                <table class="custom-table" style="min-width: 1200px;">
+                                <table class="custom-table">
                                     <thead>
                                         <tr>
                                             <th style="width: 50px;">#</th>
@@ -111,48 +111,7 @@ include __DIR__ . '/../partials/header.php';
                         </div>
                         <!-- Form đã được loại bỏ, không cần thiết cho nút xem chi tiết -->
                     </form>
-                    <div class="d-flex justify-content-end mt-3">
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination mb-0">
-                                <?php
-                                $currentPage = isset($page) ? (int) $page : 1;
-                                $totalPages = isset($totalPages) ? (int) $totalPages : 1;
-                                // previous
-                                $prevPage = max(1, $currentPage - 1);
-                                $nextPage = min($totalPages, $currentPage + 1);
-                                $baseUrl = route('settinguser.bookingHistory');
-                                // preserve sort parameter if present
-                                $sortParam = isset($status) && $status ? $status : null;
-                                $buildHref = function ($p) use ($baseUrl, $sortParam) {
-                                    $qs = ['page' => $p];
-                                    if ($sortParam)
-                                        $qs['sort'] = $sortParam;
-                                    $query = http_build_query($qs);
-                                    $sep = (strpos($baseUrl, '?') === false) ? '?' : '&';
-                                    return $baseUrl . $sep . $query;
-                                };
-
-                                ?>
-                                <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
-                                    <a class="page-link" href="<?= $buildHref($prevPage) ?>" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-
-                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                    <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>">
-                                        <a class="page-link" href="<?= $buildHref($i) ?>"><?= $i ?></a>
-                                    </li>
-                                <?php endfor; ?>
-
-                                <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
-                                    <a class="page-link" href="<?= $buildHref($nextPage) ?>" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
+                    <!-- Pagination removed: using vertical + horizontal scroll within the table container -->
                 </div>
             </div>
 

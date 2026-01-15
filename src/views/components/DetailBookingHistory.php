@@ -343,4 +343,64 @@ include __DIR__ . '/../partials/header.php';
 <?php endif; ?>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
+<script>
+    (function() {
+        // Only poll if the booking is currently a pending cancellation
+        var initialStatus = <?= json_encode($bookingDetail['booking_status'] ?? '') ?>;
+        if (!initialStatus) return;
+        if (initialStatus !== 'pending_cancellation') return; // no need to poll
+
+        var bookingId = <?= (int) ($bookingDetail['id'] ?? 0) ?>;
+        var statusCell = document.getElementById('bookingStatusCell');
+        var cancelMsgEl = document.getElementById('cancelResultMessage');
+        var pollInterval = 5000; // ms
+        var timer = null;
+
+        function renderStatus(status) {
+            var map = {
+                'pending_cancellation': '<span class="badge bg-warning">Yêu cầu hủy</span>',
+                'confirmed': '<span class="badge bg-success">Đã xác nhận</span>',
+                'cancelled': '<span class="badge bg-danger">Đã hủy</span>'
+            };
+            return map[status] || status;
+        }
+
+        function checkStatus() {
+            var url = '<?= route('settinguser.bookingStatusApi') ?>' + '?id=' + bookingId;
+            fetch(url, { credentials: 'same-origin' })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.error) return;
+                    var newStatus = data.booking_status || '';
+                    var note = data.note || '';
+
+                    if (newStatus && statusCell && statusCell.innerHTML.trim() !== renderStatus(newStatus).trim()) {
+                        statusCell.innerHTML = renderStatus(newStatus);
+                    }
+
+                    if (note && /Yêu cầu hủy thất bại/i.test(note)) {
+                        // show explicit message
+                        cancelMsgEl.innerHTML = '<div class="alert alert-danger p-2 m-0">Yêu cầu hủy thất bại</div>';
+                        cancelMsgEl.style.display = 'block';
+                    } else if (note && /thất bại/i.test(note)) {
+                        cancelMsgEl.innerHTML = '<div class="alert alert-danger p-2 m-0">' + (note.length > 100 ? note.substring(0, 100) + '...' : note) + '</div>';
+                        cancelMsgEl.style.display = 'block';
+                    }
+
+                    // Stop polling if the booking is no longer pending_cancellation
+                    if (newStatus && newStatus !== 'pending_cancellation') {
+                        if (timer) clearInterval(timer);
+                    }
+                })
+                .catch(function (err) {
+                    console.warn('Polling booking status failed', err);
+                });
+        }
+
+        // Start immediate check and periodic polling
+        checkStatus();
+        timer = setInterval(checkStatus, pollInterval);
+    })();
+</script>
+
 </html>

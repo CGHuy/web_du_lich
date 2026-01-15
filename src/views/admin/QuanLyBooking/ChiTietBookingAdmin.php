@@ -18,12 +18,8 @@ $currentPage = 'booking'; ?>
         <p style="color: #636465ff;">Thông tin chi tiết về chuyến đi của bạn đã đặt</p>
     </div>
     <div>
-        <?php if (session_status() === PHP_SESSION_NONE)
-            session_start(); ?>
-        <?php if (isset($_SESSION['admin_message'])): ?>
-            <div class="alert alert-success mb-2"><?= htmlspecialchars($_SESSION['admin_message']); ?></div>
-            <?php unset($_SESSION['admin_message']); ?>
-        <?php endif; ?>
+       
+
         <?php if (($bookingDetail['booking_status'] ?? '') === 'pending_cancellation'): ?>
             <button id="openProcessCancel" class="btn btn-danger btn-sm">Xử lý yêu cầu hủy</button>
         <?php endif; ?>
@@ -94,19 +90,19 @@ $currentPage = 'booking'; ?>
                         <td class="detail-booking-title">Địa điểm khởi hành</td>
                         <td><?= htmlspecialchars($bookingDetail['departure_location']) ?></td>
                     </tr>
+
                     <tr>
                         <td class="detail-booking-title">Ghi chú</td>
                         <td>
-                            <?= nl2br(htmlspecialchars(trim($bookingDetail['note'] ?? ''))) ?>
+                            <?= htmlspecialchars($bookingDetail['note'] ?? '') ?>
                         </td>
                     </tr>
+
 
                     <tr class="detail-payment-header">
                         <th rowspan="4">
                             <h6 style="color: #1a75c4ff;">THÔNG TIN THANH TOÁN</h6>
                         </th>
-                    </tr>
-
                     </tr>
                     <tr>
                         <td class="detail-booking-title">Tổng giá</td>

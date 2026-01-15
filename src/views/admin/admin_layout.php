@@ -64,7 +64,7 @@
                                 Quản lý dịch vụ tour</a>
                         </li>
                         <li class="menu-item mb-1 <?= $currentPage === 'TourImage' ? 'active' : '' ?>">
-                            <i class="fa-solid fa-list"></i>
+                            <i class="fa-solid fa-image"></i>
                             <a href="<?= route('TourImage.index'); ?>" class="text-decoration-none flex-grow-1"
                                 style="color: inherit;">
                                 Quản lý hình ảnh tour</a>
@@ -87,6 +87,17 @@
 
             <div class="card card_form" style="flex: 0 0 calc(80% - 1rem);">
                 <div class="card-body">
+                    <?php if (session_status() === PHP_SESSION_NONE)
+                        session_start(); ?>
+                    <?php if (isset($_SESSION['admin_message'])):
+                        $adminMsg = $_SESSION['admin_message'];
+                        $isRefund = (stripos($adminMsg, 'hoàn tiền') !== false) || (stripos($adminMsg, 'hoàn trả') !== false);
+                        ?>
+                        <div class="mb-3 alert <?= $isRefund ? 'alert-admin-refund' : 'alert-success' ?>">
+                            <?= htmlspecialchars($adminMsg) ?>
+                        </div>
+                        <?php unset($_SESSION['admin_message']); ?>
+                    <?php endif; ?>
                     <div id="admin-content">
                         <?php echo $content ?? ''; ?>
                     </div>
