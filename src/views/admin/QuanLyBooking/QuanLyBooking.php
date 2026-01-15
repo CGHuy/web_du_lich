@@ -1,6 +1,9 @@
 <div class="card-header d-flex justify-content-between align-items-center">
     <div>
-        <h5 class="card-title">Quản lý Booking</h5>
+
+        <h5 class="card-title">
+            <i class="fa-solid fa-calendar-check"></i> Quản lý Booking
+        </h5>
         <p style="color: #636465ff;">Danh sách các booking mà các khách hàng đã đặt </p>
     </div>
 </div>
@@ -24,15 +27,15 @@
         </div>
         <div class="table-container">
             <div class="table-wrapper">
-                <table class="custom-table" style="min-width: 1200px;">
+                <table class="custom-table">
                     <thead>
                         <tr>
-                            <th style="width: 50px;">#</th>
+                            <th style="width: 70px;">#</th>
                             <th style="width: 140px;">Mã Booking</th>
                             <th style="width: 220px;">Tên Khách Hàng</th>
-                            <th style="width: 280px;">Tên Tour</th>
+                            <th style="width: 260px;">Tên Tour</th>
                             <th style="width: 150px;">Ngày Khởi Hành</th>
-                            <th style="width: 130px;">Tổng Tiền</th>
+                            <th style="width: 170px;">Tổng Tiền</th>
                             <th style="width: 140px;">Trạng Thái</th>
                             <th style="width: 160px;">Ngày Đặt</th>
                             <th style="width: 120px;"></th>
@@ -80,41 +83,4 @@
             </div>
         </div>
     </form>
-    <div class="d-flex justify-content-end mt-3">
-        <nav aria-label="Page navigation">
-            <ul class="pagination mb-0">
-                <?php
-                $currentPage = isset($page) ? (int) $page : 1;
-                $totalPages = isset($totalPages) ? (int) $totalPages : 1;
-                $prevPage = max(1, $currentPage - 1);
-                $nextPage = min($totalPages, $currentPage + 1);
-                $baseUrl = route('BookingAdmin.index');
-                $sortParam = isset($status) && $status ? $status : null;
-                $buildHref = function ($p) use ($baseUrl, $sortParam) {
-                    $qs = ['page' => $p];
-                    if ($sortParam)
-                        $qs['sort'] = $sortParam;
-                    $query = http_build_query($qs);
-                    $sep = (strpos($baseUrl, '?') === false) ? '?' : '&';
-                    return $baseUrl . $sep . $query;
-                };
-                ?>
-                <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
-                    <a class="page-link" href="<?= $buildHref($prevPage) ?>" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>">
-                        <a class="page-link" href="<?= $buildHref($i) ?>"><?= $i ?></a>
-                    </li>
-                <?php endfor; ?>
-                <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
-                    <a class="page-link" href="<?= $buildHref($nextPage) ?>" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-    </div>
 </div>

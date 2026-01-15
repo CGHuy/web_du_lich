@@ -78,11 +78,48 @@ class Booking
         return $stmt->execute();
     }
 
-    // Admin note feature disabled: previously used to write admin notes into the `note` column.
-    public function appendAdminNote($id, $admin_note)
+    /**
+     * Clear the booking.note field (set to NULL)
+     */
+    public function clearNote($id)
     {
-        // Disabled - no-op
-        return false;
+        $stmt = $this->conn->prepare("UPDATE bookings SET note = NULL WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
+    }
+
+    /**
+     * Remove only the admin refund substring (e.g. "[ADMIN] Hoàn tiền: 3010000 (2026-01-13 15:01:48)")
+     * from the booking.note field for a given booking id. Keeps other note content intact.
+     */
+    public function removeAdminRefundNote($id)
+    {
+        // fetch existing note
+        $stmt = $this->conn->prepare("SELECT note FROM bookings WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        $note = $row['note'] ?? null;
+        if (empty($note)) {
+            return false; // nothing to do
+        }
+
+        // remove any occurrence of [ADMIN] Hoàn tiền: ... (up to end of line or up to a parenthesis)
+        $new = preg_replace('/\[ADMIN\]\s*Hoàn tiền:.*?(?:\)|$)/iu', '', $note);
+        // normalize whitespace and remove leftover punctuation
+        $new = preg_replace('/[\s\-_,;:\(\)]+$/u', '', trim($new));
+        $new = trim($new);
+
+        if ($new === '') {
+            $stmt = $this->conn->prepare("UPDATE bookings SET note = NULL WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            return $stmt->execute();
+        } else {
+            $stmt = $this->conn->prepare("UPDATE bookings SET note = ? WHERE id = ?");
+            $stmt->bind_param("si", $new, $id);
+            return $stmt->execute();
+        }
     }
 
     public function __destruct()
