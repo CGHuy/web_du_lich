@@ -5,7 +5,15 @@
         </h5>
     </div>
     <div class="text-end mb-2">
-        <span class="badge bg-info">Tổng: <?= $total ?> tour</span>
+        <?php
+            $count = 0;
+            foreach ($tours as $tour) {
+                if ($tour['has_itinerary']) {
+                    $count++;
+                }
+            }
+        ?>
+        <span class="badge bg-info">Tổng: <?= $count ?> tour đã có lịch trình</span>
     </div>
 </div>
 <div class="card-body">

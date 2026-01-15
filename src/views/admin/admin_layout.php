@@ -64,7 +64,7 @@
                                 Quản lý dịch vụ tour</a>
                         </li>
                         <li class="menu-item mb-1 <?= $currentPage === 'TourImage' ? 'active' : '' ?>">
-                            <i class="fa-solid fa-list"></i>
+                            <i class="fa-solid fa-image"></i>
                             <a href="<?= route('TourImage.index'); ?>" class="text-decoration-none flex-grow-1"
                                 style="color: inherit;">
                                 Quản lý hình ảnh tour</a>

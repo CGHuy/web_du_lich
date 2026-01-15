@@ -6,12 +6,12 @@
     </div>
     <div class="text-end mb-2">
         <?php
-        $count = 0;
-        foreach ($tours as $tour) {
-            if ($tour['has_service']) {
-                $count++;
+            $count = 0;
+            foreach ($tours as $tour) {
+                if ($tour['has_service']) {
+                    $count++;
+                }
             }
-        }
         ?>
         <span class="badge bg-info">Tổng: <?= $count ?> tour có dịch vụ</span>
     </div>
